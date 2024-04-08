@@ -11,7 +11,9 @@ The objective of which is to provide a tool to family members and caregivers to 
 
 - Morales Vilchis Ariadne Denisse
 [@admvl](https://github.com/admvl)
-- 
+
+- Montesinos Pérez Reyna Isabel 
 [@](https://github.com/)
-- 
-[@](https://github.com/)
+
+- Rodríguez Reyes Luis Felipe
+[@LuisRood](https://github.com/LuisRood)
