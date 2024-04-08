@@ -1,0 +1,216 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'RegisterScr.dart';
+import 'CheckLocationScr.dart';
+import 'package:star_menu/star_menu.dart';
+import 'UserProfile.dart';
+import 'UserMgmt.dart';
+import 'MedicineForm.dart';
+import 'ZoneAlarmScr.dart';
+import 'MedicineAlarmScr.dart';
+import 'FallAlarmScr.dart';
+import 'SetAlarmScr.dart';
+
+
+class WelcomeScreen extends StatelessWidget {
+  const WelcomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // entries for the dropdown menu
+    final upperMenuItems = <Widget>[
+      const Icon(Icons.person_sharp, size: 100, color: Color.fromARGB(255, 3, 189, 164)),
+      const Text('Mi Perfil'),
+      const Text('Gestionar Usuarios'), 
+      const Text('Registro de Medicamentos'),
+    ];
+
+    void navigateToScreen(int index) {
+      switch (index) {
+        case 0:
+          // Navigate to RegisterScreen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const UserProfile()),
+          );
+          break;
+        case 1:
+          // Navigate to RegisterScreen
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const UserProfile()),
+          );
+          break;
+        case 2:
+          // Navigate to CheckLocation
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const UserMgmt()),
+          );
+          break;
+        case 3:
+          // Navigate to CheckLocation
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MedicineForm()),
+          );
+          break;
+        default:
+          debugPrint('Unhandled menu item: $index');
+      }
+    }
+
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Bienvenido'),
+        actions: [
+          // upper bar menu
+          StarMenu(
+            params: StarMenuParameters.dropdown(context).copyWith(
+              backgroundParams: const BackgroundParams().copyWith(
+                sigmaX: 3,
+                sigmaY: 3,
+              ),
+            ),
+            items: upperMenuItems,
+            onItemTapped: (index, c) {
+              debugPrint('Item $index tapped');
+              c.closeMenu!();
+              navigateToScreen(index);
+            },
+            child: const Padding(
+              padding: EdgeInsets.all(18),
+              child: Icon(Icons.menu),
+            ),
+          ),
+        ],
+      ),
+      body: Center(
+        child: Column(
+          //mainAxisSize: MainAxisSize.max,
+          children: [
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 20),
+                      Flexible(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            RegisterScreen registerScreen = const RegisterScreen();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => registerScreen), // Navega a la pantalla RegisterScreen
+                            );
+                          },
+                          icon: const Icon(Icons.edit_note),
+                          label: const Text('Nuevo Usuario'),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Flexible(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            // ... (code for Configurar Zona Segura button)
+                          },
+                          icon: const Icon(Icons.security),
+                          label: const Text('Zona Segura'),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                    ],
+                  ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const SizedBox(height: 20),
+                      Flexible(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            //CheckLocation locationScreen = const CheckLocation();
+                            CheckLocationScr locationScreen = const CheckLocationScr();
+                            Navigator.push(
+                              context,
+                              //MaterialPageRoute(builder: (context) => locationScreen), // Navega a la pantalla CheckLocation
+                              MaterialPageRoute(builder: (context) => locationScreen), // Navega a la pantalla CheckLocation
+                            );
+                          },
+                          icon: const Icon(Icons.pin_drop_outlined),
+                          label: const Text('Ubicación'),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Flexible(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            SetAlarmScr setAlarmScr = const SetAlarmScr();
+                            Navigator.push(
+                              context,
+                              //MaterialPageRoute(builder: (context) => locationScreen), // Navega a la pantalla CheckLocation
+                              MaterialPageRoute(builder: (context) => setAlarmScr), // Navega a la pantalla CheckLocation
+                            );
+                          },
+                          icon: const Icon(Icons.alarm),
+                          label: const Text('Alarmas'),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Flexible(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  MedicineAlarmScr medicineAlarmScr = const MedicineAlarmScr();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => medicineAlarmScr), // Navega a la pantalla RegisterScreen
+                  );
+                },
+                icon: const Icon(Icons.alarm),
+                label: const Text('Alarma Medicamentos'),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Flexible(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  ZoneAlarmScr zoneAlarmScr = const ZoneAlarmScr();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => zoneAlarmScr), // Navega a la pantalla RegisterScreen
+                  );
+                },
+                icon: const Icon(Icons.alarm),
+                label: const Text('Alarma Zona Segura'),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Flexible(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  FallAlarmScr fallAlarmScr = const FallAlarmScr();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => fallAlarmScr), // Navega a la pantalla RegisterScreen
+                  );
+                },
+                icon: const Icon(Icons.alarm),
+                label: const Text('Alarma Caída'),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
