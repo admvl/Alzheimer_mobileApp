@@ -13,7 +13,7 @@ The objective of which is to provide a tool to family members and caregivers to 
 [@admvl](https://github.com/admvl)
 
 - Montesinos Pérez Reyna Isabel 
-[@](https://github.com/)
+[@ILockette](https://github.com/ILockette)
 
 - Rodríguez Reyes Luis Felipe
 [@LuisRood](https://github.com/LuisRood)
