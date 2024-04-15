@@ -1,13 +1,12 @@
 //log-in app
-import 'package:alzheimer_app1/json/user.dart';
+import 'package:alzheimer_app1/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:profile_view/profile_view.dart';
 
-
 class UserProfile extends StatelessWidget {
   const UserProfile({super.key});
-  static const Color dividerColor= Colors.black;
+  static const Color dividerColor = Colors.black;
   @override
   Widget build(BuildContext context) {
     /*
@@ -17,14 +16,23 @@ class UserProfile extends StatelessWidget {
     String userEmail = 'User@email.com';
     String userBirthday = "01/01/2001";
     String userPass = "**********";*/
-    User user = const User("Name", "ApPat", "ApMat", "userNickname", "5512345678", "us@email", "password", "comprobanteFam", "fechaNac", "picture");
+    User user = const User(
+        "Name",
+        "ApPat",
+        "ApMat",
+        "userNickname",
+        "5512345678",
+        "us@email",
+        "password",
+        "comprobanteFam",
+        "fechaNac",
+        "picture");
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Perfil de Usuario')
-      ),
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text('Perfil de Usuario')),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.only(top:20, left: 20, right: 20),
+        padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
         child: Column(
           children: <Widget>[
             Center(
@@ -46,37 +54,56 @@ class UserProfile extends StatelessWidget {
                   Text(
                     //userNickname,
                     user.nombre,
-                    style: const TextStyle(fontSize: 35), 
+                    style: const TextStyle(fontSize: 35),
                   ),
                   const SizedBox(height: 20),
 
                   //Icons
                   Container(
-                    padding: const EdgeInsets.only(left: 20), 
-                    child: CustomIconRow(icon: Icons.person_outline_rounded, text: user.nickname, dividerColor: dividerColor,),
+                    padding: const EdgeInsets.only(left: 20),
+                    child: CustomIconRow(
+                      icon: Icons.person_outline_rounded,
+                      text: user.nickname,
+                      dividerColor: dividerColor,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Container(
-                    padding: const EdgeInsets.only(left: 20), 
-                    child: CustomIconRow(icon: Icons.phone_iphone_outlined, text: user.telefono, dividerColor: dividerColor,),
+                    padding: const EdgeInsets.only(left: 20),
+                    child: CustomIconRow(
+                      icon: Icons.phone_iphone_outlined,
+                      text: user.telefono,
+                      dividerColor: dividerColor,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Container(
-                    padding: const EdgeInsets.only(left: 20), 
-                    child: CustomIconRow(icon: Icons.email_outlined, text: user.email, dividerColor: dividerColor,),
+                    padding: const EdgeInsets.only(left: 20),
+                    child: CustomIconRow(
+                      icon: Icons.email_outlined,
+                      text: user.email,
+                      dividerColor: dividerColor,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Container(
-                    padding: const EdgeInsets.only(left: 20), 
-                    child: CustomIconRow(icon: Icons.date_range, text: user.fechaNac, dividerColor: dividerColor,),
+                    padding: const EdgeInsets.only(left: 20),
+                    child: CustomIconRow(
+                      icon: Icons.date_range,
+                      text: user.fechaNac,
+                      dividerColor: dividerColor,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   Container(
-                    padding: const EdgeInsets.only(left: 20), 
-                    child: CustomIconRow(icon: Icons.lock_outline, text: user.password, dividerColor: dividerColor,),
+                    padding: const EdgeInsets.only(left: 20),
+                    child: CustomIconRow(
+                      icon: Icons.lock_outline,
+                      text: user.password,
+                      dividerColor: dividerColor,
+                    ),
                   ),
                   const SizedBox(height: 20),
-                  
                 ],
               ),
 
@@ -91,7 +118,6 @@ class UserProfile extends StatelessWidget {
                     )
                 ],
               ),*/
-
             ),
           ],
         ),
@@ -158,9 +184,7 @@ class CustomIconPassRow extends StatelessWidget {
           decoration: InputDecoration(
             labelText: text,
           ),
-          style: TextStyle(
-            color: textColor, fontSize: 18
-          ),
+          style: TextStyle(color: textColor, fontSize: 18),
         ),
       ],
     );

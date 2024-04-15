@@ -7,9 +7,6 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:path_provider/path_provider.dart';
 //import 'package:file_picker/file_picker.dart';
 
-
-
-
 Future<String> getProjectDirPath() async {
   final directory = await getApplicationDocumentsDirectory();
   return directory.path;
@@ -30,7 +27,7 @@ class _UserFormState extends State<UserForm> {
   Widget build(BuildContext context) {
     final _roundedDecoration = InputDecoration(
       labelText: '',
-        border: OutlineInputBorder(
+      border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(color: Colors.blue, width: 2),
       ),
@@ -67,7 +64,8 @@ class _UserFormState extends State<UserForm> {
               const SizedBox(height: 10),
               FormBuilderTextField(
                 name: 'apellidoPaterno',
-                decoration: _roundedDecoration.copyWith(labelText: 'Apellido Paterno'),
+                decoration:
+                    _roundedDecoration.copyWith(labelText: 'Apellido Paterno'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                 ]),
@@ -75,19 +73,20 @@ class _UserFormState extends State<UserForm> {
               const SizedBox(height: 10),
               FormBuilderTextField(
                 name: 'apellidoMaterno',
-                decoration: _roundedDecoration.copyWith(labelText: 'Apellido Materno'),
+                decoration:
+                    _roundedDecoration.copyWith(labelText: 'Apellido Materno'),
               ),
               const SizedBox(height: 10),
               FormBuilderTextField(
                 name: 'fechaNac',
-                decoration: _roundedDecoration.copyWith(labelText: 'Fecha de Nacimiento'),
+                decoration: _roundedDecoration.copyWith(
+                    labelText: 'Fecha de Nacimiento'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                   FormBuilderValidators.dateString(),
                 ]),
               ),
               const SizedBox(height: 20),
-              
               ElevatedButton(
                 onPressed: () async {
                   if (_fbKey.currentState!.saveAndValidate()) {

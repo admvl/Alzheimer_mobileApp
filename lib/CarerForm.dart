@@ -3,6 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:alzheimer_app1/services/PersonasService.dart';
+import 'package:alzheimer_app1/models/Personas.dart';
+
+final PersonasService personasService = PersonasService();
 
 class CarerForm extends StatefulWidget {
   const CarerForm({super.key});
@@ -19,7 +23,7 @@ class _CarerFormState extends State<CarerForm> {
   Widget build(BuildContext context) {
     final _roundedDecoration = InputDecoration(
       labelText: '',
-        border: OutlineInputBorder(
+      border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
         borderSide: const BorderSide(color: Colors.blue, width: 2),
       ),
@@ -56,7 +60,8 @@ class _CarerFormState extends State<CarerForm> {
               const SizedBox(height: 10),
               FormBuilderTextField(
                 name: 'apellidoPaterno',
-                decoration: _roundedDecoration.copyWith(labelText: 'Apellido Paterno'),
+                decoration:
+                    _roundedDecoration.copyWith(labelText: 'Apellido Paterno'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                 ]),
@@ -64,12 +69,24 @@ class _CarerFormState extends State<CarerForm> {
               const SizedBox(height: 10),
               FormBuilderTextField(
                 name: 'apellidoMaterno',
-                decoration: _roundedDecoration.copyWith(labelText: 'Apellido Materno'),
+                decoration:
+                    _roundedDecoration.copyWith(labelText: 'Apellido Materno'),
+              ),
+              const SizedBox(height: 10),
+              FormBuilderTextField(
+                name: 'fechaNac',
+                decoration: _roundedDecoration.copyWith(
+                    labelText: 'Fecha de Nacimiento'),
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(),
+                  FormBuilderValidators.dateString(),
+                ]),
               ),
               const SizedBox(height: 10),
               FormBuilderTextField(
                 name: 'telefono',
-                decoration: _roundedDecoration.copyWith(labelText: 'Número Telefónico'),
+                decoration:
+                    _roundedDecoration.copyWith(labelText: 'Número Telefónico'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                 ]),
@@ -86,7 +103,8 @@ class _CarerFormState extends State<CarerForm> {
               const SizedBox(height: 10),
               FormBuilderTextField(
                 name: 'contraseña',
-                decoration: _roundedDecoration.copyWith(labelText: 'Contraseña'),
+                decoration:
+                    _roundedDecoration.copyWith(labelText: 'Contraseña'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                   FormBuilderValidators.minLength(8),
@@ -113,11 +131,35 @@ class _CarerFormState extends State<CarerForm> {
                 obscureText: true,
               ),
               const SizedBox(height: 20),
-              
               ElevatedButton(
                 onPressed: () async {
                   if (_fbKey.currentState!.saveAndValidate()) {
-                    print(_fbKey.currentState!.value);
+                    // Obtener los valores del formulario
+                    final formValues = _fbKey.currentState!.value;
+
+                    // Crear un objeto Personas con los valores del formulario
+                    final nuevaPersona = Personas(
+                      nombre: formValues['nombre'],
+                      apellidoP: formValues['apellidoPaterno'],
+                      apellidoM: formValues['apellidoMaterno'],
+                      fechaNacimiento: DateTime.parse(formValues['fechaNac']),
+                      numeroTelefono: formValues['telefono'],
+                    );
+
+                    // Enviar la nueva persona al backend usando PersonasService
+                    try {
+                      await personasService.crearPersona(nuevaPersona);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                            content: Text('Persona registrada con éxito')),
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('Error al registrar persona: $e')),
+                      );
+                    }
+                    print(nuevaPersona.toJson());
                   }
                   /* Validar existencia correo en BD
                   if(await checkIfEmailExists()){
