@@ -18,12 +18,12 @@ class LogInpApp extends StatelessWidget {
       },
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 3, 189, 164)),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 3, 189, 164)),
       ),
     );
   }
 }
-
 
 class LogInScreen extends StatelessWidget {
   const LogInScreen({super.key});
@@ -34,7 +34,7 @@ class LogInScreen extends StatelessWidget {
       //backgroundColor: Colors.grey[200],
       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       body: const SingleChildScrollView(
-        padding: EdgeInsets.only(top:100, left: 20, right: 20),
+        padding: EdgeInsets.only(top: 100, left: 20, right: 20),
         child: Center(
           child: SizedBox(
             width: 400,
@@ -47,7 +47,6 @@ class LogInScreen extends StatelessWidget {
     );
   }
 }
-
 
 class LogInForm extends StatefulWidget {
   const LogInForm({super.key});
@@ -62,7 +61,7 @@ class _LogInFormState extends State<LogInForm> {
 
   double _formProgress = 0;
   void _showWelcomeScreen() {
-  Navigator.of(context).pushNamed('/welcome');
+    Navigator.of(context).pushNamed('/welcome');
   }
 
   @override
@@ -93,7 +92,8 @@ class _LogInFormState extends State<LogInForm> {
             ),
           ),
           const SizedBox(height: 50),
-          Text('Inicio de Sesión', style: Theme.of(context).textTheme.headlineMedium),
+          Text('Inicio de Sesión',
+              style: Theme.of(context).textTheme.headlineMedium),
           const SizedBox(height: 20),
           Padding(
             padding: const EdgeInsets.all(8),
@@ -118,7 +118,7 @@ class _LogInFormState extends State<LogInForm> {
                 return states.contains(MaterialState.disabled)
                     ? null
                     //: Theme.of(context).colorScheme.primary;
-                    :Theme.of(context).colorScheme.inverseSurface;
+                    : Theme.of(context).colorScheme.inverseSurface;
               }),
               backgroundColor: MaterialStateProperty.resolveWith((states) {
                 return states.contains(MaterialState.disabled)
@@ -128,7 +128,8 @@ class _LogInFormState extends State<LogInForm> {
             ),
             //onPressed: null,
             //onPressed: _showWelcomeScreen,
-            onPressed: _formProgress == 1 ? _showWelcomeScreen : null, // UPDATED
+            onPressed:
+                _formProgress == 1 ? _showWelcomeScreen : null, // UPDATED
             child: const Text('Iniciar Sesion'),
           ),
           const SizedBox(height: 10),
@@ -136,6 +137,7 @@ class _LogInFormState extends State<LogInForm> {
       ),
     );
   }
+
   void _updateFormProgress() {
     var progress = 0.0;
     final controllers = [
@@ -154,7 +156,6 @@ class _LogInFormState extends State<LogInForm> {
     });
   }
 }
-
 
 class AnimatedProgressIndicator extends StatefulWidget {
   final double value;
