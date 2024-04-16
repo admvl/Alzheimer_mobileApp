@@ -1,4 +1,7 @@
 //log-in app
+import 'package:alzheimer_app1/models/LogIn.dart';
+import 'package:alzheimer_app1/models/Usuarios.dart';
+import 'package:alzheimer_app1/services/UsuariosService.dart';
 import 'package:flutter/material.dart';
 import 'welcomeScr.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
@@ -58,10 +61,21 @@ class LogInForm extends StatefulWidget {
 class _LogInFormState extends State<LogInForm> {
   final _userNameTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
+  final _usuariosService = UsuariosService();
 
   double _formProgress = 0;
   void _showWelcomeScreen() {
     Navigator.of(context).pushNamed('/welcome');
+  }
+
+  void _LogIn() async {
+    String usuario = _userNameTextController.text;
+    String contrasena = _passwordTextController.text;
+
+    final user = LogIn(correo: usuario, contrasenia: contrasena);
+    // Usa UsuariosService para verificar las credenciales
+    await _usuariosService.login(user);
+    _showWelcomeScreen(); // Inicia sesión y muestra la pantalla de bienvenida
   }
 
   @override
@@ -128,8 +142,7 @@ class _LogInFormState extends State<LogInForm> {
             ),
             //onPressed: null,
             //onPressed: _showWelcomeScreen,
-            onPressed:
-                _formProgress == 1 ? _showWelcomeScreen : null, // UPDATED
+            onPressed: _formProgress == 1 ? _LogIn : null, // UPDATED
             child: const Text('Iniciar Sesion'),
           ),
           const SizedBox(height: 10),
