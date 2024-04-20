@@ -1,7 +1,6 @@
 //log-in app
 import 'package:flutter/material.dart';
-import 'welcomeScr.dart';
-
+import 'welcome_scr.dart';
 
 class UserMgmtApp extends StatelessWidget {
   const UserMgmtApp({super.key});
@@ -15,12 +14,12 @@ class UserMgmtApp extends StatelessWidget {
       },
       theme: ThemeData(
         useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 3, 145, 189)),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 3, 145, 189)),
       ),
     );
   }
 }
-
 
 class UserMgmt extends StatelessWidget {
   const UserMgmt({super.key});
@@ -40,9 +39,7 @@ class UserMgmt extends StatelessWidget {
       ),
     );
   }
-  
 }
-
 
 class LogInForm extends StatefulWidget {
   const LogInForm({super.key});
@@ -57,7 +54,7 @@ class _LogInFormState extends State<LogInForm> {
 
   double _formProgress = 0;
   void _showWelcomeScreen() {
-  Navigator.of(context).pushNamed('/welcome');
+    Navigator.of(context).pushNamed('/welcome');
   }
 
   @override
@@ -70,7 +67,8 @@ class _LogInFormState extends State<LogInForm> {
           //LinearProgressIndicator(value: _formProgress),
           AnimatedProgressIndicator(value: _formProgress), // NEW
           const SizedBox(height: 20),
-          Text('Inicio de Sesión', style: Theme.of(context).textTheme.headlineMedium),
+          Text('Inicio de Sesión',
+              style: Theme.of(context).textTheme.headlineMedium),
           Padding(
             padding: const EdgeInsets.all(8),
             child: TextFormField(
@@ -88,12 +86,11 @@ class _LogInFormState extends State<LogInForm> {
           ),
           TextButton(
             style: ButtonStyle(
-              
               foregroundColor: MaterialStateProperty.resolveWith((states) {
                 return states.contains(MaterialState.disabled)
                     ? null
                     //: Theme.of(context).colorScheme.primary;
-                    :Theme.of(context).colorScheme.inverseSurface;
+                    : Theme.of(context).colorScheme.inverseSurface;
               }),
               backgroundColor: MaterialStateProperty.resolveWith((states) {
                 return states.contains(MaterialState.disabled)
@@ -103,7 +100,8 @@ class _LogInFormState extends State<LogInForm> {
             ),
             //onPressed: null,
             //onPressed: _showWelcomeScreen,
-            onPressed: _formProgress == 1 ? _showWelcomeScreen : null, // UPDATED
+            onPressed:
+                _formProgress == 1 ? _showWelcomeScreen : null, // UPDATED
             child: const Text('Iniciar Sesion'),
           ),
           const SizedBox(height: 10),
@@ -111,6 +109,7 @@ class _LogInFormState extends State<LogInForm> {
       ),
     );
   }
+
   void _updateFormProgress() {
     var progress = 0.0;
     final controllers = [
@@ -129,7 +128,6 @@ class _LogInFormState extends State<LogInForm> {
     });
   }
 }
-
 
 class AnimatedProgressIndicator extends StatefulWidget {
   final double value;

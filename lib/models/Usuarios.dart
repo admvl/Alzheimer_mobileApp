@@ -1,5 +1,5 @@
-import 'package:alzheimer_app1/models/Personas.dart';
-import 'package:alzheimer_app1/models/TiposUsuarios.dart';
+import 'package:alzheimer_app1/models/personas.dart';
+import 'package:alzheimer_app1/models/tipos_usuarios.dart';
 
 class Usuarios {
   final String? idUsuario;

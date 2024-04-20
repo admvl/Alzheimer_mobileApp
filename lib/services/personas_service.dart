@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import '/models/Personas.dart'; // Importa tu clase Personas aquí
+import '../models/personas.dart'; // Importa tu clase Personas aquí
 
 class PersonasService {
-  final String baseUrl = "http://localhost:7084/api";
+  final String baseUrl = "http://192.168.68.115:7084/api";
 
   PersonasService();
 
