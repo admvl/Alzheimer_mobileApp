@@ -1,9 +1,10 @@
 //log-in app
-import 'package:alzheimer_app1/models/LogIn.dart';
-import 'package:alzheimer_app1/models/Usuarios.dart';
-import 'package:alzheimer_app1/services/UsuariosService.dart';
+import 'dart:convert';
+
+import 'package:alzheimer_app1/models/log_in.dart';
+import 'package:alzheimer_app1/services/usuarios_service.dart';
 import 'package:flutter/material.dart';
-import 'welcomeScr.dart';
+import 'welcome_scr.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:profile_view/profile_view.dart';
 
@@ -68,14 +69,35 @@ class _LogInFormState extends State<LogInForm> {
     Navigator.of(context).pushNamed('/welcome');
   }
 
-  void _LogIn() async {
+  void login() async {
     String usuario = _userNameTextController.text;
     String contrasena = _passwordTextController.text;
 
     final user = LogIn(correo: usuario, contrasenia: contrasena);
     // Usa UsuariosService para verificar las credenciales
-    await _usuariosService.login(user);
-    _showWelcomeScreen(); // Inicia sesión y muestra la pantalla de bienvenida
+    final response = await _usuariosService.login(user);
+    if(!mounted){
+      return;
+    }
+    if(response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      await storage.write(key: 'token', value: data['token']);
+      if(!mounted){
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Inicio de sesión exitoso"))
+      );
+      _showWelcomeScreen(); // Inicia sesión y muestra la pantalla de bienvenida
+    }else if (response.statusCode == 401) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Contraseña incorrecta"))
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Usuario no encontrado"))
+      );
+    }
   }
 
   @override
@@ -142,7 +164,7 @@ class _LogInFormState extends State<LogInForm> {
             ),
             //onPressed: null,
             //onPressed: _showWelcomeScreen,
-            onPressed: _formProgress == 1 ? _LogIn : null, // UPDATED
+            onPressed: _formProgress == 1 ? login : null, // UPDATED
             child: const Text('Iniciar Sesion'),
           ),
           const SizedBox(height: 10),

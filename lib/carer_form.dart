@@ -1,13 +1,15 @@
 //import 'dart:io';
 
+import 'package:alzheimer_app1/models/usuarios.dart';
+import 'package:alzheimer_app1/services/usuarios_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:alzheimer_app1/services/PersonasService.dart';
-import 'package:alzheimer_app1/models/Personas.dart';
+import 'package:alzheimer_app1/services/personas_service.dart';
+import 'package:alzheimer_app1/models/personas.dart';
 
 final PersonasService personasService = PersonasService();
-
+final UsuariosService usuariosService = UsuariosService();
 class CarerForm extends StatefulWidget {
   const CarerForm({super.key});
 
@@ -21,7 +23,7 @@ class _CarerFormState extends State<CarerForm> {
 
   @override
   Widget build(BuildContext context) {
-    final _roundedDecoration = InputDecoration(
+    final roundedDecoration = InputDecoration(
       labelText: '',
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
@@ -51,7 +53,7 @@ class _CarerFormState extends State<CarerForm> {
             children: [
               FormBuilderTextField(
                 name: 'nombre',
-                decoration: _roundedDecoration.copyWith(labelText: 'Nombre'),
+                decoration: roundedDecoration.copyWith(labelText: 'Nombre'),
                 //validator: FormBuilderValidators.required(context),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
@@ -61,7 +63,7 @@ class _CarerFormState extends State<CarerForm> {
               FormBuilderTextField(
                 name: 'apellidoPaterno',
                 decoration:
-                    _roundedDecoration.copyWith(labelText: 'Apellido Paterno'),
+                    roundedDecoration.copyWith(labelText: 'Apellido Paterno'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                 ]),
@@ -70,12 +72,12 @@ class _CarerFormState extends State<CarerForm> {
               FormBuilderTextField(
                 name: 'apellidoMaterno',
                 decoration:
-                    _roundedDecoration.copyWith(labelText: 'Apellido Materno'),
+                    roundedDecoration.copyWith(labelText: 'Apellido Materno'),
               ),
               const SizedBox(height: 10),
               FormBuilderTextField(
                 name: 'fechaNac',
-                decoration: _roundedDecoration.copyWith(
+                decoration: roundedDecoration.copyWith(
                     labelText: 'Fecha de Nacimiento'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
@@ -86,7 +88,7 @@ class _CarerFormState extends State<CarerForm> {
               FormBuilderTextField(
                 name: 'telefono',
                 decoration:
-                    _roundedDecoration.copyWith(labelText: 'Número Telefónico'),
+                    roundedDecoration.copyWith(labelText: 'Número Telefónico'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                 ]),
@@ -94,7 +96,7 @@ class _CarerFormState extends State<CarerForm> {
               const SizedBox(height: 10),
               FormBuilderTextField(
                 name: 'correo',
-                decoration: _roundedDecoration.copyWith(labelText: 'Correo'),
+                decoration: roundedDecoration.copyWith(labelText: 'Correo'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                   FormBuilderValidators.email(),
@@ -104,7 +106,7 @@ class _CarerFormState extends State<CarerForm> {
               FormBuilderTextField(
                 name: 'contraseña',
                 decoration:
-                    _roundedDecoration.copyWith(labelText: 'Contraseña'),
+                    roundedDecoration.copyWith(labelText: 'Contraseña'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                   FormBuilderValidators.minLength(8),
@@ -145,10 +147,25 @@ class _CarerFormState extends State<CarerForm> {
                       fechaNacimiento: DateTime.parse(formValues['fechaNac']),
                       numeroTelefono: formValues['telefono'],
                     );
-
+                    final nuevoUsuario = Usuarios(
+                        correo: formValues['correo'],
+                        contrasenia: formValues['contraseña'],
+                        estado: true,
+                        idTipoUsuario: usuariosService.
+                    );
                     // Enviar la nueva persona al backend usando PersonasService
                     try {
                       await personasService.crearPersona(nuevaPersona);
+                      try{
+                        await usuariosService.crearUsuario(nuevoUsuario);
+                      }catch(e){
+                        if(!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Error al registrar usuario: $e')),
+                        );
+                      }
+                      if(!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
                             content: Text('Persona registrada con éxito')),
@@ -159,7 +176,6 @@ class _CarerFormState extends State<CarerForm> {
                             content: Text('Error al registrar persona: $e')),
                       );
                     }
-                    print(nuevaPersona.toJson());
                   }
                   /* Validar existencia correo en BD
                   if(await checkIfEmailExists()){

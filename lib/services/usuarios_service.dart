@@ -1,38 +1,29 @@
 import 'dart:convert';
-import 'package:alzheimer_app1/models/LogIn.dart';
-import 'package:flutter/material.dart';
+import 'package:alzheimer_app1/models/log_in.dart';
 import 'package:http/http.dart' as http;
-import '/models/Usuarios.dart'; // Importa tu clase Usuarios aquí
+import '../models/usuarios.dart'; // Importa tu clase Usuarios aquí
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-final storage = new FlutterSecureStorage();
+final storage = FlutterSecureStorage();
 
 class UsuariosService {
-  final String baseUrl = "http://localhost:7084/api";
+  final String baseUrl = "http://192.168.68.115:7084/api";
 
   UsuariosService();
 
-  Future<void> login(LogIn usuario) async {
+  Future<http.Response> login(LogIn usuario) async {
     final response = await http.post(
       Uri.parse('$baseUrl/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(usuario.toJson()),
     );
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      await storage.write(key: 'token', value: data['token']);
-      print(data['token']);
-    } else if (response.statusCode == 401) {
-      const SnackBar(content: Text("Contraseña incorrecta"));
-    } else {
-      const SnackBar(content: Text("Usuario no encontrado"));
-    }
+    return response;
   }
 
   // Crear una nueva persona
   Future<Usuarios> crearUsuario(Usuarios nuevoUsuario) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/CrearPersona'),
+      Uri.parse('$baseUrl/CrearUsuario'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(nuevoUsuario.toJson()),
     );

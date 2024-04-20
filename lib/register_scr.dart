@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'CarerForm.dart';
-import 'UserForm.dart';
-import 'FamiliarForm.dart';
+import 'carer_form.dart';
+import 'user_form.dart';
+import 'familiar_form.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
@@ -19,14 +19,16 @@ class RegisterScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 10),
             ElevatedButton.icon(
-              onPressed: (){
+              onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const CarerForm()), // Navega a la pantalla
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const CarerForm()), // Navega a la pantalla
                 );
               },
               icon: const SizedBox(
-                width:48,
+                width: 48,
                 height: 48,
                 //icon: const Icon(Icons.volunteer_activism_outlined),
                 child: Icon(Icons.healing),
@@ -35,29 +37,33 @@ class RegisterScreen extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             ElevatedButton.icon(
-              onPressed: (){
+              onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const UserForm()), // Navega a la pantalla 
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const UserForm()), // Navega a la pantalla
                 );
               },
               icon: const SizedBox(
-                width:48,
+                width: 48,
                 height: 48,
                 child: Icon(Icons.person),
               ),
               label: const Text('Paciente'),
             ),
-             const SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton.icon(
-              onPressed: (){
+              onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const FamiliarForm()), // Navega a la pantalla
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          const FamiliarForm()), // Navega a la pantalla
                 );
               },
               icon: const SizedBox(
-                width:48,
+                width: 48,
                 height: 48,
                 child: Icon(Icons.group),
               ),
