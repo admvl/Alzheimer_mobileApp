@@ -1,4 +1,4 @@
-import 'package:alzheimer_app1/models/geocerca.dart';
+import 'package:alzheimer_app1/models/geocercas.dart';
 
 class Dispositivos{
   final String? idDispositivo;
