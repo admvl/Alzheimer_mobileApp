@@ -1,17 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'RegisterScr.dart';
-import 'CheckLocationScr.dart';
+import 'register_scr.dart';
+import 'check_location_scr.dart';
 import 'package:star_menu/star_menu.dart';
-import 'UserProfile.dart';
-import 'UserMgmt.dart';
-import 'MedicineForm.dart';
-import 'ZoneAlarmScr.dart';
-import 'MedicineAlarmScr.dart';
-import 'FallAlarmScr.dart';
-import 'SetAlarmScr.dart';
-
+import 'user_profile.dart';
+import 'user_mgmt.dart';
+import 'medicine_form.dart';
+import 'zone_alarm_scr.dart';
+import 'medicine_alarm_scr.dart';
+import 'fall_alarm_scr.dart';
+import 'set_alarm_scr.dart';
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -20,9 +19,10 @@ class WelcomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // entries for the dropdown menu
     final upperMenuItems = <Widget>[
-      const Icon(Icons.person_sharp, size: 100, color: Color.fromARGB(255, 3, 189, 164)),
+      const Icon(Icons.person_sharp,
+          size: 100, color: Color.fromARGB(255, 3, 189, 164)),
       const Text('Mi Perfil'),
-      const Text('Gestionar Usuarios'), 
+      const Text('Gestionar Usuarios'),
       const Text('Registro de Medicamentos'),
     ];
 
@@ -103,10 +103,13 @@ class WelcomeScreen extends StatelessWidget {
                       Flexible(
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            RegisterScreen registerScreen = const RegisterScreen();
+                            RegisterScreen registerScreen =
+                                const RegisterScreen();
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => registerScreen), // Navega a la pantalla RegisterScreen
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      registerScreen), // Navega a la pantalla RegisterScreen
                             );
                           },
                           icon: const Icon(Icons.edit_note),
@@ -134,11 +137,14 @@ class WelcomeScreen extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: () {
                             //CheckLocation locationScreen = const CheckLocation();
-                            CheckLocationScr locationScreen = const CheckLocationScr();
+                            CheckLocationScr locationScreen =
+                                const CheckLocationScr();
                             Navigator.push(
                               context,
                               //MaterialPageRoute(builder: (context) => locationScreen), // Navega a la pantalla CheckLocation
-                              MaterialPageRoute(builder: (context) => locationScreen), // Navega a la pantalla CheckLocation
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      locationScreen), // Navega a la pantalla CheckLocation
                             );
                           },
                           icon: const Icon(Icons.pin_drop_outlined),
@@ -153,7 +159,9 @@ class WelcomeScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               //MaterialPageRoute(builder: (context) => locationScreen), // Navega a la pantalla CheckLocation
-                              MaterialPageRoute(builder: (context) => setAlarmScr), // Navega a la pantalla CheckLocation
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      setAlarmScr), // Navega a la pantalla CheckLocation
                             );
                           },
                           icon: const Icon(Icons.alarm),
@@ -161,7 +169,6 @@ class WelcomeScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      
                     ],
                   ),
                 ],
@@ -173,7 +180,9 @@ class WelcomeScreen extends StatelessWidget {
                   MedicineAlarmScr medicineAlarmScr = const MedicineAlarmScr();
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => medicineAlarmScr), // Navega a la pantalla RegisterScreen
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            medicineAlarmScr), // Navega a la pantalla RegisterScreen
                   );
                 },
                 icon: const Icon(Icons.alarm),
@@ -187,7 +196,9 @@ class WelcomeScreen extends StatelessWidget {
                   ZoneAlarmScr zoneAlarmScr = const ZoneAlarmScr();
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => zoneAlarmScr), // Navega a la pantalla RegisterScreen
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            zoneAlarmScr), // Navega a la pantalla RegisterScreen
                   );
                 },
                 icon: const Icon(Icons.alarm),
@@ -201,7 +212,9 @@ class WelcomeScreen extends StatelessWidget {
                   FallAlarmScr fallAlarmScr = const FallAlarmScr();
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => fallAlarmScr), // Navega a la pantalla RegisterScreen
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            fallAlarmScr), // Navega a la pantalla RegisterScreen
                   );
                 },
                 icon: const Icon(Icons.alarm),
