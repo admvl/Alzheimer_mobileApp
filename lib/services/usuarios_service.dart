@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:alzheimer_app1/models/log_in.dart';
 import 'package:http/http.dart' as http;
+import '../models/tipos_usuarios.dart';
 import '../models/usuarios.dart'; // Importa tu clase Usuarios aquí
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -47,7 +48,16 @@ class UsuariosService {
       throw Exception('Error al obtener persona por ID');
     }
   }
+  Future<TiposUsuarios> obtenerTipoUsuario(String tipoUsuario) async{
+    final response = await http.get(Uri.parse('$baseUrl/tiposusuarios/$tipoUsuario'));
 
+    if(response.statusCode == 200){
+      final Map<String,dynamic> jsonData = jsonDecode(response.body);
+      return TiposUsuarios.fromJson(jsonData);
+    }else{
+      throw Exception('Error al obtener el tipo de usuario');
+    }
+  }
   // Actualizar una persona por ID
   Future<Usuarios> actualizarUsuarioPorId(
       String id, Usuarios usuarioActualizado) async {
