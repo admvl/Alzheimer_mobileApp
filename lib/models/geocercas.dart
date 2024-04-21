@@ -3,7 +3,7 @@ import 'dart:ffi';
 class Geocerca{
   final String? idGeocerca;
   final String coordenadaInicial;
-  final Float radioGeocerca; // validar tipo dato
+  final Double radioGeocerca; // validar tipo dato
   final DateTime fecha; // validar tipo dato
 
   Geocerca({
@@ -17,7 +17,7 @@ class Geocerca{
     return Geocerca(
       idGeocerca: json['idGeocerca'] as String,
       coordenadaInicial: json['coordenadaInicial'] as String,
-      radioGeocerca: json['radioGeocerca'] as Float,
+      radioGeocerca: json['radioGeocerca'] as Double,
       fecha: DateTime.parse(json['fecha']as String),
     );
   }
