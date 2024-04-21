@@ -1,28 +1,31 @@
+import 'package:alzheimer_app1/models/familiares.dart';
+import 'package:alzheimer_app1/models/pacientes.dart';
+
 class PacientesFamiliares{
   final String? idPacienteFamiliar;
-  final String? idPaciente;
-  final String? idFamiliar;
+  final Pacientes idPaciente;
+  final Familiares idFamiliar;
   
   
   PacientesFamiliares({
-    this.idPaciente,
-    this.idFamiliar,
     this.idPacienteFamiliar,
+    required this.idPaciente,
+    required this.idFamiliar,
   });
 
   factory PacientesFamiliares.fromJson(Map<String, dynamic> json){
     return PacientesFamiliares(
-      idPaciente: json['IdPaciente']as String,
-      idFamiliar: json['IdFamiliar']as String,
-      idPacienteFamiliar: json['IdPacienteFamiliar']as String,
+      idPacienteFamiliar: json['idPacienteFamiliar']as String,
+      idPaciente: Pacientes.fromJson(json['idPaciente']),
+      idFamiliar: Familiares.fromJson(json['idFamiliar']),
     );
   }
 
   Map<String, dynamic> toJson(){
     return{
-      'IdPaciente': idPaciente,
-      'IdFamiliar': idFamiliar,
-      'IdPacienteFamiliar': idPacienteFamiliar,
+      'idPacienteFamiliar': idPacienteFamiliar ?? '',
+      'idPaciente': idPaciente.toJson(),
+      'idFamiliar': idFamiliar.toJson(),
     };
   }
 }
