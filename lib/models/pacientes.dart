@@ -1,4 +1,4 @@
-import 'package:alzheimer_app1/models/dispositivo.dart';
+import 'package:alzheimer_app1/models/dispositivos.dart';
 import 'package:alzheimer_app1/models/personas.dart';
 
 class Pacientes{
