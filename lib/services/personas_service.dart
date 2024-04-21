@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/personas.dart'; // Importa tu clase Personas aquí
 
 class PersonasService {
-  final String baseUrl = "http://192.168.68.115:7084/api";
+  final String baseUrl = "http://192.168.68.118:7084/api";
 
   PersonasService();
 
@@ -15,7 +15,7 @@ class PersonasService {
       body: jsonEncode(nuevaPersona.toJson()),
     );
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
       return Personas.fromJson(jsonData);
     } else {

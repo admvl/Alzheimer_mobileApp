@@ -1,5 +1,6 @@
 //import 'dart:io';
 
+import 'package:alzheimer_app1/models/tipos_usuarios.dart';
 import 'package:alzheimer_app1/models/usuarios.dart';
 import 'package:alzheimer_app1/services/usuarios_service.dart';
 import 'package:flutter/material.dart';
@@ -147,33 +148,26 @@ class _CarerFormState extends State<CarerForm> {
                       fechaNacimiento: DateTime.parse(formValues['fechaNac']),
                       numeroTelefono: formValues['telefono'],
                     );
-                    final nuevoUsuario = Usuarios(
+                    TiposUsuarios tiposUsuarios = await usuariosService.obtenerTipoUsuario('Cuidador');
+                      final nuevoUsuario = Usuarios(
                         correo: formValues['correo'],
                         contrasenia: formValues['contraseña'],
                         estado: true,
-                        idTipoUsuario: usuariosService.obtenerTipoUsuario('Cuidador'),
-                    );
+                        idTipoUsuario: tiposUsuarios,
+                        idPersona: nuevaPersona
+                      );
                     // Enviar la nueva persona al backend usando PersonasService
                     try {
-                      await personasService.crearPersona(nuevaPersona);
-                      try{
-                        await usuariosService.crearUsuario(nuevoUsuario);
-                      }catch(e){
-                        if(!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                              content: Text('Error al registrar usuario: $e')),
-                        );
-                      }
+                      await usuariosService.crearUsuario(nuevoUsuario);
                       if(!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
-                            content: Text('Persona registrada con éxito')),
+                            content: Text('Usuario registrado con éxito')),
                       );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                            content: Text('Error al registrar persona: $e')),
+                            content: Text('Error al registrar usuario: $e')),
                       );
                     }
                   }
