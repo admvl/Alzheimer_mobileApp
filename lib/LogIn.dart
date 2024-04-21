@@ -87,7 +87,7 @@ class _LogInFormState extends State<LogInForm> {
               //child: const FlutterLogo(),
               child: const ProfileView(
                 image: NetworkImage(
-                  "https://images.unsplash.com/photo-1711408464105-9105ec773098?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "https://images.unsplash.com/photo-1712945245297-9d9f05cf27b1?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                 ),
               ),
             ),
