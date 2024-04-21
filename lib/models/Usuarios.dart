@@ -33,11 +33,10 @@ class Usuarios {
   // Método para convertir la instancia de Personas a JSON
   Map<String, dynamic> toJson() {
     return {
-      'idUsuario' : idUsuario ?? '',
       'Correo': correo,
       'Contrasenia': contrasenia,
       'Estado': estado,
-      'IdTipoUsuario': idTipoUsuario?.toJson(),
+      'IdTipoUsuario': idTipoUsuario?.idTipoUsuario,
       'IdPersona': idPersona?.toJson(),
     };
   }
