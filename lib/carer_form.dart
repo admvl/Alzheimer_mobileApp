@@ -151,7 +151,7 @@ class _CarerFormState extends State<CarerForm> {
                         correo: formValues['correo'],
                         contrasenia: formValues['contraseña'],
                         estado: true,
-                        idTipoUsuario: usuariosService.
+                        idTipoUsuario: usuariosService.obtenerTipoUsuario('Cuidador'),
                     );
                     // Enviar la nueva persona al backend usando PersonasService
                     try {

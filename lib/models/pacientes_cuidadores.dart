@@ -1,7 +1,9 @@
+import 'package:alzheimer_app1/models/cuidadores.dart';
+
 class PacientesCuidadores{
   final String? idCuidaPaciente;
   final String? idPaciente;
-  final String? idCuidador;
+  final Cuidadores idCuidador;
   final DateTime horaInicio;
   final DateTime horaFin;
   
@@ -9,7 +11,7 @@ class PacientesCuidadores{
   PacientesCuidadores({
     this.idCuidaPaciente,
     this.idPaciente,
-    this.idCuidador,
+    required this.idCuidador,
     required this.horaInicio,
     required this.horaFin,
   });
@@ -18,7 +20,7 @@ class PacientesCuidadores{
     return PacientesCuidadores(
       idCuidaPaciente: json['IdCuidaPaciente']as String,
       idPaciente: json['IdPaciente']as String,
-      idCuidador: json['IdCuidador']as String,
+      idCuidador: Cuidadores.fromJson(json['IdCuidador']),
       horaInicio: DateTime.parse(json['HoraInicio']as String),
       horaFin: DateTime.parse(json['HoraFin']as String),
     );
@@ -28,7 +30,7 @@ class PacientesCuidadores{
     return{
       'IdCuidaPaciente': idCuidaPaciente,
       'IdPaciente': idPaciente,
-      'IdCuidador': idCuidador,
+      'IdCuidador': idCuidador.toJson(),
       'HoraInicio': horaInicio,
       'HoraFin': horaFin,
     };
