@@ -6,14 +6,15 @@ class TiposUsuarios {
   // Método para crear una instancia de TiposUsuarios a partir de un JSON
   factory TiposUsuarios.fromJson(Map<String, dynamic> json) {
     return TiposUsuarios(
-      idTipoUsuario: json['IdTipoUsuario'] as String,
-      tipoUsuario: json['TipoUsuario'] as String,
+      idTipoUsuario: json['idTipoUsuario'] as String,
+      tipoUsuario: json['tipoUsuario'] as String,
     );
   }
 
   // Método para convertir la instancia de Personas a JSON
   Map<String, dynamic> toJson() {
     return {
+      'idTipoUsuario': idTipoUsuario ?? '',
       'tipoUsuario': tipoUsuario,
     };
   }
