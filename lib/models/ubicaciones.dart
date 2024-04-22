@@ -29,7 +29,7 @@ class Ubicaciones{
       'IdUbicación': idUbicacion ?? '',
       'Ubicacion': ubicacion,
       'FechaHora': fechaHora,
-      'IdDispositivo': idDispositivo?.idDispositivo,
+      'IdDispositivo': idDispositivo.idDispositivo,
     };
   }
 

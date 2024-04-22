@@ -15,17 +15,17 @@ class PacientesFamiliares{
 
   factory PacientesFamiliares.fromJson(Map<String, dynamic> json){
     return PacientesFamiliares(
-      idPacienteFamiliar: json['idPacienteFamiliar']as String,
-      idPaciente: Pacientes.fromJson(json['idPaciente']),
-      idFamiliar: Familiares.fromJson(json['idFamiliar']),
+      idPacienteFamiliar: json['IdPacienteFamiliar']as String,
+      idPaciente: Pacientes.fromJson(json['IdPaciente']),
+      idFamiliar: Familiares.fromJson(json['IdFamiliar']),
     );
   }
 
   Map<String, dynamic> toJson(){
     return{
-      'idPacienteFamiliar': idPacienteFamiliar ?? '',
-      'idPaciente': idPaciente?.idPaciente,
-      'idFamiliar': idFamiliar?.idFamiliar,
+      'IdPacienteFamiliar': idPacienteFamiliar ?? '',
+      'IdPaciente': idPaciente.idPaciente,
+      'IdFamiliar': idFamiliar.idFamiliar,
     };
   }
 }

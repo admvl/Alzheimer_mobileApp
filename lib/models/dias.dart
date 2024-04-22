@@ -13,17 +13,17 @@ class Dias{
 
   factory Dias.fromJson(Map<String, dynamic> json){
     return Dias(
-      idDia: json['idDia'] as String,
-      dia: DateTime.parse(json['dia'] as String),
-      idCuidaPaciente: PacientesCuidadores.fromJson(json['idCuidaPaciente']),
+      idDia: json['IdDia'] as String,
+      dia: DateTime.parse(json['Dia'] as String),
+      idCuidaPaciente: PacientesCuidadores.fromJson(json['IdCuidaPaciente']),
     );
   }
 
   Map<String,dynamic> toJson(){
     return{
-      'idDia': idDia ?? '',
-      'dia': dia,
-      'idCuidaPaciente': idCuidaPaciente?.idCuidaPaciente,
+      'IdDia': idDia ?? '',
+      'Dia': dia,
+      'IdCuidaPaciente': idCuidaPaciente.idCuidaPaciente,
     };
   }
 }

@@ -21,7 +21,7 @@ class Familiares{
   Map<String, dynamic> toJson(){
     return{
       'IdFamiliar': idFamiliar ?? '',
-      'IdUsuario': idUsuario.toJson(),
+      'IdUsuario': idUsuario.idUsuario,
     };
   }
 }

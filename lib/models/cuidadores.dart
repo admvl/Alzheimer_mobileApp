@@ -24,8 +24,8 @@ class Cuidadores{
   Map<String, dynamic> toJson(){
     return{
       'IdCuidador': idCuidador?? '',
-      'IdUsuario': idUsuario?.idUsuario,
-      'IdFamiliar': idFamiliar?.idFamiliar,
+      'IdUsuario': idUsuario.idUsuario,
+      'IdFamiliar': idFamiliar.idFamiliar,
     };
   }
 }
