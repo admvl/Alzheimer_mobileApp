@@ -24,8 +24,8 @@ class Pacientes{
   Map<String,dynamic> toJson(){
     return{
       'idPaciente': idPaciente ?? '',
-      'idDispositivo': idDispositivo.toJson(),
-      'idPersona': idPersona.toJson(),
+      'idDispositivo': idDispositivo?.idDispositivo,
+      'idPersona': idPersona?.idPersona,
   };
   }
 }

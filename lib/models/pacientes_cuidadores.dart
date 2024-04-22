@@ -30,8 +30,8 @@ class PacientesCuidadores{
   Map<String, dynamic> toJson(){
     return{
       'idCuidaPaciente': idCuidaPaciente ?? '',
-      'idPaciente': idPaciente.toJson(),
-      'idCuidador': idCuidador.toJson(),
+      'idPaciente': idPaciente?.idPaciente,
+      'idCuidador': idCuidador?.idCuidador,
       'horaInicio': horaInicio,
       'horaFin': horaFin,
     };

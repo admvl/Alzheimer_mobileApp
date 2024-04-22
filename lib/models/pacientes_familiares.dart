@@ -24,8 +24,8 @@ class PacientesFamiliares{
   Map<String, dynamic> toJson(){
     return{
       'idPacienteFamiliar': idPacienteFamiliar ?? '',
-      'idPaciente': idPaciente.toJson(),
-      'idFamiliar': idFamiliar.toJson(),
+      'idPaciente': idPaciente?.idPaciente,
+      'idFamiliar': idFamiliar?.idFamiliar,
     };
   }
 }

@@ -19,7 +19,7 @@ class Dispositivos{
   Map<String, dynamic> toJson(){
     return{
       'idDispositivo': idDispositivo ?? '',
-      'idGeocerca': idGeocerca.toJson(),
+      'idGeocerca': idGeocerca?.idGeocerca,
     };
   }
 }

@@ -23,7 +23,7 @@ class Dias{
     return{
       'idDia': idDia ?? '',
       'dia': dia,
-      'idCuidaPaciente': idCuidaPaciente.toJson(),
+      'idCuidaPaciente': idCuidaPaciente?.idCuidaPaciente,
     };
   }
 }
