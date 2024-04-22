@@ -1,4 +1,4 @@
-import 'package:alzheimer_app1/models/Usuarios.dart';
+import 'package:alzheimer_app1/models/usuarios.dart';
 import 'package:alzheimer_app1/models/familiares.dart';
 
 class Cuidadores{
