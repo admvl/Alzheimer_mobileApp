@@ -13,15 +13,15 @@ class Familiares{
 
   factory Familiares.fromJson(Map<String, dynamic> json){
     return Familiares(
-      idFamiliar: json['idFamiliar']as String,
-      idUsuario: Usuarios.fromJson(json['idUsuario']),
+      idFamiliar: json['IdFamiliar']as String,
+      idUsuario: Usuarios.fromJson(json['IdUsuario']),
     );
   }
 
   Map<String, dynamic> toJson(){
     return{
-      'idFamiliar': idFamiliar ?? '',
-      'idUsuario': idUsuario.toJson(),
+      'IdFamiliar': idFamiliar ?? '',
+      'IdUsuario': idUsuario.toJson(),
     };
   }
 }

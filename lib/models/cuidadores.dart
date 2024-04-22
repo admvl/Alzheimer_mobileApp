@@ -15,17 +15,17 @@ class Cuidadores{
 
   factory Cuidadores.fromJson(Map<String, dynamic> json){
     return Cuidadores(
-      idCuidador: json['idCuidador']as String,
-      idUsuario: Usuarios.fromJson(json['idUsuario']),
-      idFamiliar: Familiares.fromJson(json['idFamiliar']),
+      idCuidador: json['IdCuidador']as String,
+      idUsuario: Usuarios.fromJson(json['IdUsuario']),
+      idFamiliar: Familiares.fromJson(json['IdFamiliar']),
     );
   }
 
   Map<String, dynamic> toJson(){
     return{
-      'idCuidador': idCuidador ?? '',
-      'idUsuario': idUsuario.toJson(),
-      'idFamiliar': idFamiliar.toJson(),
+      'IdCuidador': idCuidador?? '',
+      'IdUsuario': idUsuario?.idUsuario,
+      'IdFamiliar': idFamiliar?.idFamiliar,
     };
   }
 }
