@@ -15,19 +15,19 @@ class Geocerca{
 
   factory Geocerca.fromJson(Map<String,dynamic> json){
     return Geocerca(
-      idGeocerca: json['idGeocerca'] as String,
-      coordenadaInicial: json['coordenadaInicial'] as String,
-      radioGeocerca: json['radioGeocerca'] as Double,
-      fecha: DateTime.parse(json['fecha']as String),
+      idGeocerca: json['IdGeocerca'] as String,
+      coordenadaInicial: json['CoordenadaInicial'] as String,
+      radioGeocerca: json['RadioGeocerca'] as Double,
+      fecha: DateTime.parse(json['Fecha']as String),
     );
   }
 
   Map<String, dynamic> toJson(){
     return{
-      'idGeocerca': idGeocerca ?? '',
-      'coordenadaInicial': coordenadaInicial,
-      'radioGeocerca': radioGeocerca,
-      'fecha': fecha,
+      'IdGeocerca': idGeocerca ?? '',
+      'CoordenadaInicial': coordenadaInicial,
+      'RadioGeocerca': radioGeocerca,
+      'Fecha': fecha,
     };
   }
 }

@@ -11,15 +11,15 @@ class Dispositivos{
 
   factory Dispositivos.fromJson(Map<String, dynamic> json){
     return Dispositivos(
-      idDispositivo: json['idDispositivo']as String,
-      idGeocerca: Geocerca.fromJson(json['idGeocerca']),
+      idDispositivo: json['IdDispositivo']as String,
+      idGeocerca: Geocerca.fromJson(json['IdGeocerca']),
       );
   }
 
   Map<String, dynamic> toJson(){
     return{
-      'idDispositivo': idDispositivo ?? '',
-      'idGeocerca': idGeocerca?.idGeocerca,
+      'IdDispositivo': idDispositivo ?? '',
+      'IdGeocerca': idGeocerca.idGeocerca,
     };
   }
 }
