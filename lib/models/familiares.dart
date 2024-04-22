@@ -1,5 +1,5 @@
 
-import 'package:alzheimer_app1/models/Usuarios.dart';
+import 'package:alzheimer_app1/models/usuarios.dart';
 
 class Familiares{
   final String? idFamiliar;
