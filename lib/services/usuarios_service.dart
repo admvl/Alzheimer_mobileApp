@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:alzheimer_app1/models/log_in.dart';
 import 'package:http/http.dart' as http;
 import '../models/tipos_usuarios.dart';
+import '../models/users.dart';
 import '../models/usuarios.dart'; // Importa tu clase Usuarios aquí
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
@@ -22,14 +23,14 @@ class UsuariosService {
   }
 
   // Crear una nueva persona
-  Future<Usuarios> crearUsuario(Usuarios nuevoUsuario) async {
+  Future<Usuarios> crearUsuario(Users nuevoUsuario) async {
     final response = await http.post(
       Uri.parse('$baseUrl/CrearUsuario'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(nuevoUsuario.toJson()),
     );
 
-    if (response.statusCode == 201) {
+    if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
       return Usuarios.fromJson(jsonData);
     } else {

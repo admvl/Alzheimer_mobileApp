@@ -25,20 +25,22 @@ class Usuarios {
       correo: json['Correo'] as String,
       contrasenia: json['Contrasenia'] as String,
       estado: json['Estado'] as bool,
-      idTipoUsuario: TiposUsuarios.fromJson(json['IdTipoUsuario']),
-      idPersona: Personas.fromJson(json['IdPersona']),
+      idTipoUsuario: TiposUsuarios.fromJson(json['IdTipoUsuarioNavigation']),
+      idPersona: Personas.fromJson(json['IdPersonaNavigation']),
     );
   }
 
   // Método para convertir la instancia de Personas a JSON  
   Map<String, dynamic> toJson() {
     return {
-      'IdUsuario': idUsuario ?? '',
+      if(idUsuario!=null) 'IdUsuario': idUsuario,
+      //'IdUsuario': idUsuario ?? '',
       'Correo': correo,
       'Contrasenia': contrasenia,
       'Estado': estado,
       'IdTipoUsuario': idTipoUsuario?.idTipoUsuario,
-      'IdPersona': idPersona?.toJson(),
+      if(idPersona?.idPersona!=null)'IdPersona': idPersona?.idPersona,
+      //'IdPersona': idPersona?.idPersona?? '',
     };
   }
 }
