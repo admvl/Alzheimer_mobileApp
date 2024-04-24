@@ -1,6 +1,7 @@
 //import 'dart:io';
 
 import 'package:alzheimer_app1/models/tipos_usuarios.dart';
+import 'package:alzheimer_app1/models/users.dart';
 import 'package:alzheimer_app1/models/usuarios.dart';
 import 'package:alzheimer_app1/services/usuarios_service.dart';
 import 'package:flutter/material.dart';
@@ -148,26 +149,37 @@ class _CarerFormState extends State<CarerForm> {
                       fechaNacimiento: DateTime.parse(formValues['fechaNac']),
                       numeroTelefono: formValues['telefono'],
                     );
-                    TiposUsuarios tiposUsuarios = await usuariosService.obtenerTipoUsuario('Cuidador');
-                      final nuevoUsuario = Usuarios(
-                        correo: formValues['correo'],
-                        contrasenia: formValues['contraseña'],
-                        estado: true,
-                        idTipoUsuario: tiposUsuarios,
-                        idPersona: nuevaPersona
-                      );
-                    // Enviar la nueva persona al backend usando PersonasService
                     try {
-                      await usuariosService.crearUsuario(nuevoUsuario);
-                      if(!context.mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Usuario registrado con éxito')),
+                      TiposUsuarios tiposUsuarios = await usuariosService.obtenerTipoUsuario('Cuidador');
+                      final nuevoUsuario = Usuarios(
+                          correo: formValues['correo'],
+                          contrasenia: formValues['contraseña'],
+                          estado: true,
+                          idTipoUsuario: tiposUsuarios,
+                          idPersona: nuevaPersona
                       );
+                      final nuevoUser = Users(
+                          persona:nuevaPersona,
+                          usuario:nuevoUsuario
+                      );
+                      // Enviar la nueva persona al backend usando PersonasService
+                      try {
+                        await usuariosService.crearUsuario(nuevoUser);
+                        if(!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Usuario registrado con éxito')),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Error al registrar usuario: $e')),
+                        );
+                      }
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                            content: Text('Error al registrar usuario: $e')),
+                            content: Text('Error al obtener el tipo de usuario: $e')),
                       );
                     }
                   }
