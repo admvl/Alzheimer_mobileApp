@@ -1,32 +1,75 @@
 //log-in app
 import 'package:alzheimer_app1/models/user.dart';
+import 'package:alzheimer_app1/models/usuarios.dart';
+import 'package:alzheimer_app1/services/usuarios_service.dart';
+import 'package:alzheimer_app1/utils/token_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:profile_view/profile_view.dart';
 
+final usuariosService = UsuariosService();
+final tokenUtils = new TokenUtils();
 class UserProfile extends StatelessWidget {
   const UserProfile({super.key});
   static const Color dividerColor = Colors.black;
-  @override
-  Widget build(BuildContext context) {
-    /*
-    String userNickname = 'User Nickname';
-    String userName = "User Name, Last Name";
-    String userPhone = "55-55-55-55-55";
-    String userEmail = 'User@email.com';
-    String userBirthday = "01/01/2001";
-    String userPass = "**********";*/
-    User user = const User(
-        "Name",
-        "ApPat",
-        "ApMat",
-        "userNickname",
-        "5512345678",
-        "us@email",
-        "password",
-        "comprobanteFam",
-        "fechaNac",
-        "picture");
+
+  Widget _buildContent(BuildContext context,AsyncSnapshot<String> snapshot){
+    if(snapshot.connectionState == ConnectionState.waiting)
+    {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text('Perfil de Usuario'),
+        ),
+        body: const Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }else if(snapshot.hasError)
+    {
+      return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text('Perfil de Usuario'),
+        ),
+        body: Center(
+          child: Text('Error al obtener el token: ${snapshot.error}'),
+        ),
+      );
+    }else{
+      return FutureBuilder<Usuarios>(
+        future:usuariosService.obtenerUsuarioPorId(snapshot.data!),
+        builder: (context,usuarioSnapshot){
+          if(usuarioSnapshot.connectionState == ConnectionState.waiting){
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                title: const Text('Datos de Usuario'),
+              ),
+              body: const Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }else if(usuarioSnapshot.hasError){
+            return Scaffold(
+              appBar: AppBar(
+                backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                title: const Text('Datos de Usuario'),
+              ),
+              body: Center(
+                child: Text('Error al obtener el usuario: ${usuarioSnapshot.error}'),
+              ),
+            );
+          }else{
+            final usuario = usuarioSnapshot.data!;
+            return _buildUserProfile(context, usuario);
+          }
+        },
+      );
+    }
+  }
+
+  Widget _buildUserProfile(BuildContext context, Usuarios usuario){
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -53,7 +96,7 @@ class UserProfile extends StatelessWidget {
                   const SizedBox(height: 10),
                   Text(
                     //userNickname,
-                    user.nombre,
+                    usuario.idPersona!.nombre,
                     style: const TextStyle(fontSize: 35),
                   ),
                   const SizedBox(height: 20),
@@ -63,7 +106,7 @@ class UserProfile extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 20),
                     child: CustomIconRow(
                       icon: Icons.person_outline_rounded,
-                      text: user.nickname,
+                      text: '${usuario.idPersona!.nombre} ${usuario.idPersona!.apellidoP} ${usuario.idPersona!.apellidoM} ',
                       dividerColor: dividerColor,
                     ),
                   ),
@@ -72,7 +115,7 @@ class UserProfile extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 20),
                     child: CustomIconRow(
                       icon: Icons.phone_iphone_outlined,
-                      text: user.telefono,
+                      text: usuario.idPersona!.numeroTelefono!,
                       dividerColor: dividerColor,
                     ),
                   ),
@@ -81,7 +124,7 @@ class UserProfile extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 20),
                     child: CustomIconRow(
                       icon: Icons.email_outlined,
-                      text: user.email,
+                      text: usuario.correo,
                       dividerColor: dividerColor,
                     ),
                   ),
@@ -90,12 +133,12 @@ class UserProfile extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 20),
                     child: CustomIconRow(
                       icon: Icons.date_range,
-                      text: user.fechaNac,
+                      text: usuario.idPersona!.fechaNacimiento.toString().split(' ')[0],
                       dividerColor: dividerColor,
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Container(
+                  /*Container(
                     padding: const EdgeInsets.only(left: 20),
                     child: CustomIconRow(
                       icon: Icons.lock_outline,
@@ -103,25 +146,21 @@ class UserProfile extends StatelessWidget {
                       dividerColor: dividerColor,
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 20),*/
                 ],
               ),
-
-              /*
-              child: ListView(
-                children: const <Widget> [
-                  for(var user in people )
-                    ListTile(
-                      leading: Image.network(user.picture),
-                      title: Text(user.nombre),
-
-                    )
-                ],
-              ),*/
             ),
           ],
         ),
       ),
+    );
+    
+  }
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: tokenUtils.getIdUsuarioToken(),
+      builder: _buildContent,
     );
   }
 }
