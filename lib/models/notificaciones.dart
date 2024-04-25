@@ -25,8 +25,8 @@ class Notificaciones{
       mensaje: json['Mensaje'] as String,
       fecha: DateTime.parse(json['Fecha'] as String),
       hora: DateTime.parse(json['Hora'] as String),
-      idPaciente: Pacientes.fromJson(json['IdPaciente']),
-      idTipoNotificacion: TiposNotificaciones.fromJson(json['IdTipoNotificacion']),
+      idPaciente: Pacientes.fromJson(json['IdPacienteNavigation']),
+      idTipoNotificacion: TiposNotificaciones.fromJson(json['IdTipoNotificacionNavigation']),
     );
   }
 
