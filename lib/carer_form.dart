@@ -9,11 +9,13 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:alzheimer_app1/services/personas_service.dart';
 import 'package:alzheimer_app1/models/personas.dart';
+import 'package:intl/intl.dart';
 
 final PersonasService personasService = PersonasService();
 final UsuariosService usuariosService = UsuariosService();
 class CarerForm extends StatefulWidget {
-  const CarerForm({super.key});
+  final Usuarios? usuario;
+  const CarerForm({Key? key, this.usuario}) : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -51,6 +53,14 @@ class _CarerFormState extends State<CarerForm> {
         padding: const EdgeInsets.all(16.0),
         child: FormBuilder(
           key: _fbKey,
+          initialValue: {
+            'nombre':widget.usuario?.idPersona?.nombre,
+            'apellidoPaterno':widget.usuario?.idPersona?.apellidoP,
+            'apellidoMaterno':widget.usuario?.idPersona?.apellidoM,
+            'telefono':widget.usuario?.idPersona?.numeroTelefono,
+            'correo':widget.usuario?.correo,
+            'contraseña':widget.usuario?.contrasenia,
+          },
           child: Column(
             children: [
               FormBuilderTextField(
@@ -77,13 +87,17 @@ class _CarerFormState extends State<CarerForm> {
                     roundedDecoration.copyWith(labelText: 'Apellido Materno'),
               ),
               const SizedBox(height: 10),
-              FormBuilderTextField(
+              FormBuilderDateTimePicker(
                 name: 'fechaNac',
+                inputType: InputType.date,
+                initialDate: widget.usuario?.idPersona?.fechaNacimiento ?? DateTime.now() ,
+                format: DateFormat("yyyy-MM-dd"),
                 decoration: roundedDecoration.copyWith(
-                    labelText: 'Fecha de Nacimiento'),
+                    labelText: 'Fecha de Nacimiento',
+                ),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
-                  FormBuilderValidators.dateString(),
+                  //FormBuilderValidators.dateString(),
                 ]),
               ),
               const SizedBox(height: 10),
@@ -141,46 +155,93 @@ class _CarerFormState extends State<CarerForm> {
                     // Obtener los valores del formulario
                     final formValues = _fbKey.currentState!.value;
 
-                    // Crear un objeto Personas con los valores del formulario
-                    final nuevaPersona = Personas(
-                      nombre: formValues['nombre'],
-                      apellidoP: formValues['apellidoPaterno'],
-                      apellidoM: formValues['apellidoMaterno'],
-                      fechaNacimiento: DateTime.parse(formValues['fechaNac']),
-                      numeroTelefono: formValues['telefono'],
-                    );
-                    try {
-                      TiposUsuarios tiposUsuarios = await usuariosService.obtenerTipoUsuario('Cuidador');
-                      final nuevoUsuario = Usuarios(
-                          correo: formValues['correo'],
-                          contrasenia: formValues['contraseña'],
-                          estado: true,
-                          idTipoUsuario: tiposUsuarios,
-                          idPersona: nuevaPersona
+                    if(widget.usuario == null) {
+                      // Crear un objeto Personas con los valores del formulario
+                      final nuevaPersona = Personas(
+                        nombre: formValues['nombre'],
+                        apellidoP: formValues['apellidoPaterno'],
+                        apellidoM: formValues['apellidoMaterno'],
+                        fechaNacimiento: formValues['fechaNac'],
+                        numeroTelefono: formValues['telefono'],
                       );
-                      final nuevoUser = Users(
-                          persona:nuevaPersona,
-                          usuario:nuevoUsuario
-                      );
-                      // Enviar la nueva persona al backend usando PersonasService
                       try {
-                        await usuariosService.crearUsuario(nuevoUser);
-                        if(!context.mounted) return;
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text('Usuario registrado con éxito')),
+                        TiposUsuarios tiposUsuarios = await usuariosService.obtenerTipoUsuario('Cuidador');
+                        final nuevoUsuario = Usuarios(
+                            correo: formValues['correo'],
+                            contrasenia: formValues['contraseña'],
+                            estado: true,
+                            idTipoUsuario: tiposUsuarios,
+                            idPersona: nuevaPersona
                         );
+                        final nuevoUser = Users(
+                            persona:nuevaPersona,
+                            usuario:nuevoUsuario
+                        );
+                        // Enviar la nueva persona al backend usando PersonasService
+                        try {
+                          await usuariosService.crearUsuario(nuevoUser);
+                          if(!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Usuario registrado con éxito')),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('Error al registrar usuario: $e')),
+                          );
+                        }
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                              content: Text('Error al registrar usuario: $e')),
+                              content: Text('Error al obtener el tipo de usuario: $e')),
                         );
                       }
-                    } catch (e) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text('Error al obtener el tipo de usuario: $e')),
+                    } else{
+                      // Crear un objeto Personas con los valores del formulario
+                      final nuevaPersona = Personas(
+                        idPersona: widget.usuario?.idPersona?.idPersona,
+                        nombre: formValues['nombre'],
+                        apellidoP: formValues['apellidoPaterno'],
+                        apellidoM: formValues['apellidoMaterno'],
+                        fechaNacimiento: formValues['fechaNac'],
+                        numeroTelefono: formValues['telefono'],
                       );
+                      try {
+                        TiposUsuarios tiposUsuarios = await usuariosService.obtenerTipoUsuario(widget.usuario!.idTipoUsuario!.tipoUsuario);
+                        final nuevoUsuario = Usuarios(
+                            idUsuario: widget.usuario?.idUsuario,
+                            correo: formValues['correo'],
+                            contrasenia: formValues['contraseña'],
+                            estado: true,
+                            idTipoUsuario: tiposUsuarios,
+                            idPersona: nuevaPersona
+                        );
+                        final nuevoUser = Users(
+                            persona:nuevaPersona,
+                            usuario:nuevoUsuario
+                        );
+                        // Enviar la nueva persona al backend usando PersonasService
+                        try {
+                          await usuariosService.actualizarUsuario(nuevoUser);
+                          if(!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Usuario registrado con éxito')),
+                          );
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                                content: Text('Error al registrar usuario: $e')),
+                          );
+                        }
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Error al obtener el tipo de usuario: $e')),
+                        );
+                      }
+
                     }
                   }
                   /* Validar existencia correo en BD
@@ -191,7 +252,7 @@ class _CarerFormState extends State<CarerForm> {
                     _emailFieldKey.currentState?.invalidate('Email already taken');
                   }*/
                 },
-                child: const Text('Registrar'),
+                child: Text(widget.usuario == null ? 'Registrar':'Actualizar'),
               ),
             ],
           ),

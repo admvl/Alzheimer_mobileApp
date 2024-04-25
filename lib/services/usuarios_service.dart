@@ -21,13 +21,27 @@ class UsuariosService {
     );
     return response;
   }
-
   // Crear una nueva persona
   Future<Usuarios> crearUsuario(Users nuevoUsuario) async {
     final response = await http.post(
       Uri.parse('$baseUrl/CrearUsuario'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(nuevoUsuario.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonData = jsonDecode(response.body);
+      return Usuarios.fromJson(jsonData);
+    } else {
+      throw Exception('Error al crear un nuevo Usuario');
+    }
+  }
+  // Actualizar una nueva persona
+  Future<Usuarios> actualizarUsuario(Users actualizarUsuario) async {
+    final response = await http.put(
+      Uri.parse('$baseUrl/usuarios/${actualizarUsuario.usuario.idUsuario}'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(actualizarUsuario.toJson()),
     );
 
     if (response.statusCode == 200) {

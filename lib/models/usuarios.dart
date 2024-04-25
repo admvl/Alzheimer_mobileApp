@@ -4,7 +4,7 @@ import 'package:alzheimer_app1/models/tipos_usuarios.dart';
 class Usuarios {
   final String? idUsuario;
   final String correo;
-  final String contrasenia;
+  String contrasenia;
   final bool? estado;
   final TiposUsuarios? idTipoUsuario;
   final Personas? idPersona;
