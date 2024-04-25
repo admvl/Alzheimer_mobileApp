@@ -15,7 +15,7 @@ class Dias{
     return Dias(
       idDia: json['IdDia'] as String,
       dia: DateTime.parse(json['Dia'] as String),
-      idCuidaPaciente: PacientesCuidadores.fromJson(json['IdCuidaPaciente']),
+      idCuidaPaciente: PacientesCuidadores.fromJson(json['IdCuidaPacienteNavigation']),
     );
   }
 

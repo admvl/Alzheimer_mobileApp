@@ -20,7 +20,7 @@ class Ubicaciones{
       idUbicacion: json['IdUbicacion'] as String,
       ubicacion: json['Ubicacion'] as String,
       fechaHora: json['FechahHora'] as DateTime, //validar tipo dedato
-      idDispositivo: Dispositivos.fromJson(json['IdDispositivo']),
+      idDispositivo: Dispositivos.fromJson(json['IdDispositivoNavigation']),
     );
   }
 

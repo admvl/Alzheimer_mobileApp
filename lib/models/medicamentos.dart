@@ -21,7 +21,7 @@ class Medicamentos{
       nombre: json['Nombre'] as String,
       gramaje: json['Gramaje'] as double,
       descripcion: json['Descripcion'] as String,
-      idPaciente: Pacientes.fromJson(json['IdPaciente']),
+      idPaciente: Pacientes.fromJson(json['IdPacienteNavigation']),
     );
   }
 

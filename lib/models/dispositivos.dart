@@ -12,7 +12,7 @@ class Dispositivos{
   factory Dispositivos.fromJson(Map<String, dynamic> json){
     return Dispositivos(
       idDispositivo: json['IdDispositivo']as String,
-      idGeocerca: Geocerca.fromJson(json['IdGeocerca']),
+      idGeocerca: Geocerca.fromJson(json['IdGeocercaNavigation']),
       );
   }
 

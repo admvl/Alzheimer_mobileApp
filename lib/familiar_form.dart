@@ -2,6 +2,12 @@
 import 'dart:io';
 
 //import 'package:file_picker/file_picker.dart';
+import 'package:alzheimer_app1/carer_form.dart';
+import 'package:alzheimer_app1/models/personas.dart';
+import 'package:alzheimer_app1/models/tipos_usuarios.dart';
+import 'package:alzheimer_app1/models/usuarios.dart';
+import 'package:alzheimer_app1/services/personas_service.dart';
+import 'package:alzheimer_app1/services/usuarios_service.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter/foundation.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -9,8 +15,10 @@ import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 //import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:alzheimer_app1/models/users.dart';
 
-
+final PersonasService personasService = PersonasService();
+final UsuariosService usuariosService = UsuariosService();
 
 
 Future<String> getProjectDirPath() async {
@@ -31,7 +39,7 @@ class _FamiliarFormState extends State<FamiliarForm> {
   File? _pdfFile;
   @override
   Widget build(BuildContext context) {
-    final _roundedDecoration = InputDecoration(
+    final roundedDecoration = InputDecoration(
       labelText: '',
         border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
@@ -64,7 +72,7 @@ class _FamiliarFormState extends State<FamiliarForm> {
               const SizedBox(height: 10),
               FormBuilderTextField(
                 name: 'nombre',
-                decoration: _roundedDecoration.copyWith(labelText: 'Nombre'),
+                decoration: roundedDecoration.copyWith(labelText: 'Nombre'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                 ]),
@@ -72,7 +80,7 @@ class _FamiliarFormState extends State<FamiliarForm> {
               const SizedBox(height: 10),
               FormBuilderTextField(
                 name: 'apellidoPaterno',
-                decoration: _roundedDecoration.copyWith(labelText: 'Apellido Paterno'),
+                decoration: roundedDecoration.copyWith(labelText: 'Apellido Paterno'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                 ]),
@@ -80,15 +88,24 @@ class _FamiliarFormState extends State<FamiliarForm> {
               const SizedBox(height: 10),
               FormBuilderTextField(
                 name: 'apellidoMaterno',
-                decoration: _roundedDecoration.copyWith(labelText: 'Apellido Materno'),
+                decoration: roundedDecoration.copyWith(labelText: 'Apellido Materno'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                 ]),
               ),
               const SizedBox(height: 10),
               FormBuilderTextField(
+                name: 'fechaNac',
+                decoration: roundedDecoration.copyWith(labelText: 'Fecha de Nacimiento'),
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(),
+                  FormBuilderValidators.dateString(),
+                ]),
+              ),
+              const SizedBox(height: 10),
+              FormBuilderTextField(
                 name: 'telefono',
-                decoration: _roundedDecoration.copyWith(labelText: 'Número Telefónico'),
+                decoration: roundedDecoration.copyWith(labelText: 'Número Telefónico'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                 ]),
@@ -96,7 +113,7 @@ class _FamiliarFormState extends State<FamiliarForm> {
               const SizedBox(height: 10),
               FormBuilderTextField(
                 name: 'correo',
-                decoration: _roundedDecoration.copyWith(labelText: 'Correo'),
+                decoration: roundedDecoration.copyWith(labelText: 'Correo'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                   FormBuilderValidators.email(),
@@ -105,7 +122,7 @@ class _FamiliarFormState extends State<FamiliarForm> {
               const SizedBox(height: 10),
               FormBuilderTextField(
                 name: 'contraseña',
-                decoration: _roundedDecoration.copyWith(labelText: 'Contraseña'),
+                decoration: roundedDecoration.copyWith(labelText: 'Contraseña'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                   FormBuilderValidators.minLength(8),
@@ -134,7 +151,7 @@ class _FamiliarFormState extends State<FamiliarForm> {
               const SizedBox(height: 10),
               FormBuilderFilePicker(
                 name: "attachments",
-                decoration: _roundedDecoration,
+                decoration: roundedDecoration,
                 previewImages: true,
                 allowMultiple: false,
                 withData: true,
@@ -165,6 +182,47 @@ class _FamiliarFormState extends State<FamiliarForm> {
               ElevatedButton(
                 onPressed: () async {
                   if (_fbKey.currentState!.saveAndValidate()) {
+                    //obtener valores de formulario
+                    final formValues = _fbKey.currentState!.value;
+
+                    //Creacion de objeto persona con valores de formulario
+                    final nuevaPersona = Personas(
+                      nombre: formValues['nombre'],
+                      apellidoP: formValues['apellidoPaterno'],
+                      apellidoM: formValues['apellidoMaterno'],
+                      fechaNacimiento: DateTime.parse(formValues['fechaNac']),
+                      numeroTelefono: formValues['telefono'],
+                    );
+                    try{
+                      TiposUsuarios tiposUsuarios = await usuariosService.obtenerTipoUsuario('Familiar');
+                      final nuevoUsuario = Usuarios(
+                          correo: formValues['correo'],
+                          contrasenia: formValues['contraseña'],
+                          estado: true,
+                          idTipoUsuario: tiposUsuarios,
+                          idPersona: nuevaPersona
+                      );
+                      final nuevoUser = Users(
+                        persona:nuevaPersona,
+                        usuario:nuevoUsuario
+                      );
+                      // Enviar la nueva persona al backend usando PersonasService
+                      try{
+                        await usuariosService.crearUsuario(nuevoUser);
+                        if(!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Usuario registrado con éxito')),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error al registrar usuario: $e')),
+                        );
+                      }
+                    } catch (e){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Error al obtener el tipo de usuario: $e')),
+                      );
+                    }
                   }
                   /* Validar existencia correo en BD
                   if(await checkIfEmailExists()){
