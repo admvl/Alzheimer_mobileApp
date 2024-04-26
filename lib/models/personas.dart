@@ -30,6 +30,7 @@ class Personas {
   // Método para convertir la instancia de Personas a JSON
   Map<String, dynamic> toJson() {
     return {
+      if(idPersona!=null) 'IdPersona': idPersona,
       'Nombre': nombre,
       'ApellidoP': apellidoP,
       'ApellidoM': apellidoM,

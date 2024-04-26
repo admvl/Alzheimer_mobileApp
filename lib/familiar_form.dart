@@ -211,16 +211,16 @@ class _FamiliarFormState extends State<FamiliarForm> {
                         await usuariosService.crearUsuario(nuevoUser);
                         if(!context.mounted) return;
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Usuario registrado con éxito')),
+                          const SnackBar(content: Text('Familiar registrado con éxito')),
                         );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('Error al registrar usuario: $e')),
+                          SnackBar(content: Text('Error al registrar familiar : $e')),
                         );
                       }
                     } catch (e){
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Error al obtener el tipo de usuario: $e')),
+                        SnackBar(content: Text('Error al establecer permisos: $e')),
                       );
                     }
                   }
