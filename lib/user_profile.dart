@@ -1,17 +1,91 @@
 //log-in app
-import 'package:alzheimer_app1/models/user.dart';
+import 'package:alzheimer_app1/carer_form.dart';
 import 'package:alzheimer_app1/models/usuarios.dart';
 import 'package:alzheimer_app1/services/usuarios_service.dart';
 import 'package:alzheimer_app1/utils/token_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:profile_view/profile_view.dart';
+import 'package:http/http.dart' as http;
+
+import 'models/log_in.dart';
 
 final usuariosService = UsuariosService();
-final tokenUtils = new TokenUtils();
+final tokenUtils = TokenUtils();
 class UserProfile extends StatelessWidget {
   const UserProfile({super.key});
   static const Color dividerColor = Colors.black;
+
+  /*void _showUserform(BuildContext context){
+    Navigator.of(context).pushNamed(routeName);
+  }*/
+  Future<void> _showDialog(BuildContext context,Usuarios usuario){
+    final TextEditingController passwordController = TextEditingController();
+    final roundedDecoration = InputDecoration(
+      labelText: '',
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Colors.blue, width: 2),
+      ),
+      fillColor: Colors.blue.withOpacity(0.1),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Colors.blueAccent, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(10),
+        borderSide: const BorderSide(color: Colors.red, width: 2),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+    );
+    return showDialog(
+        context: context,
+        builder: (BuildContext context){
+          return AlertDialog(
+            title: const Text('Confirmar contraseña'),
+            content: TextFormField(
+              controller: passwordController,
+              decoration: roundedDecoration.copyWith(labelText: 'Contraseña'),
+              obscureText: true,
+            ),
+            actions: <Widget>[
+              TextButton(
+                  onPressed: (){
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text('Cancelar'),
+              ),
+              ElevatedButton(
+                  onPressed: (){
+                    final user = LogIn(correo:usuario.correo,contrasenia:passwordController.text);
+                    usuariosService.login(user).then((http.Response response){
+                      if(response.statusCode == 200){
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Contraseña correcta')),
+                        );
+                        Navigator.of(context).pop();
+                        usuario.contrasenia = passwordController.text;
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CarerForm(usuario:usuario),
+                          )
+                        );
+                      }else{
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Contraseña incorrecta')),
+                        );
+                        Navigator.of(context).pop();
+                      }
+                    });
+                  },
+                  child: const Text('Confirmar'),
+              )
+            ],
+          );
+        }
+    );
+  }
 
   Widget _buildContent(BuildContext context,AsyncSnapshot<String> snapshot){
     if(snapshot.connectionState == ConnectionState.waiting)
@@ -138,15 +212,12 @@ class UserProfile extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  /*Container(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: CustomIconRow(
-                      icon: Icons.lock_outline,
-                      text: user.password,
-                      dividerColor: dividerColor,
-                    ),
+                  ElevatedButton(
+                    onPressed: (){
+                      _showDialog(context,usuario);
+                    },
+                    child: const Text("Editar Información"),
                   ),
-                  const SizedBox(height: 20),*/
                 ],
               ),
             ),
@@ -154,7 +225,7 @@ class UserProfile extends StatelessWidget {
         ),
       ),
     );
-    
+
   }
   @override
   Widget build(BuildContext context) {
@@ -164,6 +235,7 @@ class UserProfile extends StatelessWidget {
     );
   }
 }
+
 
 class CustomIconRow extends StatelessWidget {
   final IconData icon;
