@@ -1,12 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET"/>
     <application
         android:label="alzheimer_app1"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        <!-- 
         <meta-data android:name="com.google.android.geo.API_KEY"
-               android:value="@string/google_maps_key"/>
-        -->
+               android:value="AIzaSyAJv8n8gsdt2rw9a4fDeflACk856Q1n_Gk"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
