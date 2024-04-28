@@ -4,6 +4,8 @@ import 'package:alzheimer_app1/models/tipos_usuarios.dart';
 import 'package:alzheimer_app1/models/users.dart';
 import 'package:alzheimer_app1/models/usuarios.dart';
 import 'package:alzheimer_app1/services/usuarios_service.dart';
+import 'package:alzheimer_app1/user_profile.dart';
+import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -183,18 +185,24 @@ class _CarerFormState extends State<CarerForm> {
                           if(!context.mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content: Text('Usuario registrado con éxito')),
+                                content: Text('Cuidador registrado con éxito')),
+                          );
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const WelcomeScreen(),
+                              )
                           );
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text('Error al registrar usuario: $e')),
+                                content: Text('Error al registrar Cuidador: $e')),
                           );
                         }
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                              content: Text('Error al obtener el tipo de usuario: $e')),
+                              content: Text('Error al obtener los permisos: $e')),
                         );
                       }
                     } else{
@@ -227,18 +235,24 @@ class _CarerFormState extends State<CarerForm> {
                           if(!context.mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content: Text('Usuario registrado con éxito')),
+                                content: Text('Usuario actualizado con éxito')),
+                          );
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const UserProfile(),
+                              )
                           );
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text('Error al registrar usuario: $e')),
+                                content: Text('Error al actualizar usuario: $e')),
                           );
                         }
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                              content: Text('Error al obtener el tipo de usuario: $e')),
+                              content: Text('Error al obtener permisos: $e')),
                         );
                       }
 
