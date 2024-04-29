@@ -12,6 +12,12 @@ import 'medicine_alarm_scr.dart';
 import 'fall_alarm_scr.dart';
 import 'set_alarm_scr.dart';
 
+void main() {
+  runApp(const MaterialApp(
+    home: WelcomeScreen(),
+  ));
+}
+
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
 

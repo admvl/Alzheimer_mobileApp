@@ -1,12 +1,12 @@
 //import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+/*
 void main() {
   runApp(const MaterialApp(
     home: CheckLocationScr(),
   ));
-}
+}*/
 
 
 class CheckLocationScr extends StatelessWidget{
@@ -23,10 +23,20 @@ class CheckLocationScr extends StatelessWidget{
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Ubicación del paciente'),
       ),
-      body: GoogleMap(
-        initialCameraPosition: _initialCameraPosition,
-        myLocationButtonEnabled: true,
-        mapType: MapType.normal,
+      body: 
+      Column(
+        children: [
+          
+          SizedBox(
+            width: 500,
+            height: 300,
+            child: GoogleMap(
+              initialCameraPosition: _initialCameraPosition,
+              myLocationButtonEnabled: true,
+              mapType: MapType.normal,
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,4 +1,4 @@
-import 'dart:html';
+//import 'dart:html';
 
 import 'package:alzheimer_app1/models/dispositivos.dart';
 
@@ -26,10 +26,11 @@ class Ubicaciones{
 
   Map<String, dynamic> toJson(){
     return{
-      'IdUbicación': idUbicacion ?? '',
+      if(idUbicacion!=null)'IdUbicación': idUbicacion,
       'Ubicacion': ubicacion,
       'FechaHora': fechaHora,
-      'IdDispositivo': idDispositivo.idDispositivo,
+      if(idDispositivo.idDispositivo!=null)'IdDispositivo': idDispositivo.idDispositivo,
+      //'IdDispositivo': idDispositivo.idDispositivo,
     };
   }
 
