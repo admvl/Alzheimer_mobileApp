@@ -1,3 +1,4 @@
+import 'package:alzheimer_app1/configure_geocerca_scr.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -127,6 +128,14 @@ class WelcomeScreen extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: () {
                             // ... (code for Configurar Zona Segura button)
+                            CheckGeocercaScr geocercaScreen =
+                                const CheckGeocercaScr();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => geocercaScreen
+                              ), // Navega a la pantalla CheckGeocerca
+                            );
                           },
                           icon: const Icon(Icons.security),
                           label: const Text('Zona Segura'),
