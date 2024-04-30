@@ -9,7 +9,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 final storage = FlutterSecureStorage();
 
 class UsuariosService {
-  final String baseUrl = "http://192.168.68.119:7084/api";
+  final String baseUrl = "http://192.168.0.10:7084/api";
 
   UsuariosService();
 
