@@ -8,6 +8,7 @@ import 'package:alzheimer_app1/models/tipos_usuarios.dart';
 import 'package:alzheimer_app1/models/usuarios.dart';
 import 'package:alzheimer_app1/services/personas_service.dart';
 import 'package:alzheimer_app1/services/usuarios_service.dart';
+import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter/foundation.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -61,6 +62,16 @@ class _FamiliarFormState extends State<FamiliarForm> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Registro Familiar'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navega a la pantalla de bienvenida
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+            );
+          },
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

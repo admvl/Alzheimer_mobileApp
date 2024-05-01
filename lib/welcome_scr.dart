@@ -1,4 +1,5 @@
 import 'package:alzheimer_app1/configure_geocerca_scr.dart';
+import 'package:alzheimer_app1/log_in.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -14,12 +15,12 @@ import 'medicine_alarm_scr.dart';
 import 'fall_alarm_scr.dart';
 import 'set_alarm_scr.dart';
 
-/*
+
 void main() {
   runApp(const MaterialApp(
     home: WelcomeScreen(),
   ));
-}*/
+}
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -75,6 +76,12 @@ class WelcomeScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Bienvenido'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            _showConfirmationDialog(context); // Llama al diálogo de confirmación
+          },
+        ),
         actions: [
           // upper bar menu
           StarMenu(
@@ -244,3 +251,35 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 }
+
+
+void _showConfirmationDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('¿Desea cerrar sesión?'),
+        content: const Text('Se cerrará la sesión actual.'),
+        actions: [
+          TextButton(
+            child: const Text('Sí'),
+            onPressed: () {
+              //Implementar la acción de cierre de sesión: 
+              //Cualquier acción necesaria para cerrar la sesión correctamente
+
+              //Navegar a la pantalla inicial:
+              Navigator.popUntil(context, ModalRoute.withName('log_in'));
+            },
+          ),
+          TextButton(
+            child: const Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
