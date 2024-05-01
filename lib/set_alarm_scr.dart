@@ -1,4 +1,5 @@
 //dart
+import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
 
 class SetAlarmScr extends StatefulWidget {
@@ -33,6 +34,16 @@ class _SetAlarmScrState extends State<SetAlarmScr> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Nueva Alarma'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navega a la pantalla de bienvenida
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+            );
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(

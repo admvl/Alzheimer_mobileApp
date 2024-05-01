@@ -1,6 +1,9 @@
+import 'package:alzheimer_app1/configure_geocerca_scr.dart';
+import 'package:alzheimer_app1/log_in.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'register_scr.dart';
 import 'check_location_scr.dart';
 import 'package:star_menu/star_menu.dart';
@@ -11,6 +14,13 @@ import 'zone_alarm_scr.dart';
 import 'medicine_alarm_scr.dart';
 import 'fall_alarm_scr.dart';
 import 'set_alarm_scr.dart';
+
+
+void main() {
+  runApp(const MaterialApp(
+    home: WelcomeScreen(),
+  ));
+}
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});
@@ -66,6 +76,12 @@ class WelcomeScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Bienvenido'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            _showConfirmationDialog(context); // Llama al diálogo de confirmación
+          },
+        ),
         actions: [
           // upper bar menu
           StarMenu(
@@ -121,6 +137,14 @@ class WelcomeScreen extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: () {
                             // ... (code for Configurar Zona Segura button)
+                            CheckGeocercaScr geocercaScreen =
+                                const CheckGeocercaScr();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => geocercaScreen
+                              ), // Navega a la pantalla CheckGeocerca
+                            );
                           },
                           icon: const Icon(Icons.security),
                           label: const Text('Zona Segura'),
@@ -227,3 +251,35 @@ class WelcomeScreen extends StatelessWidget {
     );
   }
 }
+
+
+void _showConfirmationDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('¿Desea cerrar sesión?'),
+        content: const Text('Se cerrará la sesión actual.'),
+        actions: [
+          TextButton(
+            child: const Text('Sí'),
+            onPressed: () {
+              //Implementar la acción de cierre de sesión: 
+              //Cualquier acción necesaria para cerrar la sesión correctamente
+
+              //Navegar a la pantalla inicial:
+              Navigator.popUntil(context, ModalRoute.withName('log_in'));
+            },
+          ),
+          TextButton(
+            child: const Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+

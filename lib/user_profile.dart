@@ -3,6 +3,7 @@ import 'package:alzheimer_app1/carer_form.dart';
 import 'package:alzheimer_app1/models/usuarios.dart';
 import 'package:alzheimer_app1/services/usuarios_service.dart';
 import 'package:alzheimer_app1/utils/token_utils.dart';
+import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:profile_view/profile_view.dart';
@@ -94,6 +95,16 @@ class UserProfile extends StatelessWidget {
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.inversePrimary,
           title: const Text('Perfil de Usuario'),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              // Navega a la pantalla de bienvenida
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+              );
+            },
+          ),
         ),
         body: const Center(
           child: CircularProgressIndicator(),

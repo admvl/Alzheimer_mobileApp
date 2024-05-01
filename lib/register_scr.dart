@@ -1,3 +1,4 @@
+import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
 import 'carer_form.dart';
 import 'user_form.dart';
@@ -12,6 +13,16 @@ class RegisterScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Registro de Usuarios'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navega a la pantalla de bienvenida
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+            );
+          },
+        ),
       ),
       body: Center(
         child: Column(

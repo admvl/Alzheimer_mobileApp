@@ -6,18 +6,18 @@
     "configurations": [
         
         {
-            "name": "Alzheimer_mobileApp",
+            "name": "alzheimer_mobileApp",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "Alzheimer_mobileApp (profile mode)",
+            "name": "alzheimer_mobileApp (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"
         },
         {
-            "name": "Alzheimer_mobileApp (release mode)",
+            "name": "alzheimer_mobileApp (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release"
