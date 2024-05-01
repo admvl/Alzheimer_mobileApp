@@ -160,22 +160,3 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
     );
   }
 }
-
-/*
-Future<Dispositivos> _getDeviceLocation(int idPaciente) async {
-  // Assuming you have an API endpoint to get device location by patient ID
-  final url = 'https://your-api-endpoint.com/pacientes/$idPaciente/dispositivo/ubicacion';
-
-  final response = await http.get(Uri.parse(url),
-    headers: {
-      'Authorization': 'Bearer ${await tokenUtils.getIdUsuarioToken()}' // Include authorization token
-    }
-  );
-
-  if (response.statusCode == 200) {
-    return Dispositivos.fromJson(jsonDecode(response.body));
-  } else {
-    throw Exception('Error getting device location: ${response.statusCode}');
-  }
-}
-*/
