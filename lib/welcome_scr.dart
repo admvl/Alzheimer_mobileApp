@@ -119,7 +119,7 @@ class WelcomeScreen extends StatelessWidget {
                                 const RegisterScreen();
                             Navigator.push(
                               context,
-                              MaterialPageRoute(
+                              MaterialPageRoute( 
                                   builder: (context) =>
                                       registerScreen), // Navega a la pantalla RegisterScreen
                             );
