@@ -96,21 +96,22 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
           children: [
             Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: FutureBuilder<Pacientes>(
-                    future: pacientesService.obtenerPacientePorId(usuario.idPersona! as String),
-                    builder: (context, pacienteSnapshot) {
-                      if (pacienteSnapshot.connectionState == ConnectionState.waiting) {
-                        return const Text('Cargando...');
-                      } else if (pacienteSnapshot.hasError) {
-                        return const Text('Error al obtener el paciente: <span class="math-inline">{pacienteSnapshot.error}');
-                      } else{
-                        final paciente = pacienteSnapshot.data!;
-                        return Text('</span>{paciente.nombre!} ${paciente.idPersona.nombre}',style: const TextStyle(fontSize: 35),
-                        );
-                      }
-                    },
+                Expanded(
+                  child:Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FutureBuilder<Pacientes>(
+                      future: pacientesService.obtenerPacientePorId(usuario.idUsuario!),
+                      builder: (context, pacienteSnapshot) {
+                        if (pacienteSnapshot.connectionState == ConnectionState.waiting) {
+                          return const Text('Cargando...');
+                        } else if (pacienteSnapshot.hasError) {
+                          return Text('Error al obtener el paciente: ${pacienteSnapshot.error}');
+                        } else{
+                          final paciente = pacienteSnapshot.data!;
+                          return Text(paciente.idPersona.nombre);
+                        }
+                      },
+                    ),
                   ),
                 ),
               ],
@@ -118,18 +119,20 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
             const SizedBox(height: 20),
             const Row(
               children: [
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text(
-                    'Ubicación',
-                    style: TextStyle(fontSize: 35),
+                Expanded(
+                  child: Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Text(
+                      'Ubicación',
+                      style: TextStyle(fontSize: 35),
+                    ),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 20),
             FutureBuilder<Ubicaciones>(
-              future: ubicacionesService.obtenerUbicacion(usuario.idPersona! as String),
+              future: ubicacionesService.obtenerUbicacion(usuario.idPersona!.idPersona!),
               builder: (context, deviceSnapshot) {
                 if (deviceSnapshot.connectionState == ConnectionState.waiting) {
                   return const Center(

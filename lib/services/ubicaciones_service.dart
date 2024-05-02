@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:alzheimer_app1/models/ubicaciones.dart';
 
 class UbicacionesService{
-  final String baseUrl =  "http://192.168.0.10:7084/api";
+  final String baseUrl =  "http://192.168.68.125:7084/api";
 
   UbicacionesService();
 
