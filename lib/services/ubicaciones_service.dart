@@ -25,6 +25,7 @@ class UbicacionesService{
   }
 
   //Obtener ubicacion
+  
   Future<Ubicaciones> obtenerUbicacion(String id) async{
     final response = await http.get(Uri.parse('$baseUrl/ubicaciones/$id'));
     if(response.statusCode == 200){

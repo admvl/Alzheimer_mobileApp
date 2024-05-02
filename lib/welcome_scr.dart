@@ -1,9 +1,5 @@
 import 'package:alzheimer_app1/configure_geocerca_scr.dart';
-import 'package:alzheimer_app1/log_in.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:provider/provider.dart';
 import 'register_scr.dart';
 import 'check_location_scr.dart';
 import 'package:star_menu/star_menu.dart';
@@ -15,12 +11,12 @@ import 'medicine_alarm_scr.dart';
 import 'fall_alarm_scr.dart';
 import 'set_alarm_scr.dart';
 
-
+/*
 void main() {
   runApp(const MaterialApp(
     home: WelcomeScreen(),
   ));
-}
+}*/
 
 class WelcomeScreen extends StatelessWidget {
   const WelcomeScreen({super.key});

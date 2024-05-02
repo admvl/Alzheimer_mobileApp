@@ -1,17 +1,17 @@
-import 'dart:io';
-import 'package:alzheimer_app1/models/dispositivos.dart';
+
 import 'package:alzheimer_app1/models/pacientes.dart';
 import 'package:alzheimer_app1/models/ubicaciones.dart';
 import 'package:alzheimer_app1/models/usuarios.dart';
-import 'package:alzheimer_app1/services/usuarios_service.dart';
-import 'package:alzheimer_app1/user_profile.dart';
 import 'package:alzheimer_app1/services/ubicaciones_service.dart';
+import 'package:alzheimer_app1/services/usuarios_service.dart';
+import 'package:alzheimer_app1/services/pacientes_service.dart';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:alzheimer_app1/utils/token_utils.dart';
 
 final usuariosService = UsuariosService();
-final ubicacionesService = UbicacionesService();
+final pacientesService = PacientesService();
 final tokenUtils = TokenUtils();
 
 class CheckLocationScr extends StatefulWidget {
@@ -83,8 +83,9 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
       );
     }
   }
-  
+
   Widget _buildUserLocation(BuildContext context, Usuarios usuario) {
+    final ubicacionesService = UbicacionesService();
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -97,9 +98,19 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: Text(
-                    usuario.idPersona!.nombre!,
-                    style: const TextStyle(fontSize: 35),
+                  child: FutureBuilder<Pacientes>(
+                    future: pacientesService.obtenerPacientePorId(usuario.idPersona! as String),
+                    builder: (context, pacienteSnapshot) {
+                      if (pacienteSnapshot.connectionState == ConnectionState.waiting) {
+                        return const Text('Cargando...');
+                      } else if (pacienteSnapshot.hasError) {
+                        return const Text('Error al obtener el paciente: <span class="math-inline">{pacienteSnapshot.error}');
+                      } else{
+                        final paciente = pacienteSnapshot.data!;
+                        return Text('</span>{paciente.nombre!} ${paciente.idPersona.nombre}',style: const TextStyle(fontSize: 35),
+                        );
+                      }
+                    },
                   ),
                 ),
               ],
@@ -117,9 +128,8 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
               ],
             ),
             const SizedBox(height: 20),
-            FutureBuilder<Dispositivos>(
-              //future: _getDeviceLocation(usuario.idPaciente!),
-              future: ubicacionesService.obtenerUbicacion(usuario.idPaciente!),
+            FutureBuilder<Ubicaciones>(
+              future: ubicacionesService.obtenerUbicacion(usuario.idPersona! as String),
               builder: (context, deviceSnapshot) {
                 if (deviceSnapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
@@ -135,17 +145,17 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
                     height: 300,
                     child: GoogleMap(
                       initialCameraPosition: CameraPosition(
-                        target: LatLng(dispositivo.ubicacion!.latitud!, dispositivo.ubicacion!.longitud!),
+                        target: LatLng(dispositivo.ubicacion!.latitude, dispositivo.ubicacion!.longitude),
                         zoom: 16.0,
                       ),
                       myLocationButtonEnabled: true,
                       mapType: MapType.normal,
                       markers: {
                         Marker(
-                          markerId: MarkerId('device_marker'),
-                          position: LatLng(dispositivo.ubicacion!.latitud!, dispositivo.ubicacion!.longitud!),
+                          markerId: const MarkerId('device_marker'),
+                          position: LatLng(dispositivo.ubicacion!.latitude, dispositivo.ubicacion!.longitude),
                           infoWindow: InfoWindow(
-                            title: Text(dispositivo.nombre!),
+                            title: dispositivo.idDispositivo.idDispositivo!,
                           ),
                         ),
                       },
@@ -158,5 +168,6 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
         ),
       ),
     );
-  }
+  } 
 }
+
