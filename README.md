@@ -1,4 +1,4 @@
-# Alzheimer_mobileApp
+# alzheimer_mobileApp
 
 # Mobile Application for monitoring system for people with Alzheimer's
 
