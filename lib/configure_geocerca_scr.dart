@@ -1,14 +1,20 @@
-//import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class CheckGeocercaScr extends StatelessWidget{
+class CheckGeocercaScr extends StatefulWidget {
   const CheckGeocercaScr({super.key});
+
+  @override
+  State<CheckGeocercaScr> createState() => _CheckGeocercaScrState();
+}
+
+class _CheckGeocercaScrState extends State<CheckGeocercaScr> {
+  LatLng? selectedLocation;
 
   final _initialCameraPosition = const CameraPosition(
     target: LatLng(19.504711, -99.144362),
   );
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,30 +22,70 @@ class CheckGeocercaScr extends StatelessWidget{
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Configuración de Zona Segura'),
       ),
-      body: 
-      Center(
+      body: SingleChildScrollView(
         child: Column(
-          //mainAxisSize: MainAxisSize.min,
           children: [
-            const SizedBox(
-              child: Text("Ajusta la ubicación de la zona segura",
-                style: TextStyle(
-                  fontSize: 16.0, // Tamaño de la fuente
-                  fontWeight: FontWeight.bold, // Peso de la fuente (normal, negrita, etc.)
-                  color: Colors.blue, // Color del texto
-                  fontStyle: FontStyle.italic, // Estilo de la fuente (cursiva)
-                  decoration: TextDecoration.underline, // Decoración del texto (subrayado)
+            const SizedBox(height: 20),
+            const Row(
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    'Ajusta la ubicación de la zona segura:',
+                    style: TextStyle(fontSize: 35),
+                  ),
                 ),
-              ),
+              ],
             ),
             SizedBox(
               width: 500,
               height: 300,
-              child: GoogleMap(
-                initialCameraPosition: _initialCameraPosition,
-                myLocationButtonEnabled: true,
-                mapType: MapType.normal,
+              child: Stack(
+                children: [
+                  GoogleMap(
+                    initialCameraPosition: _initialCameraPosition,
+                    myLocationButtonEnabled: true,
+                    mapType: MapType.normal,
+                    onTap: (LatLng tapPosition) {
+                      setState(() {
+                        selectedLocation = tapPosition;
+                      });
+                    },
+                  ),
+                  selectedLocation != null
+                      ? Circle(
+                          center: selectedLocation!,
+                          radius: 100,
+                          fillColor: Colors.blue.withOpacity(0.3),
+                          strokeColor: Colors.blue,
+                          strokeWidth: 2,
+                          circleId: const CircleId('circle_id'),
+                        )
+                      : Container(),
+                ],
               ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                // Implement logic to store the selected location data
+                // (e.g., save to database or shared preferences)
+                if (selectedLocation != null) {
+                  // Show a confirmation dialog or message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Zona segura configurada'),
+                    ),
+                  );
+                } else {
+                  // Show an error message if no location is selected
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Debes seleccionar una ubicación'),
+                    ),
+                  );
+                }
+              },
+              child: const Text('Guardar Zona Segura'),
             ),
           ],
         ),
@@ -47,4 +93,3 @@ class CheckGeocercaScr extends StatelessWidget{
     );
   }
 }
-
