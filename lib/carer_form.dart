@@ -17,7 +17,7 @@ final PersonasService personasService = PersonasService();
 final UsuariosService usuariosService = UsuariosService();
 class CarerForm extends StatefulWidget {
   final Usuarios? usuario;
-  const CarerForm({Key? key, this.usuario}) : super(key: key);
+  const CarerForm({super.key, this.usuario});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -49,7 +49,7 @@ class _CarerFormState extends State<CarerForm> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Registro Cuidador'),
+        title: Text(widget.usuario == null?'Registro Cuidador':'Actualizar Datos'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),

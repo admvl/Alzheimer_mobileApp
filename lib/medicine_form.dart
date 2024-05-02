@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:alzheimer_app1/models/medicamentos.dart';
 //import 'package:file_picker/file_picker.dart';
 //import 'package:file_picker/file_picker.dart';
 
@@ -56,7 +57,7 @@ class _MedicineFormState extends State<MedicineForm> {
                 ]),
               ),
               const SizedBox(height: 10),
-              FormBuilderDropdown(
+              /*FormBuilderDropdown(
                 name: 'tipoMed',
                 decoration: _roundedDecoration.copyWith(labelText: 'Tipo de Medicamento'),
                 // Add the following properties for the dropdown:
@@ -93,7 +94,7 @@ class _MedicineFormState extends State<MedicineForm> {
                   FormBuilderValidators.required(),
                 ]),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 10),*/
               FormBuilderTextField(
                 name: 'gramajeMed',
                 decoration: _roundedDecoration.copyWith(labelText: 'Gramaje del Medicamento'),
@@ -113,6 +114,14 @@ class _MedicineFormState extends State<MedicineForm> {
                 onPressed: () async {
                   if (_fbKey.currentState!.saveAndValidate()) {
                     print(_fbKey.currentState!.value);
+                    try{
+
+                    }catch(e){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('Error al registrar el medicamento: $e')),
+                      );
+                    }
                   }
                   /* Validar existencia correo en BD
                   if(await checkIfEmailExists()){
