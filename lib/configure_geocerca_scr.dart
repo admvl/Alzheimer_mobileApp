@@ -52,16 +52,16 @@ class _CheckGeocercaScrState extends State<CheckGeocercaScr> {
                       });
                     },
                   ),
-                  selectedLocation != null
-                      ? Circle(
-                          center: selectedLocation!,
-                          radius: 100,
-                          fillColor: Colors.blue.withOpacity(0.3),
-                          strokeColor: Colors.blue,
-                          strokeWidth: 2,
-                          circleId: const CircleId('circle_id'),
-                        )
-                      : Container(),
+                  /*
+                  if (selectedLocation != null)
+                    Circle(
+                      center: selectedLocation!,
+                      radius: 100,
+                      fillColor: Colors.blue.withOpacity(0.3),
+                      strokeColor: Colors.blue,
+                      strokeWidth: 2,
+                      circleId: const CircleId('circle_id'),
+                    )*/
                 ],
               ),
             ),
