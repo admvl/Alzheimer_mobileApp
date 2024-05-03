@@ -22,6 +22,7 @@ class CheckLocationScr extends StatefulWidget {
 }
 
 class _CheckLocationScrState extends State<CheckLocationScr> {
+  String? dispositivoPacienteId;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -107,8 +108,13 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
                         } else if (pacienteSnapshot.hasError) {
                           return Text('Error al obtener el paciente: ${pacienteSnapshot.error}');
                         } else{
-                          final paciente = pacienteSnapshot.data!;
-                          return Text(paciente.idPersona.nombre);
+                          try{
+                            final paciente = pacienteSnapshot.data!;
+                            dispositivoPacienteId = paciente.idDispositivo.idDispositivo!;
+                            return Text(paciente.idPersona.nombre);
+                          } catch (e){
+                            return const Text('Error al obtener el paciente:');
+                          }
                         }
                       },
                     ),
@@ -132,7 +138,7 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
             ),
             const SizedBox(height: 20),
             FutureBuilder<Ubicaciones>(
-              future: ubicacionesService.obtenerUbicacion(usuario.idPersona!.idPersona!),
+              future: ubicacionesService.obtenerUbicacion(dispositivoPacienteId!),
               builder: (context, deviceSnapshot) {
                 if (deviceSnapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
@@ -148,7 +154,7 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
                     height: 300,
                     child: GoogleMap(
                       initialCameraPosition: CameraPosition(
-                        target: LatLng(dispositivo.ubicacion!.latitude, dispositivo.ubicacion!.longitude),
+                        target: LatLng(dispositivo.latitude, dispositivo.longitude),
                         zoom: 16.0,
                       ),
                       myLocationButtonEnabled: true,
@@ -156,7 +162,7 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
                       markers: {
                         Marker(
                           markerId: const MarkerId('device_marker'),
-                          position: LatLng(dispositivo.ubicacion!.latitude, dispositivo.ubicacion!.longitude),
+                          position: LatLng(dispositivo.latitude, dispositivo.longitude),
                           infoWindow: InfoWindow(
                             title: dispositivo.idDispositivo.idDispositivo!,
                           ),
