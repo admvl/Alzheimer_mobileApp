@@ -7,24 +7,24 @@ class Ubicaciones{
   final String? idUbicacion;
   final double latitude;
   final double longitude;
-  final DateTime fechaHora;
-  final Dispositivos idDispositivo;
+  //final DateTime fechaHora;
+  final String idDispositivo;
 
   Ubicaciones({
     this.idUbicacion,
     required this.latitude,
     required this.longitude,
-    required this.fechaHora,
+    //required this.fechaHora,
     required this.idDispositivo,
   });
 
   factory Ubicaciones.fromJson(Map<String, dynamic> json) {
     return Ubicaciones(
       idUbicacion: json['IdUbicacion'] as String?,
-      latitude: json['latitude'],
-      longitude: json['longitude'],
-      fechaHora: DateTime.parse(json['FechahHora']),
-      idDispositivo: Dispositivos.fromJson(json['IdDispositivoNavigation']),
+      latitude: json['Latitud'],
+      longitude: json['Longitud'],
+      //fechaHora: DateTime.parse(json['FechaHora'] as String),
+      idDispositivo: json['IdDispositivo'] as String//Dispositivos.fromJson(json['IdDispositivoNavigation']),
     );
   }
   Map<String, dynamic> toJson(){
@@ -32,8 +32,8 @@ class Ubicaciones{
       if(idUbicacion!=null)'IdUbicación': idUbicacion,
       'Latitude': latitude,
       'Longitude': longitude,
-      'FechaHora': fechaHora,
-      if(idDispositivo.idDispositivo!=null)'IdDispositivo': idDispositivo.idDispositivo,
+      //'FechaHora': fechaHora,
+      //if(idDispositivo.idDispositivo!=null)'IdDispositivo': idDispositivo.idDispositivo,
     };
   }
 

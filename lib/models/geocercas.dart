@@ -2,7 +2,7 @@ import 'dart:ffi';
 
 class Geocerca{
   final String? idGeocerca;
-  final Double radioGeocerca; // validar tipo dato
+  final double radioGeocerca; // validar tipo dato
   final DateTime fecha; // validar tipo dato
   final double latitude;
   final double longitude;
@@ -18,10 +18,10 @@ class Geocerca{
   factory Geocerca.fromJson(Map<String,dynamic> json){
     return Geocerca(
       idGeocerca: json['IdGeocerca'] as String,
-      radioGeocerca: json['RadioGeocerca'] as Double,
+      radioGeocerca: json['RadioGeocerca'] as double,
       fecha: DateTime.parse(json['Fecha']as String),
-      latitude: json['latitude'],
-      longitude: json['longitude'],
+      latitude: json['Latitud'] as double,
+      longitude: json['Longitud'] as double,
     );
   }
 
