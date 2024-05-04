@@ -9,7 +9,7 @@ final storage = FlutterSecureStorage();
 
 class GeocercasService{
 
-  final String baseUrl = "http://192.168.0.4:7084/api";
+  final String baseUrl = "http://172.100.74.165:7084/api";
   GeocercasService();
 
   //crear Geocerca
