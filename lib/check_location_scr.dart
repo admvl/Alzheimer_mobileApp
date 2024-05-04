@@ -12,6 +12,7 @@ import 'package:alzheimer_app1/utils/token_utils.dart';
 
 final usuariosService = UsuariosService();
 final pacientesService = PacientesService();
+final ubicacionesService = UbicacionesService();
 final tokenUtils = TokenUtils();
 
 class CheckLocationScr extends StatefulWidget {
@@ -30,6 +31,107 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
       builder: (context, snapshot) => _buildContent(context, snapshot),
     );
   }
+
+  Widget _buildUserLocation(BuildContext context, Usuarios usuario) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Ubicación del paciente'),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FutureBuilder<Pacientes>(
+                      future: pacientesService.obtenerPacientePorId(usuario.idUsuario!),
+                      builder: (context, pacienteSnapshot) {
+                        if (pacienteSnapshot.connectionState == ConnectionState.waiting) {
+                          return const Text('Cargando...');
+                        } else if (pacienteSnapshot.hasError) {
+                          return Text('Error al obtener el paciente: ${pacienteSnapshot.error}');
+                        } else {
+                          try {
+                            final paciente = pacienteSnapshot.data!;
+                            dispositivoPacienteId = paciente.idDispositivo.idDispositivo!;
+                            _buildLocationWidget();
+                            return Text(paciente.idPersona.nombre);
+                          } catch (e) {
+                            return const Text('Error al obtener el paciente:');
+                          }
+                        }
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  Widget _buildLocationWidget() {
+    return Column(
+      children: [
+        const SizedBox(height: 20),
+        const Row(
+          children: [
+            Expanded(
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  'Ubicación',
+                  style: TextStyle(fontSize: 35),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        FutureBuilder<Ubicaciones>(
+          future: ubicacionesService.obtenerUbicacion(dispositivoPacienteId!),
+          builder: (context, deviceSnapshot) {
+            if (deviceSnapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (deviceSnapshot.hasError) {
+              return Center(
+                child: Text('Error al obtener la ubicación del dispositivo: ${deviceSnapshot.error}'),
+              );
+            } else {
+              final dispositivo = deviceSnapshot.data!;
+              return SizedBox(
+                height: 300,
+                child: GoogleMap(
+                  initialCameraPosition: CameraPosition(
+                    target: LatLng(dispositivo.latitude, dispositivo.longitude),
+                    zoom: 16.0,
+                  ),
+                  myLocationButtonEnabled: true,
+                  mapType: MapType.normal,
+                  markers: {
+                    Marker(
+                      markerId: const MarkerId('device_marker'),
+                      position: LatLng(dispositivo.latitude, dispositivo.longitude),
+                      infoWindow: InfoWindow(
+                        title: dispositivo.idDispositivo,
+                      ),
+                    ),
+                  },
+                ),
+              );
+            }
+          },
+        ),
+      ],
+    );
+  }
+
 
   Widget _buildContent(BuildContext context, AsyncSnapshot<String> snapshot) {
     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -85,7 +187,7 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
     }
   }
 
-  Widget _buildUserLocation(BuildContext context, Usuarios usuario) {
+  /*Widget _buildUserLocation(BuildContext context, Usuarios usuario) {
     final ubicacionesService = UbicacionesService();
     return Scaffold(
       appBar: AppBar(
@@ -177,6 +279,6 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
         ),
       ),
     );
-  } 
+  } */
 }
 
