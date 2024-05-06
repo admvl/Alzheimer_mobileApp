@@ -31,7 +31,7 @@ class Geocerca{
       'Latitud': latitude,
       'Longitud': longitude,
       'RadioGeocerca': radioGeocerca,
-      'Fecha': fecha,
+      'Fecha': fecha.toIso8601String(),
     };
   }
 }

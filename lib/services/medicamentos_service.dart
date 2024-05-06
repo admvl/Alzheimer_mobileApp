@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:alzheimer_app1/models/medicamentos.dart';
 
 class MedicamentosService{
-  final String baseUrl = "http://192.168.0.2:7084/api";
+  final String baseUrl = "http://192.168.68.124:7084/api";
 
   MedicamentosService();
 
