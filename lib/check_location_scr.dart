@@ -2,18 +2,14 @@
 import 'package:alzheimer_app1/models/pacientes.dart';
 import 'package:alzheimer_app1/models/ubicaciones.dart';
 import 'package:alzheimer_app1/models/usuarios.dart';
+import 'package:alzheimer_app1/services/pacientes_service.dart';
 import 'package:alzheimer_app1/services/ubicaciones_service.dart';
 import 'package:alzheimer_app1/services/usuarios_service.dart';
-import 'package:alzheimer_app1/services/pacientes_service.dart';
-import 'package:circular_profile_avatar/circular_profile_avatar.dart';
-import 'package:flutter/cupertino.dart';
-
-import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:alzheimer_app1/utils/token_utils.dart';
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:profile_view/profile_view.dart';
-import 'package:star_menu/star_menu.dart';
 
 final usuariosService = UsuariosService();
 final pacientesService = PacientesService();

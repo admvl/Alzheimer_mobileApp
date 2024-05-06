@@ -1,22 +1,17 @@
-//
 import 'dart:io';
 
-//import 'package:file_picker/file_picker.dart';
-import 'package:alzheimer_app1/carer_form.dart';
 import 'package:alzheimer_app1/models/personas.dart';
 import 'package:alzheimer_app1/models/tipos_usuarios.dart';
+import 'package:alzheimer_app1/models/users.dart';
 import 'package:alzheimer_app1/models/usuarios.dart';
 import 'package:alzheimer_app1/services/personas_service.dart';
 import 'package:alzheimer_app1/services/usuarios_service.dart';
 import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter/foundation.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
-//import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:alzheimer_app1/models/users.dart';
 
 final PersonasService personasService = PersonasService();
 final UsuariosService usuariosService = UsuariosService();

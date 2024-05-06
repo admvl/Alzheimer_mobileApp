@@ -1,7 +1,3 @@
-//import 'dart:html';
-
-import 'package:alzheimer_app1/models/dispositivos.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class Ubicaciones{
   final String? idUbicacion;

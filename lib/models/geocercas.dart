@@ -1,4 +1,4 @@
-import 'dart:ffi';
+
 
 class Geocerca{
   final String? idGeocerca;
