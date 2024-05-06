@@ -1,4 +1,5 @@
 import 'package:alzheimer_app1/configure_geocerca_scr.dart';
+import 'package:alzheimer_app1/log_in.dart';
 import 'package:flutter/material.dart';
 import 'register_scr.dart';
 import 'check_location_scr.dart';
@@ -52,7 +53,7 @@ class WelcomeScreen extends StatelessWidget {
           // Navigate to CheckLocation
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => const UserMgmt()),
+            MaterialPageRoute(builder: (context) => const UserMangement()),
           );
           break;
         case 3:
@@ -134,6 +135,7 @@ class WelcomeScreen extends StatelessWidget {
                           onPressed: () {
                             // ... (code for Configurar Zona Segura button)
                             CheckGeocercaScr geocercaScreen =
+                                //const CheckGeocercaScr();
                                 const CheckGeocercaScr();
                             Navigator.push(
                               context,
@@ -260,11 +262,8 @@ void _showConfirmationDialog(BuildContext context) {
           TextButton(
             child: const Text('Sí'),
             onPressed: () {
-              //Implementar la acción de cierre de sesión: 
-              //Cualquier acción necesaria para cerrar la sesión correctamente
-
-              //Navegar a la pantalla inicial:
-              Navigator.popUntil(context, ModalRoute.withName('log_in'));
+              //Navigator.popUntil(context, ModalRoute.withName('log_in'));
+              const LogInForm();
             },
           ),
           TextButton(

@@ -5,10 +5,15 @@ import 'package:alzheimer_app1/models/usuarios.dart';
 import 'package:alzheimer_app1/services/ubicaciones_service.dart';
 import 'package:alzheimer_app1/services/usuarios_service.dart';
 import 'package:alzheimer_app1/services/pacientes_service.dart';
+import 'package:circular_profile_avatar/circular_profile_avatar.dart';
+import 'package:flutter/cupertino.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:alzheimer_app1/utils/token_utils.dart';
+import 'package:profile_view/profile_view.dart';
+import 'package:star_menu/star_menu.dart';
 
 final usuariosService = UsuariosService();
 final pacientesService = PacientesService();
@@ -24,6 +29,7 @@ class CheckLocationScr extends StatefulWidget {
 
 class _CheckLocationScrState extends State<CheckLocationScr> {
   String? dispositivoPacienteId;
+  String? nombrePaciente;
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -32,6 +38,7 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
     );
   }
   Widget _buildLocationWidget(BuildContext context, Usuarios usuario) {
+    
     return FutureBuilder<Pacientes>(
       future: pacientesService.obtenerPacientePorId(usuario.idUsuario!),
       builder: (context, pacienteSnapshot) {
@@ -46,8 +53,7 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
         } else {
           final paciente = pacienteSnapshot.data!;
           dispositivoPacienteId = paciente.idDispositivo.idDispositivo!;
-          // Ahora, en lugar de devolver directamente el contenido del segundo FutureBuilder,
-          // retornaremos otro FutureBuilder que dependa del resultado del primero.
+          nombrePaciente = "${paciente.idPersona.nombre} ${paciente.idPersona.apellidoP} ${paciente.idPersona.apellidoM}";
           return FutureBuilder<Ubicaciones>(
             future: ubicacionesService.obtenerUbicacion(dispositivoPacienteId!),
             builder: (context, deviceSnapshot) {
@@ -61,25 +67,96 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
                 );
               } else {
                 final dispositivo = deviceSnapshot.data!;
-                return SizedBox(
-                  height: 300,
-                  child: GoogleMap(
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(dispositivo.latitude, dispositivo.longitude),
-                      zoom: 16.0,
-                    ),
-                    myLocationButtonEnabled: true,
-                    mapType: MapType.normal,
-                    markers: {
-                      Marker(
-                        markerId: const MarkerId('device_marker'),
-                        position: LatLng(dispositivo.latitude, dispositivo.longitude),
-                        infoWindow: InfoWindow(
-                          title: dispositivo.idDispositivo,
-                        ),
+                return Column(
+                  children: [
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          GoogleMap(
+                            initialCameraPosition: CameraPosition(
+                              target: LatLng(dispositivo.latitude, dispositivo.longitude),
+                              zoom: 16.0,
+                            ),
+                            myLocationButtonEnabled: true,
+                            mapType: MapType.normal,
+                            markers: {
+                              Marker(
+                                markerId: const MarkerId('device_marker'),
+                                position: LatLng(dispositivo.latitude, dispositivo.longitude),
+                                infoWindow: InfoWindow(
+                                  title: dispositivo.idDispositivo,
+                                ),
+                              ),
+                            },
+                          ),
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            child: AppBar(
+                              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                              title: const Text('Ubicación del paciente'),
+                            ),
+                          ),
+                          Positioned(
+                            top: 85,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                              ),
+                              child: Center(
+                                child: CircularProfileAvatar(
+                                  'hbv,v.jbhb n',
+                                  borderColor: Theme.of(context).colorScheme.inversePrimary,
+                                  borderWidth: 2,
+                                  elevation: 5,
+                                  radius: 50,
+                                  child: const ProfileView(
+                                    image: NetworkImage(
+                                      "https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 200,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                              ),
+                              child: Row( //const
+                                children: [
+                                  const SizedBox(width: 8.0),
+                                  Expanded(
+                                    child: Text(
+                                      nombrePaciente ?? '',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+
+                                        fontSize: 20.0,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      overflow: TextOverflow.ellipsis, 
+                                      maxLines: 2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    },
-                  ),
+                    )
+                  ],
                 );
               }
             },
