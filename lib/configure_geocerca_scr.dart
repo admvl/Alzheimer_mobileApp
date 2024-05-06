@@ -3,14 +3,13 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-
 class CheckGeocerca extends StatelessWidget {
   const CheckGeocerca({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'Geofence Example',
+      title: 'Establecer Zona Segura',
       home: CheckGeocercaScr(),
     );
   }
@@ -78,6 +77,7 @@ class _CheckGeocercaScrState extends State<CheckGeocercaScr> {
       LatLng markerPosition = markers.first.position;
       double radius = double.tryParse(radiusController.text) ?? 0;
       if (radius > 0) {
+        
         setState(() {
           geofenceCircle = Circle(
             circleId: const CircleId('geofence_circle'),
@@ -92,15 +92,12 @@ class _CheckGeocercaScrState extends State<CheckGeocercaScr> {
     }
   }
 
-  void saveDataGeocerca(){
-    
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Geofence Example'),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Establecer Zona Segura'),
       ),
       body: Stack(
         children: [
@@ -114,7 +111,7 @@ class _CheckGeocercaScrState extends State<CheckGeocercaScr> {
             },
             onTap: _onMapTap,
             markers: markers,
-            circles: geofenceCircle != null ? Set.of([geofenceCircle!]) : Set(),
+            circles: geofenceCircle != null ? {geofenceCircle!} : Set(),
           ),
           Positioned(
             top: 16,
@@ -147,7 +144,6 @@ class _CheckGeocercaScrState extends State<CheckGeocercaScr> {
                 ElevatedButton(
                   onPressed: () {
                     _updateGeofenceCircle();
-
                   },
                   child: const Text('Establecer geocerca'),
                 ),

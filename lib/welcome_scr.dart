@@ -1,5 +1,6 @@
 import 'package:alzheimer_app1/configure_geocerca_scr.dart';
 import 'package:alzheimer_app1/log_in.dart';
+import 'package:alzheimer_app1/update_geocerca.dart';
 import 'package:flutter/material.dart';
 import 'register_scr.dart';
 import 'check_location_scr.dart';
@@ -133,15 +134,21 @@ class WelcomeScreen extends StatelessWidget {
                       Flexible(
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            // ... (code for Configurar Zona Segura button)
+                            /*
                             CheckGeocercaScr geocercaScreen =
-                                //const CheckGeocercaScr();
                                 const CheckGeocercaScr();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => geocercaScreen
-                              ), // Navega a la pantalla CheckGeocerca
+                              ),
+                            );*/
+                            UpdateGeocerca geocercaScreen = const UpdateGeocerca();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => geocercaScreen
+                              ),
                             );
                           },
                           icon: const Icon(Icons.security),

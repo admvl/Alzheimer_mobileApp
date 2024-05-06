@@ -36,6 +36,7 @@ dependencies:
   form_builder_file_picker: ^4.1.0
   #google_maps_flutter: ^2.0.6
   provider: ^6.0.0
+  #geocoding: ^3.0.0
   geocoding: ^2.0.1
 
   # The following adds the Cupertino Icons font to your application.
@@ -44,8 +45,12 @@ dependencies:
   form_builder_validators: ^9.1.0
   path_provider: ^2.0.15
   google_maps_flutter: ^2.2.8
-  http: ^1.2.1
-  json_serializable: ^6.7.1
+  #http: ^1.2.1
+  #json_serializable: ^6.7.1
+  google_maps_webservice: ^0.0.20-nullsafety.5
+  #json_serializable: 4.0.0-nullsafety.0 -> 6.8.0
+  http: ^0.13.0
+  json_serializable: ^6.8.0
   english_words: ^4.0.0
   expandable_menu: ^0.0.5
   star_menu: ^4.0.0
