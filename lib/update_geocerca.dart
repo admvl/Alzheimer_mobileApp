@@ -219,7 +219,7 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
         } else {
           final paciente = pacienteSnapshot.data!;
           dispositivoPacienteId = paciente.idDispositivo.idDispositivo!;
-          dispositivoGeocercaId = paciente.idDispositivo.idGeocerca.idGeocerca;
+          dispositivoGeocercaId = paciente.idDispositivo.idGeocerca?.idGeocerca;
           return FutureBuilder<Geocerca>(
             future: geocercaService.obtenerGeocerca(dispositivoGeocercaId!),
             builder: (context, geocercaSnapshot){

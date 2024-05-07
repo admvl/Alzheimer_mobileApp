@@ -2,11 +2,11 @@ import 'package:alzheimer_app1/models/geocercas.dart';
 
 class Dispositivos{
   final String? idDispositivo;
-  final Geocerca idGeocerca;
+  final Geocerca? idGeocerca;
 
   Dispositivos({
     this.idDispositivo,
-    required this.idGeocerca,
+    this.idGeocerca,
   });
 
   factory Dispositivos.fromJson(Map<String, dynamic> json){
@@ -19,7 +19,7 @@ class Dispositivos{
   Map<String, dynamic> toJson(){
     return{
       'IdDispositivo': idDispositivo ?? '',
-      'IdGeocerca': idGeocerca.idGeocerca,
+      'IdGeocerca': idGeocerca?.idGeocerca,
     };
   }
 }
