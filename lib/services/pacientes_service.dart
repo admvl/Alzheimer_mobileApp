@@ -35,7 +35,24 @@ class PacientesService {
       throw Exception('Error al obtener paciente por ID');
     }
   }
+  //Obtener pacientes por ID de usuario loggeado
+  Future<List<Pacientes>> obtenerPacientesPorId(String id) async {
+    final response = await http.get(Uri.parse('$baseUrl/pacienteslista/$id'));
 
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = jsonDecode(response.body);
+      //final Map<String, dynamic> jsonData = jsonDecode(response.body);
+      //List<Pacientes> pacientes = jsonData.map((e) => Pacientes.fromJson(e)).toList();
+      List<Pacientes> pacientes = [];
+      for (var item in jsonData) {
+        pacientes.add(Pacientes.fromJson(item));
+      }
+      return pacientes;
+      //return Pacientes.fromJson(jsonData);
+    } else {
+      throw Exception('Error al obtener paciente por ID');
+    }
+  }
   // Actualizar una persona por ID
   Future<Pacientes> actualizarPacientePorId(
       String id, Pacientes pacienteActualizado) async {

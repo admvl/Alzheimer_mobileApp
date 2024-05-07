@@ -5,7 +5,7 @@ class Medicamentos{
   final String nombre;
   final double gramaje;
   final String descripcion;
-  final Pacientes idPaciente;
+  final String idPaciente;
 
   Medicamentos({
     this.idMedicamento,
@@ -19,19 +19,19 @@ class Medicamentos{
     return Medicamentos(
       idMedicamento: json['IdPaciente'] as String,
       nombre: json['Nombre'] as String,
-      gramaje: json['Gramaje'] as double,
+      gramaje: (json['Gramaje'] as num).toDouble(),
       descripcion: json['Descripcion'] as String,
-      idPaciente: Pacientes.fromJson(json['IdPacienteNavigation']),
+      idPaciente: json['IdPaciente'] as String//Pacientes.fromJson(json['IdPacienteNavigation']),
     );
   }
 
   Map<String,dynamic> toJson(){
     return{
-      'IdMedicamento': idMedicamento ?? '',
+      if(idMedicamento!=null)'IdMedicamento': idMedicamento,
       'Nombre': nombre,
       'Gramaje': gramaje, 
       'Descripcion': descripcion,
-      'IdPaciente': idPaciente.idPaciente,
+      'IdPaciente': idPaciente,
     };
   }
 

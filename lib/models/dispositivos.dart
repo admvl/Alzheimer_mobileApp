@@ -10,9 +10,13 @@ class Dispositivos{
   });
 
   factory Dispositivos.fromJson(Map<String, dynamic> json){
+    var geocerca;
+    if(json['IdGeocercaNavigation']!=null){
+      geocerca = Geocerca.fromJson(json['IdGeocercaNavigation']);
+    }
     return Dispositivos(
       idDispositivo: json['IdDispositivo']as String,
-      idGeocerca: Geocerca.fromJson(json['IdGeocercaNavigation']),
+      idGeocerca: geocerca,
       );
   }
 

@@ -1,5 +1,10 @@
 //import 'dart:io';
 
+import 'package:alzheimer_app1/models/medicamentos.dart';
+import 'package:alzheimer_app1/models/pacientes.dart';
+import 'package:alzheimer_app1/services/medicamentos_service.dart';
+import 'package:alzheimer_app1/services/pacientes_service.dart';
+import 'package:alzheimer_app1/utils/token_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -12,11 +17,96 @@ class MedicineForm extends StatefulWidget {
   _MedicineFormState createState() => _MedicineFormState();
 }
 
+
 class _MedicineFormState extends State<MedicineForm> {
+
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
+  final PacientesService _pacientesService = PacientesService();
+  final MedicamentosService _medicamentosService = MedicamentosService();
+  final tokenUtils = TokenUtils();
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: tokenUtils.getIdUsuarioToken(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Muestra un indicador de carga mientras se obtiene el ID del usuario
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          // Si hay un error al obtener el ID del usuario, muestra un mensaje de error
+            return SnackBar(
+                content: Text('Error: ${snapshot.error}'),
+            );
+        }else {
+          // Cuando se obtiene el ID del usuario, muestra el diálogo para seleccionar al paciente
+          return _buildSelectPatientDialog(context, snapshot.data);
+        }
+      },
+    );
+  }
+  Widget _buildSelectPatientDialog(BuildContext context, String? idUsuario) {
+    return Dialog(
+      // Utiliza un contenedor personalizado en lugar de AlertDialog
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              'Elige al paciente al que agregarás medicamentos',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16.0),
+            FutureBuilder(
+              future: _pacientesService.obtenerPacientesPorId(idUsuario!),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasError) {
+                  return SnackBar(content: Text('${snapshot.error}'));
+                  //return Text('Error: ${snapshot.error}');
+                } else {
+                  final List<Pacientes> pacientes = snapshot.data!;
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: pacientes.length,
+                    itemBuilder: (context, index) {
+                      final paciente = pacientes[index];
+                      return ListTile(
+                        title: Text('${paciente.idPersona.nombre} ${paciente.idPersona.apellidoP} ${paciente.idPersona.apellidoM}'),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => _buildForm(context,paciente),
+                              ),
+                          );
+                          _buildForm;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(paciente.idPersona.nombre),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //@override
+  Widget _buildForm(BuildContext context,Pacientes paciente) {
     final _roundedDecoration = InputDecoration(
       labelText: '',
         border: OutlineInputBorder(
@@ -54,52 +144,9 @@ class _MedicineFormState extends State<MedicineForm> {
                 ]),
               ),
               const SizedBox(height: 10),
-              /*FormBuilderDropdown(
-                name: 'tipoMed',
-                decoration: _roundedDecoration.copyWith(labelText: 'Tipo de Medicamento'),
-                // Add the following properties for the dropdown:
-                initialValue: 'Medicamentos por vía oral',  // Set an initial value
-                //allowClear: true,          // Allow clearing the selection
-                items: const [
-                  DropdownMenuItem(
-                    value: 'medOral', 
-                    child: Text(
-                      'Medicamentos por vía oral',
-                      style: TextStyle(color: Color.fromARGB(255, 83, 80, 80)),
-                    )
-                  ),
-                  DropdownMenuItem(value: 'medInyectable', 
-                   child: Text(
-                      'Medicamentos inyectable',
-                      style: TextStyle(color: Color.fromARGB(255, 83, 80, 80)),
-                    )
-                  ),
-                  DropdownMenuItem(value: 'medTopico', 
-                   child: Text(
-                      'Medicamentos de uso tópico',
-                      style: TextStyle(color: Color.fromARGB(255, 83, 80, 80)),
-                    )
-                  ),
-                  DropdownMenuItem(value: 'otrosMed',
-                   child: Text(
-                      'Otros',
-                      style: TextStyle(color: Color.fromARGB(255, 83, 80, 80)),
-                    )
-                  ),
-                ],
-                validator: FormBuilderValidators.compose([
-                  FormBuilderValidators.required(),
-                ]),
-              ),
-              const SizedBox(height: 10),*/
               FormBuilderTextField(
                 name: 'gramajeMed',
                 decoration: _roundedDecoration.copyWith(labelText: 'Gramaje del Medicamento'),
-              ),
-              const SizedBox(height: 10),
-              FormBuilderTextField(
-                name: 'dosisMed',
-                decoration: _roundedDecoration.copyWith(labelText: 'Dósis del Medicamento por toma'),
               ),
               const SizedBox(height: 10),
               FormBuilderTextField(
@@ -110,9 +157,28 @@ class _MedicineFormState extends State<MedicineForm> {
               ElevatedButton(
                 onPressed: () async {
                   if (_fbKey.currentState!.saveAndValidate()) {
-                    print(_fbKey.currentState!.value);
+                    final formValues = _fbKey.currentState!.value;
                     try{
-
+                      final nuevoMedicamento = Medicamentos(
+                        nombre: formValues['nombreMed'],
+                        gramaje: double.parse(formValues['gramajeMed']),
+                        descripcion: formValues['notasMed'],
+                        idPaciente: paciente.idPaciente!
+                      );
+                      _medicamentosService.crearMedicamento(nuevoMedicamento).then((value) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text(
+                                  'Medicamento Registrado con Exito')
+                          ),
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => _buildForm(context,paciente),
+                          ),
+                        );
+                      });
                     }catch(e){
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -120,13 +186,6 @@ class _MedicineFormState extends State<MedicineForm> {
                       );
                     }
                   }
-                  /* Validar existencia correo en BD
-                  if(await checkIfEmailExists()){
-                    // Either invalidate using Form Key
-                    _formKey.currentState?.fields['email']?.invalidate('Email already taken');
-                    // OR invalidate using Field Key
-                    _emailFieldKey.currentState?.invalidate('Email already taken');
-                  }*/
                 },
                 child: const Text('Registrar'),
               ),
@@ -136,4 +195,7 @@ class _MedicineFormState extends State<MedicineForm> {
       ),
     );
   }
+
+
+
 }
