@@ -9,7 +9,7 @@ final storage = FlutterSecureStorage();
 
 class GeocercasService{
 
-  final String baseUrl = "http://192.168.68.125:7084/api";
+  final String baseUrl = "http://192.168.0.2:7084/api";
   GeocercasService();
 
   //crear Geocerca
@@ -35,7 +35,7 @@ class GeocercasService{
       headers: {'Content--Type': 'application/json'},
       body: jsonEncode(geocercaActualizada.toJson()),
     );
-
+    print(geocercaActualizada.toJson());
     if(response.statusCode == 200){
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
       return Geocerca.fromJson(jsonData);
