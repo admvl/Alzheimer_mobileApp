@@ -7,6 +7,20 @@ class DispositivosService {
 
   DispositivosService();
 
+  //Actualizar geocerca
+  Future<Dispositivos> actualizarDispositivos(String id, Dispositivos dispositivoActualizado) async{
+    final response = await http.put(
+      Uri.parse(('$baseUrl/dispositivo/$id')),
+      headers: {'Content--Type': 'application/json'},
+      body: jsonEncode(dispositivoActualizado.toJson()),
+    );
+    if(response.statusCode == 200){
+      final Map<String, dynamic> jsonData = jsonDecode(response.body);
+      return Dispositivos.fromJson(jsonData);
+    }else {
+      throw Exception('Error al actualizar dispositivo');
+    }
+  }
 
   // Obtener una persona por ID
   Future<Dispositivos> obtenerDispositivoPorId(String id) async {

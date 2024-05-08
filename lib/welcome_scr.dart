@@ -1,4 +1,3 @@
-import 'package:alzheimer_app1/configure_geocerca_scr.dart';
 import 'package:alzheimer_app1/log_in.dart';
 import 'package:alzheimer_app1/update_geocerca.dart';
 import 'package:flutter/material.dart';

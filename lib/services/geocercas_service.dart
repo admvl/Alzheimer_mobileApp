@@ -35,7 +35,6 @@ class GeocercasService{
       headers: {'Content--Type': 'application/json'},
       body: jsonEncode(geocercaActualizada.toJson()),
     );
-    print(geocercaActualizada.toJson());
     if(response.statusCode == 200){
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
       return Geocerca.fromJson(jsonData);
