@@ -19,4 +19,18 @@ class DispositivosService {
       throw Exception('Error al obtener dispositivo por ID');
     }
   }
+  Future<List<Dispositivos>> obtenerDispositivos() async {
+    final response = await http.get(Uri.parse('$baseUrl/dispositivos/'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = jsonDecode(response.body);
+      List<Dispositivos> dispositivos = [];
+      for(var item in jsonData){
+        dispositivos.add(Dispositivos.fromJson(item));
+      }
+      return dispositivos;
+    } else {
+      throw Exception('Error al obtener dispositivos');
+    }
+  }
 }

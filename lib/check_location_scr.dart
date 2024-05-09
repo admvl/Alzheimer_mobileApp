@@ -25,8 +25,197 @@ class CheckLocationScr extends StatefulWidget {
 
 class _CheckLocationScrState extends State<CheckLocationScr> {
   String? dispositivoPacienteId;
+  PacientesService _pacientesService = PacientesService();
   String? nombrePaciente;
+
   @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: tokenUtils.getIdUsuarioToken(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Muestra un indicador de carga mientras se obtiene el ID del usuario
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          // Si hay un error al obtener el ID del usuario, muestra un mensaje de error
+          return SnackBar(
+            content: Text('Error: ${snapshot.error}'),
+          );
+        }else {
+          // Cuando se obtiene el ID del usuario, muestra el diálogo para seleccionar al paciente
+          return _buildSelectPatientDialog(context, snapshot.data);
+        }
+      },
+    );
+  }
+  Widget _buildSelectPatientDialog(BuildContext context, String? idUsuario) {
+    return Dialog(
+      // Utiliza un contenedor personalizado en lugar de AlertDialog
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              'Elige al paciente al que agregarás medicamentos',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16.0),
+            FutureBuilder(
+              future: _pacientesService.obtenerPacientesPorId(idUsuario!),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (snapshot.hasError) {
+                  return SnackBar(content: Text('${snapshot.error}'));
+                  //return Text('Error: ${snapshot.error}');
+                } else {
+                  final List<Pacientes> pacientes = snapshot.data!;
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: pacientes.length,
+                    itemBuilder: (context, index) {
+                      final paciente = pacientes[index];
+                      return ListTile(
+                        title: Text('${paciente.idPersona.nombre} ${paciente.idPersona.apellidoP} ${paciente.idPersona.apellidoM}'),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => _buildLocationWidget(context,paciente),
+                            ),
+                          );
+                          //_buildForm;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(paciente.idPersona.nombre),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }Widget _buildLocationWidget(BuildContext context, Pacientes paciente) {
+    return FutureBuilder<Ubicaciones>(
+      future: ubicacionesService.obtenerUbicacion(paciente.idDispositivo.idDispositivo!),
+      builder: (context, deviceSnapshot) {
+        if (deviceSnapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (deviceSnapshot.hasError) {
+          return Center(
+            child: Text('Error al obtener la ubicación del dispositivo: ${deviceSnapshot.error}'),
+          );
+        } else {
+          final dispositivo = deviceSnapshot.data!;
+          return Column(
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    GoogleMap(
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(dispositivo.latitude, dispositivo.longitude),
+                        zoom: 16.0,
+                      ),
+                      myLocationButtonEnabled: true,
+                      mapType: MapType.normal,
+                      markers: {
+                        Marker(
+                          markerId: const MarkerId('device_marker'),
+                          position: LatLng(dispositivo.latitude, dispositivo.longitude),
+                          infoWindow: InfoWindow(
+                            title: dispositivo.idDispositivo,
+                          ),
+                        ),
+                      },
+                    ),
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      child: AppBar(
+                        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                        title: const Text('Ubicación del paciente'),
+                      ),
+                    ),
+                    Positioned(
+                      top: 85,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                        ),
+                        child: Center(
+                          child: CircularProfileAvatar(
+                            'hbv,v.jbhb n',
+                            borderColor: Theme.of(context).colorScheme.inversePrimary,
+                            borderWidth: 2,
+                            elevation: 5,
+                            radius: 50,
+                            child: const ProfileView(
+                              image: NetworkImage(
+                                "https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 200,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                        ),
+                        child: Row( //const
+                          children: [
+                            const SizedBox(width: 8.0),
+                            Expanded(
+                              child: Text(
+                                nombrePaciente ?? '',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+
+                                  fontSize: 20.0,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          );
+        }
+      },
+    );
+  }
+  /*@override
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: tokenUtils.getIdUsuarioToken(),
@@ -34,7 +223,7 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
     );
   }
   Widget _buildLocationWidget(BuildContext context, Usuarios usuario) {
-    
+
     return FutureBuilder<Pacientes>(
       future: pacientesService.obtenerPacientePorId(usuario.idUsuario!),
       builder: (context, pacienteSnapshot) {
@@ -141,7 +330,7 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
                                         color: Colors.black,
                                         fontWeight: FontWeight.bold,
                                       ),
-                                      overflow: TextOverflow.ellipsis, 
+                                      overflow: TextOverflow.ellipsis,
                                       maxLines: 2,
                                     ),
                                   ),
@@ -216,7 +405,7 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
         },
       );
     }
-  }
+  }*/
 
 }
 

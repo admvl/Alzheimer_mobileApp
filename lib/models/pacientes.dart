@@ -3,12 +3,12 @@ import 'package:alzheimer_app1/models/personas.dart';
 
 class Pacientes{
 
-  final String? idPaciente;
+  final String idPaciente;
   final Dispositivos idDispositivo;
   final Personas idPersona;
 
   Pacientes({
-    this.idPaciente,
+    required this.idPaciente,
     required this.idDispositivo,
     required this.idPersona
   });
@@ -23,7 +23,7 @@ class Pacientes{
 
   Map<String,dynamic> toJson(){
     return{
-      'IdPaciente': idPaciente ?? '',
+      'IdPaciente': idPaciente,
       'IdDispositivo': idDispositivo.idDispositivo,
       'IdPersona': idPersona.idPersona,
   };
