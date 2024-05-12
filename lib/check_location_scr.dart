@@ -107,6 +107,7 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
       ),
     );
   }Widget _buildLocationWidget(BuildContext context, Pacientes paciente) {
+    nombrePaciente = '${paciente.idPersona.nombre} ${paciente.idPersona.apellidoP} ${paciente.idPersona.apellidoM}';
     return FutureBuilder<Ubicaciones>(
       future: ubicacionesService.obtenerUbicacion(paciente.idDispositivo.idDispositivo!),
       builder: (context, deviceSnapshot) {
