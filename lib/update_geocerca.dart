@@ -44,7 +44,7 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
   TextEditingController radiusController = TextEditingController();
   Set<Marker> markers = {};
   Circle? geofenceCircle;
-  late LatLng geofenceCenter = const LatLng(0,0);
+  late LatLng geofenceCenter = const LatLng(0, 0);
 
   @override
   void initState() {
@@ -64,14 +64,16 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
       Position position = await Geolocator.getCurrentPosition();
       setState(() {
         geofenceCenter = LatLng(position.latitude, position.longitude);
-        mapController?.animateCamera(CameraUpdate.newLatLngZoom(geofenceCenter, 20.0));
+        mapController
+            ?.animateCamera(CameraUpdate.newLatLngZoom(geofenceCenter, 20.0));
       });
     }
   }
 
   void _onMapTap(LatLng position) async {
     if (mapController != null) {
-      List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(position.latitude, position.longitude);
       if (placemarks.isNotEmpty) {
         Placemark placemark = placemarks.first;
         setState(() {
@@ -80,23 +82,14 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
             Marker(
               markerId: const MarkerId('marker_id'),
               position: position,
-              infoWindow: InfoWindow(title: 'Marcador', snippet: placemark.street ?? ''),
+              infoWindow: InfoWindow(
+                  title: 'Marcador', snippet: placemark.street ?? ''),
             ),
           );
           addressController.text = placemark.street ?? '';
         });
       }
     } else {
-      /*
-      Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('Zona Segura'),
-        ),
-        body: const Center(
-          child: Text('Error al configurar dirección:'),
-        ),
-      );*/
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Error al configurar dirección'),
@@ -113,12 +106,11 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
         if (radius > 0) {
           setState(() {
             geocerca = Geocerca(
-              idGeocerca: geocercaId,
-              radioGeocerca: radius, 
-              fecha: DateTime.now(), 
-              latitude: markerPosition.latitude, 
-              longitude: markerPosition.longitude
-            );
+                idGeocerca: geocercaId,
+                radioGeocerca: radius,
+                fecha: DateTime.now(),
+                latitude: markerPosition.latitude,
+                longitude: markerPosition.longitude);
 
             geofenceCircle = Circle(
               circleId: const CircleId('geofence_circle'),
@@ -142,50 +134,56 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
           child: Text('Error al configurar y actualizar zona segura:'),
         ),
       );
-
     }
   }
-  void _createGeofenceCircle(String? dispositivoPacienteId) {
+
+ void _createGeofenceCircle(String? dispositivoPacienteId) async {
     if (mapController != null) {
       if (markers.isNotEmpty) {
         LatLng markerPosition = markers.first.position;
         double radius = double.tryParse(radiusController.text) ?? 0;
         if (radius > 0) {
           final nuevaGeocerca = Geocerca(
-            radioGeocerca: radius, 
-            fecha: DateTime.now(), 
-            latitude: markerPosition.latitude, 
-            longitude: markerPosition.longitude
-          );
-          geocercaService.crearGeocerca(nuevaGeocerca);
-          setState(() {
-            dispositivo = Dispositivos(
+              radioGeocerca: radius,
+              fecha: DateTime.now(),
+              latitude: markerPosition.latitude,
+              longitude: markerPosition.longitude);
+          try{
+            Geocerca geocercaCreada = await geocercaService.crearGeocerca(nuevaGeocerca); 
+            setState(() {
+              geocercaId = geocercaCreada.idGeocerca; 
+              geofenceCircle = Circle(
+                circleId: const CircleId('geofence_circle'),
+                center: markerPosition,
+                radius: radius,
+                fillColor: Colors.blue.withOpacity(0.3),
+                strokeWidth: 2,
+                strokeColor: Colors.blue,
+              );
+            });
+            final dispositivo = Dispositivos(
               idDispositivo: dispositivoPacienteId,
-              idGeocerca: nuevaGeocerca.idGeocerca!,
+              idGeocerca: geocercaCreada,
             );
-
-            geofenceCircle = Circle(
-              circleId: const CircleId('geofence_circle'),
-              center: markerPosition,
-              radius: radius,
-              fillColor: Colors.blue.withOpacity(0.3),
-              strokeWidth: 2,
-              strokeColor: Colors.blue,
+            await dispositivoService.actualizarDispositivos(dispositivo.idDispositivo!, dispositivo); 
+          } catch (e){
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Error al actualizar dispositivo con geocerca : $e')),
             );
-          });
+          }
+          
         }
+      } else {
+        Scaffold(
+          appBar: AppBar(
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            title: const Text('Zona Segura'),
+          ),
+          body: const Center(
+            child: Text('Error al obtener el usuario:'),
+          ),
+        );
       }
-    } else {
-      Scaffold(
-        appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('Zona Segura'),
-        ),
-        body: const Center(
-          child: Text('Error al obtener el usuario:'),
-        ),
-      );
-
     }
   }
 
@@ -196,7 +194,6 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
       builder: (context, snapshot) => _buildContent(context, snapshot),
     );
   }
-  
 
   Widget _buildContent(BuildContext context, AsyncSnapshot<String> snapshot) {
     if (snapshot.connectionState == ConnectionState.waiting) {
@@ -240,7 +237,8 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
                 title: const Text('Zona Segura'),
               ),
               body: Center(
-                child: Text('Error al obtener el usuario: ${usuarioSnapshot.error}'),
+                child: Text(
+                    'Error al obtener el usuario: ${usuarioSnapshot.error}'),
               ),
             );
           } else {
@@ -265,7 +263,8 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
           );
         } else if (pacienteSnapshot.hasError) {
           return Center(
-            child: Text('Error al obtener el paciente: ${pacienteSnapshot.error}'),
+            child:
+                Text('Error al obtener el paciente: ${pacienteSnapshot.error}'),
           );
         } else {
           final paciente = pacienteSnapshot.data!;
@@ -273,174 +272,101 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
           dispositivoPacienteId = paciente.idDispositivo.idDispositivo!;
           //validar si existe geocerca: crear || actualizar
           geocercaId = paciente.idDispositivo.idGeocerca?.idGeocerca;
-          if(geocercaId != null){ 
+          if (geocercaId != null) {
             //geocerca nula
             return FutureBuilder<Geocerca>(
-              future: geocercaService.obtenerGeocerca(geocercaId!),
-              builder: (context, geocercaSnapshot){
-                if(geocercaSnapshot.connectionState == ConnectionState.waiting){
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if(geocercaSnapshot.hasError){
-                  return Center(
-                    child: Text('Error al obtener la zona segura: ${geocercaSnapshot.error}'),
-                  );
-                } else {
-                  final geocerca = geocercaSnapshot.data!;
-                  double radius = geocerca.radioGeocerca ?? 0;
-                  if (radius > 0) {
-                    geofenceCircle = Circle(
-                      circleId: const CircleId('geofence_circle'),
-                      center: LatLng(geocerca.latitude, geocerca.longitude),
-                      radius: radius,
-                      fillColor: Colors.blue.withOpacity(0.3),
-                      strokeWidth: 2,
-                      strokeColor: Colors.blue,
+                future: geocercaService.obtenerGeocerca(geocercaId!),
+                builder: (context, geocercaSnapshot) {
+                  if (geocercaSnapshot.connectionState ==
+                      ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (geocercaSnapshot.hasError) {
+                    return Center(
+                      child: Text(
+                          'Error al obtener la zona segura: ${geocercaSnapshot.error}'),
+                    );
+                  } else {
+                    final geocerca = geocercaSnapshot.data!;
+                    double radius = geocerca.radioGeocerca ?? 0;
+                    if (radius > 0) {
+                      geofenceCircle = Circle(
+                        circleId: const CircleId('geofence_circle'),
+                        center: LatLng(geocerca.latitude, geocerca.longitude),
+                        radius: radius,
+                        fillColor: Colors.blue.withOpacity(0.3),
+                        strokeWidth: 2,
+                        strokeColor: Colors.blue,
+                      );
+                    }
+                    return Scaffold(
+                      appBar: AppBar(
+                        backgroundColor:
+                            Theme.of(context).colorScheme.inversePrimary,
+                        title: const Text('Zona Segura'),
+                      ),
+                      body: Stack(
+                        children: [
+                          GoogleMap(
+                            initialCameraPosition: CameraPosition(
+                              target:
+                                  LatLng(geocerca.latitude, geocerca.longitude),
+                              zoom: 20,
+                            ),
+                            onMapCreated: (GoogleMapController controller) {
+                              mapController = controller;
+                            },
+                            onTap: _onMapTap,
+                            markers: markers,
+                            circles: geofenceCircle != null
+                                ? {geofenceCircle!}
+                                : Set(),
+                          ),
+                          Positioned(
+                            top: 16,
+                            left: 16,
+                            right: 16,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                TextField(
+                                  controller: addressController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Dirección',
+                                    border: OutlineInputBorder(),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                TextField(
+                                  controller: radiusController,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Radio (metros)',
+                                    border: OutlineInputBorder(),
+                                    filled: true,
+                                    fillColor: Colors.white,
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                ),
+                                const SizedBox(height: 8),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    final geocerca = geocercaSnapshot.data!;
+                                    _updateGeofenceCircle(geocerca);
+                                  },
+                                  child: const Text('Establecer geocerca'),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     );
                   }
-                  return Scaffold(
-                    appBar: AppBar(
-                      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                      title: const Text('Zona Segura'),
-                    ),
-                    body: Stack(
-                      children: [
-                        GoogleMap(
-                          initialCameraPosition: CameraPosition(
-                            target: LatLng(geocerca.latitude, geocerca.longitude),
-                            zoom: 20,
-                          ),
-                          onMapCreated: (GoogleMapController controller) {
-                            mapController = controller;
-                          },
-                          onTap: _onMapTap,
-                          markers: markers,
-                          circles: geofenceCircle != null ? {geofenceCircle!} : Set(),
-                        ),
-                        Positioned(
-                          top: 16,
-                          left: 16,
-                          right: 16,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              TextField(
-                                controller: addressController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Dirección',
-                                  border: OutlineInputBorder(),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              TextField(
-                                controller: radiusController,
-                                decoration: const InputDecoration(
-                                  labelText: 'Radio (metros)',
-                                  border: OutlineInputBorder(),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                ),
-                                keyboardType: TextInputType.number,
-                              ),
-                              const SizedBox(height: 8),
-                              ElevatedButton(
-                                onPressed: () {
-                                  final geocerca = geocercaSnapshot.data!;
-                                  _updateGeofenceCircle(geocerca);
-                                },
-                                child: const Text('Establecer geocerca'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-              }
-            );
+                });
           } else {
-            return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-              title: const Text('Zona Segura'),
-            ),
-            body: Stack(
-              children: [
-                GoogleMap(
-                  initialCameraPosition: CameraPosition(
-                    target: geofenceCenter,
-                    zoom: 15,
-                  ),
-                  onMapCreated: (GoogleMapController controller) {
-                    mapController = controller;
-                  },
-                  onTap: _onMapTap,
-                  markers: markers,
-                ),
-                Positioned(
-                  top: 16,
-                  left: 16,
-                  right: 16,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      TextField(
-                        controller: addressController,
-                        decoration: const InputDecoration(
-                          labelText: 'Dirección',
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      TextField(
-                        controller: radiusController,
-                        decoration: const InputDecoration(
-                          labelText: 'Radio (metros)',
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                        keyboardType: TextInputType.number,
-                      ),
-                      const SizedBox(height: 8),
-                      ElevatedButton(
-                        onPressed: () {
-                          _createGeofenceCircle(dispositivoPacienteId);
-                        },
-                        child: const Text('Establecer geocerca'),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        }
-      }
-    },
-  );
-}
-}
-            //geocerca es nulo - no existe -> crear
-            /*
-            double radius = double.tryParse(radiusController.text) ?? 0;
-            LatLng markerPosition = markers.first.position;
-            if (radius > 0) {
-              geofenceCircle = Circle(
-                circleId: const CircleId('geofence_circle'),
-                center: markerPosition,
-                radius: radius,
-                fillColor: Colors.blue.withOpacity(0.3),
-                strokeWidth: 2,
-                strokeColor: Colors.blue,
-              );
-            }
             return Scaffold(
               appBar: AppBar(
                 backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -450,7 +376,7 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
                 children: [
                   GoogleMap(
                     initialCameraPosition: CameraPosition(
-                      target: initialCameraPosition,
+                      target: geofenceCenter,
                       zoom: 15,
                     ),
                     onMapCreated: (GoogleMapController controller) {
@@ -458,7 +384,6 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
                     },
                     onTap: _onMapTap,
                     markers: markers,
-                    circles: geofenceCircle != null ? {geofenceCircle!} : Set(),
                   ),
                   Positioned(
                     top: 16,
@@ -490,7 +415,7 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
                         const SizedBox(height: 8),
                         ElevatedButton(
                           onPressed: () {
-                            _createGeofenceCircle();
+                            _createGeofenceCircle(dispositivoPacienteId);
                           },
                           child: const Text('Establecer geocerca'),
                         ),
@@ -505,5 +430,4 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
       },
     );
   }
-}*/
-
+}

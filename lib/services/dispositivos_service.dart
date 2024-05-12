@@ -3,14 +3,14 @@ import 'package:alzheimer_app1/models/dispositivos.dart';
 import 'package:http/http.dart' as http;
 
 class DispositivosService {
-  final String baseUrl = "http://192.168.0.2:7084/api";
+  final String baseUrl = "http://192.168.0.7:7084/api";
 
   DispositivosService();
 
   //Actualizar geocerca
   Future<Dispositivos> actualizarDispositivos(String id, Dispositivos dispositivoActualizado) async{
     final response = await http.put(
-      Uri.parse(('$baseUrl/dispositivo/$id')),
+      Uri.parse(('$baseUrl/dispositivos/$id')),
       headers: {'Content--Type': 'application/json'},
       body: jsonEncode(dispositivoActualizado.toJson()),
     );
