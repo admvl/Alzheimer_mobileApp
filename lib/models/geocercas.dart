@@ -18,7 +18,7 @@ class Geocerca{
   factory Geocerca.fromJson(Map<String,dynamic> json){
     return Geocerca(
       idGeocerca: json['IdGeocerca'] as String?,
-      radioGeocerca: json['RadioGeocerca'] as double,
+      radioGeocerca: (json['RadioGeocerca'] as num).toDouble(),
       fecha: DateTime.parse(json['Fecha']as String),
       latitude: json['Latitud'] as double,
       longitude: json['Longitud'] as double,
@@ -27,7 +27,7 @@ class Geocerca{
 
   Map<String, dynamic> toJson(){
     return{
-      'IdGeocerca': idGeocerca ?? '',
+      if(idGeocerca!=null)'IdGeocerca': idGeocerca,
       'Latitud': latitude,
       'Longitud': longitude,
       'RadioGeocerca': radioGeocerca,

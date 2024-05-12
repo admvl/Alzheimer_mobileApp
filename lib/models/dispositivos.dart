@@ -17,7 +17,7 @@ class Dispositivos{
     return Dispositivos(
       idDispositivo: json['IdDispositivo']as String,
       idGeocerca: geocerca,
-      );
+    );
   }
 
   Map<String, dynamic> toJson(){
