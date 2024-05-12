@@ -3,10 +3,24 @@ import 'package:alzheimer_app1/models/dispositivos.dart';
 import 'package:http/http.dart' as http;
 
 class DispositivosService {
-  final String baseUrl = "http://192.168.68.125:7084/api";
+  final String baseUrl = "http://192.168.0.7:7084/api";
 
   DispositivosService();
 
+  //Actualizar geocerca
+  Future<Dispositivos> actualizarDispositivos(String id, Dispositivos dispositivoActualizado) async{
+    final response = await http.put(
+      Uri.parse(('$baseUrl/dispositivos/$id')),
+      headers: {'Content--Type': 'application/json'},
+      body: jsonEncode(dispositivoActualizado.toJson()),
+    );
+    if(response.statusCode == 200){
+      final Map<String, dynamic> jsonData = jsonDecode(response.body);
+      return Dispositivos.fromJson(jsonData);
+    }else {
+      throw Exception('Error al actualizar dispositivo');
+    }
+  }
 
   // Obtener una persona por ID
   Future<Dispositivos> obtenerDispositivoPorId(String id) async {
