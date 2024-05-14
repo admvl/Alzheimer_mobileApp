@@ -1,4 +1,5 @@
 import 'package:alzheimer_app1/log_in.dart';
+import 'package:alzheimer_app1/patient_selection.dart';
 import 'package:alzheimer_app1/update_geocerca.dart';
 import 'package:flutter/material.dart';
 import 'register_scr.dart';
@@ -142,11 +143,13 @@ class WelcomeScreen extends StatelessWidget {
                                 builder: (context) => geocercaScreen
                               ),
                             );*/
-                            UpdateGeocerca geocercaScreen = const UpdateGeocerca();
+                            //UpdateGeocerca geocercaScreen = const UpdateGeocerca();
+                            PatientSelection patientSelect = const PatientSelection();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => geocercaScreen
+                                //builder: (context) => geocercaScreen
+                                builder: (context) => patientSelect
                               ),
                             );
                           },
