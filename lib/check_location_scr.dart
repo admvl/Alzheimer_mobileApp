@@ -1,7 +1,7 @@
-
+import 'package:alzheimer_app1/models/geocercas.dart';
 import 'package:alzheimer_app1/models/pacientes.dart';
 import 'package:alzheimer_app1/models/ubicaciones.dart';
-import 'package:alzheimer_app1/models/usuarios.dart';
+import 'package:alzheimer_app1/services/geocercas_service.dart';
 import 'package:alzheimer_app1/services/pacientes_service.dart';
 import 'package:alzheimer_app1/services/ubicaciones_service.dart';
 import 'package:alzheimer_app1/services/usuarios_service.dart';
@@ -13,6 +13,7 @@ import 'package:profile_view/profile_view.dart';
 
 final usuariosService = UsuariosService();
 final pacientesService = PacientesService();
+final geocercaService = GeocercasService();
 final ubicacionesService = UbicacionesService();
 final tokenUtils = TokenUtils();
 
@@ -25,6 +26,7 @@ class CheckLocationScr extends StatefulWidget {
 
 class _CheckLocationScrState extends State<CheckLocationScr> {
   String? dispositivoPacienteId;
+  String? geocercaId;
   PacientesService _pacientesService = PacientesService();
   String? nombrePaciente;
 
@@ -123,100 +125,136 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
           );
         } else {
           final dispositivo = deviceSnapshot.data!;
-          return Column(
-            children: [
-              Expanded(
-                child: Stack(
+          dispositivoPacienteId = paciente.idDispositivo.idDispositivo!;
+          geocercaId = paciente.idDispositivo.idGeocerca?.idGeocerca;
+          return FutureBuilder<Geocerca>(
+            future: geocercaService.obtenerGeocerca(geocercaId!),
+            builder: (context, geocercaSnapshot) {
+              if (geocercaSnapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else if (geocercaSnapshot.hasError) {
+                return Center(
+                  child: Text('Error al obtener la zona segura: ${geocercaSnapshot.error}'),
+                );
+              } else {
+                final geocerca = geocercaSnapshot.data!;
+                return Column(
                   children: [
-                    GoogleMap(
-                      initialCameraPosition: CameraPosition(
-                        target: LatLng(dispositivo.latitude, dispositivo.longitude),
-                        zoom: 16.0,
-                      ),
-                      myLocationButtonEnabled: true,
-                      mapType: MapType.normal,
-                      markers: {
-                        Marker(
-                          markerId: const MarkerId('device_marker'),
-                          position: LatLng(dispositivo.latitude, dispositivo.longitude),
-                          infoWindow: InfoWindow(
-                            title: dispositivo.idDispositivo,
-                          ),
-                        ),
-                      },
-                    ),
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      child: AppBar(
-                        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-                        title: const Text('Ubicación del paciente'),
-                      ),
-                    ),
-                    Positioned(
-                      top: 85,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                        ),
-                        child: Center(
-                          child: CircularProfileAvatar(
-                            'hbv,v.jbhb n',
-                            borderColor: Theme.of(context).colorScheme.inversePrimary,
-                            borderWidth: 2,
-                            elevation: 5,
-                            radius: 50,
-                            child: const ProfileView(
-                              image: NetworkImage(
-                                "https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-                              ),
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          GoogleMap(
+                            initialCameraPosition: CameraPosition(
+                              target: LatLng(dispositivo.latitude, dispositivo.longitude),
+                              zoom: 19,
                             ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned(
-                      top: 200,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                        ),
-                        child: Row( //const
-                          children: [
-                            const SizedBox(width: 8.0),
-                            Expanded(
-                              child: Text(
-                                nombrePaciente ?? '',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-
-                                  fontSize: 20.0,
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
+                            myLocationButtonEnabled: true,
+                            mapType: MapType.normal,
+                            markers: {
+                              Marker(
+                                markerId: const MarkerId('device_marker'),
+                                position: LatLng(dispositivo.latitude, dispositivo.longitude),
+                                infoWindow: InfoWindow(
+                                  title: dispositivo.idDispositivo,
                                 ),
-                                overflow: TextOverflow.ellipsis,
-                                maxLines: 2,
+                              ),
+                            },
+                            circles: _createCircles(paciente, geocerca),
+                            //circles: Set<Circle>.from(_createCircles(paciente)),
+                            //circles: Set.of(_createCircles(paciente) as Iterable<Circle>),
+                          ),
+                          Positioned(
+                            top: 0,
+                            left: 0,
+                            right: 0,
+                            child: AppBar(
+                              backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+                              title: const Text('Ubicación del paciente'),
+                            ),
+                          ),
+                          Positioned(
+                            top: 85,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                              ),
+                              child: Center(
+                                child: CircularProfileAvatar(
+                                  'hbv,v.jbhb n',
+                                  borderColor: Theme.of(context).colorScheme.inversePrimary,
+                                  borderWidth: 2,
+                                  elevation: 5,
+                                  radius: 50,
+                                  child: const ProfileView(
+                                    image: NetworkImage(
+                                      "https://images.unsplash.com/photo-1566616213894-2d4e1baee5d8?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          Positioned(
+                            top: 200,
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(8.0),
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                              ),
+                              child: Row( //const
+                                children: [
+                                  const SizedBox(width: 8.0),
+                                  Expanded(
+                                    child: Text(
+                                      nombrePaciente ?? '',
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(
+
+                                        fontSize: 20.0,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
+                    )
                   ],
-                ),
-              )
-            ],
+                );
+              }
+            },
           );
+          
         }
       },
     );
   }
-}
 
+  Set<Circle> _createCircles(Pacientes paciente, Geocerca geocerca) {
+  dispositivoPacienteId = paciente.idDispositivo.idDispositivo!;
+  geocercaId = paciente.idDispositivo.idGeocerca?.idGeocerca;
+  return {
+    Circle(
+      circleId: const CircleId('circle_id'),
+      center: LatLng(geocerca.latitude, geocerca.longitude),
+      radius: geocerca.radioGeocerca,
+      fillColor: Colors.blue.withOpacity(0.3),
+      strokeWidth: 2,
+      strokeColor: Colors.blue,
+    ),
+  };
+}
+}

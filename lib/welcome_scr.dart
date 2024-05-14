@@ -1,17 +1,16 @@
 import 'package:alzheimer_app1/log_in.dart';
 import 'package:alzheimer_app1/patient_selection.dart';
-import 'package:alzheimer_app1/update_geocerca.dart';
 import 'package:flutter/material.dart';
-import 'register_scr.dart';
-import 'check_location_scr.dart';
 import 'package:star_menu/star_menu.dart';
-import 'user_profile.dart';
-import 'user_mgmt.dart';
-import 'medicine_form.dart';
-import 'zone_alarm_scr.dart';
-import 'medicine_alarm_scr.dart';
+import 'check_location_scr.dart';
 import 'fall_alarm_scr.dart';
+import 'medicine_alarm_scr.dart';
+import 'medicine_form.dart';
+import 'register_scr.dart';
 import 'set_alarm_scr.dart';
+import 'user_mgmt.dart';
+import 'user_profile.dart';
+import 'zone_alarm_scr.dart';
 
 /*
 void main() {
@@ -75,7 +74,7 @@ class WelcomeScreen extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Bienvenido'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             _showConfirmationDialog(context); // Llama al diálogo de confirmación
           },
@@ -134,21 +133,10 @@ class WelcomeScreen extends StatelessWidget {
                       Flexible(
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            /*
-                            CheckGeocercaScr geocercaScreen =
-                                const CheckGeocercaScr();
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => geocercaScreen
-                              ),
-                            );*/
-                            //UpdateGeocerca geocercaScreen = const UpdateGeocerca();
                             PatientSelection patientSelect = const PatientSelection();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                //builder: (context) => geocercaScreen
                                 builder: (context) => patientSelect
                               ),
                             );
@@ -167,15 +155,13 @@ class WelcomeScreen extends StatelessWidget {
                       Flexible(
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            //CheckLocation locationScreen = const CheckLocation();
                             CheckLocationScr locationScreen =
                                 const CheckLocationScr();
                             Navigator.push(
                               context,
-                              //MaterialPageRoute(builder: (context) => locationScreen), // Navega a la pantalla CheckLocation
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      locationScreen), // Navega a la pantalla CheckLocation
+                                      locationScreen),
                             );
                           },
                           icon: const Icon(Icons.pin_drop_outlined),
@@ -189,7 +175,6 @@ class WelcomeScreen extends StatelessWidget {
                             SetAlarmScr setAlarmScr = const SetAlarmScr();
                             Navigator.push(
                               context,
-                              //MaterialPageRoute(builder: (context) => locationScreen), // Navega a la pantalla CheckLocation
                               MaterialPageRoute(
                                   builder: (context) =>
                                       setAlarmScr), // Navega a la pantalla CheckLocation
