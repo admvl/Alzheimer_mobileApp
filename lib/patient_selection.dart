@@ -89,12 +89,10 @@ class _PatientSelectionState extends State<PatientSelection> {
                       return ListTile(
                         title: Text('${paciente.idPersona.nombre} ${paciente.idPersona.apellidoP} ${paciente.idPersona.apellidoM}'),
                         onTap: () {
-                          //Navigator.of(context).pop();
-                          UpdateGeocerca geocercaScreen = const UpdateGeocerca();
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => geocercaScreen,
+                              builder: (context) => UpdateGeocerca(paciente: paciente),
                             ),
                           );
                           //_buildForm;

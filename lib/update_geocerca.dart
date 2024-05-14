@@ -22,7 +22,10 @@ final dispositivoService = DispositivosService();
 final tokenUtils = TokenUtils();
 
 class UpdateGeocerca extends StatefulWidget {
-  const UpdateGeocerca({Key? key}) : super(key: key);
+  final Pacientes paciente;
+  const UpdateGeocerca({
+    super.key, required this.paciente
+  });
 
   @override
   _UpdateGeocercaState createState() => _UpdateGeocercaState();
@@ -197,69 +200,14 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
   Widget build(BuildContext context) {
     return FutureBuilder(
       future: tokenUtils.getIdUsuarioToken(),
-      builder: (context, snapshot) => _buildContent(context, snapshot),
+      //builder: (context, snapshot) => _buildContent(context, snapshot),
+      builder: (context, snapshot) => _buildLocationWidget(context),
     );
   }
   
-  Widget _buildContent(BuildContext context, AsyncSnapshot<String> snapshot) {
-  if (snapshot.connectionState == ConnectionState.waiting) {
-    return Scaffold(
-      appBar:  _buildAppBar('Zona Segura'),
-      body: const Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
-  } else if (snapshot.hasError) {
-    return Scaffold(
-      appBar: _buildAppBar('Zona Segura'),
-      body: Center(
-        child: Text('Error al obtener el token: ${snapshot.error}'),
-      ),
-    );
-  } else {
-      return FutureBuilder<Usuarios>(
-        future: usuariosService.obtenerUsuarioPorId(snapshot.data!),
-        builder: (context, usuarioSnapshot) {
-          if (usuarioSnapshot.connectionState == ConnectionState.waiting) {
-            return Scaffold(
-              appBar: _buildAppBar('Zona Segura'),
-              body: _buildCircularProgressIndicator(),
-            );
-          } else if (usuarioSnapshot.hasError) {
-            return Scaffold(
-              appBar: _buildAppBar('Zona Segura'),
-              body: Center(
-                child: Text(
-                    'Error al obtener el usuario: ${usuarioSnapshot.error}'),
-              ),
-            );
-          } else {
-            final usuario = usuarioSnapshot.data!;
-            return _buildLocationWidget(context, usuario);
-          }
-        },
-      );
-    }
-  }
-  
-  Widget _buildLocationWidget(BuildContext context, Usuarios usuario) {
-    /*if (geofenceCenter == null) {
-      return _buildCircularProgressIndicator();
-    }*/
-    return FutureBuilder<Pacientes>(
-      future: pacientesService.obtenerPacientePorId(usuario.idUsuario!),
-      builder: (context, pacienteSnapshot) {
-        if (pacienteSnapshot.connectionState == ConnectionState.waiting) {
-          return _buildCircularProgressIndicator();
-        } else if (pacienteSnapshot.hasError) {
-          return Center(
-            child: Text(
-                'Error al obtener el paciente: ${pacienteSnapshot.error}'),
-          );
-        } else {
-          final paciente = pacienteSnapshot.data!;
-          dispositivoPacienteId = paciente.idDispositivo.idDispositivo!;
-          geocercaId = paciente.idDispositivo.idGeocerca?.idGeocerca;
+  Widget _buildLocationWidget(BuildContext context) {
+          dispositivoPacienteId = widget.paciente.idDispositivo.idDispositivo!;
+          geocercaId = widget.paciente.idDispositivo.idGeocerca?.idGeocerca;
           if (geocercaId != null) {
             return FutureBuilder<Geocerca>(
                 future: geocercaService.obtenerGeocerca(geocercaId!),
@@ -299,9 +247,6 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
               body: _buildMapWidget(geofenceCenter),
             );
           }
-        }
-      },
-    );
   }
 
   Widget _buildMapWidget(LatLng targetPosition) {
