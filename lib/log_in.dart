@@ -35,7 +35,6 @@ class LogInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: Colors.grey[200],
       backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       body: const SingleChildScrollView(
         padding: EdgeInsets.only(top: 100, left: 20, right: 20),
@@ -88,7 +87,7 @@ class _LogInFormState extends State<LogInForm> {
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Inicio de sesión exitoso"))
       );
-      _showWelcomeScreen(); // Inicia sesión y muestra la pantalla de bienvenida
+      _showWelcomeScreen();
     }else if (response.statusCode == 401) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Contraseña incorrecta"))
@@ -107,19 +106,16 @@ class _LogInFormState extends State<LogInForm> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          //LinearProgressIndicator(value: _formProgress),
           AnimatedProgressIndicator(value: _formProgress), // NEW
           const SizedBox(height: 20),
           const SizedBox(height: 20),
           Center(
             child: CircularProfileAvatar(
               '',
-              //borderColor: Colors.purpleAccent,
               borderColor: Theme.of(context).colorScheme.inversePrimary,
               borderWidth: 2,
               elevation: 5,
               radius: 80,
-              //child: const FlutterLogo(),
               child: const ProfileView(
                 image: NetworkImage(
                   "https://images.unsplash.com/photo-1712945245297-9d9f05cf27b1?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
@@ -153,7 +149,6 @@ class _LogInFormState extends State<LogInForm> {
               foregroundColor: MaterialStateProperty.resolveWith((states) {
                 return states.contains(MaterialState.disabled)
                     ? null
-                    //: Theme.of(context).colorScheme.primary;
                     : Theme.of(context).colorScheme.inverseSurface;
               }),
               backgroundColor: MaterialStateProperty.resolveWith((states) {
@@ -162,8 +157,6 @@ class _LogInFormState extends State<LogInForm> {
                     : Theme.of(context).colorScheme.primaryContainer;
               }),
             ),
-            //onPressed: null,
-            //onPressed: _showWelcomeScreen,
             onPressed: _formProgress == 1 ? login : null, // UPDATED
             child: const Text('Iniciar Sesion'),
           ),
@@ -219,8 +212,6 @@ class _AnimatedProgressIndicatorState extends State<AnimatedProgressIndicator>
       duration: const Duration(milliseconds: 1200),
       vsync: this,
     );
-
-    // No accedas al contexto aquí
   }
 
   @override

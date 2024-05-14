@@ -308,10 +308,8 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
     return Stack(
       children: [
         GoogleMap(
-          //minMaxZoomPreference: const MinMaxZoomPreference(50, 200),
           initialCameraPosition: CameraPosition(
             target: targetPosition,
-            //target: LatLng(geocerca.latitude, geocerca.longitude),
             zoom: 19,
           ),
           onMapCreated: (GoogleMapController controller) {
