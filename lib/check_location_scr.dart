@@ -113,7 +113,7 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
   Widget _buildLocationWidget(BuildContext context, Pacientes paciente) {
     nombrePaciente = '${paciente.idPersona.nombre} ${paciente.idPersona.apellidoP} ${paciente.idPersona.apellidoM}';
     return FutureBuilder<Ubicaciones>(
-      future: ubicacionesService.obtenerUbicacion(paciente.idDispositivo.idDispositivo!),
+      future: ubicacionesService.obtenerUbicacionActualizada(paciente.idDispositivo.idDispositivo!),
       builder: (context, deviceSnapshot) {
         if (deviceSnapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -213,7 +213,7 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
                                   const SizedBox(width: 8.0),
                                   Expanded(
                                     child: Text(
-                                      nombrePaciente ?? '',
+                                      '${nombrePaciente} ${dispositivo.fechaHora}',
                                       textAlign: TextAlign.center,
                                       style: const TextStyle(
 
