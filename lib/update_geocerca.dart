@@ -1,5 +1,6 @@
 //Version OK
 
+import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
@@ -163,8 +164,17 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
 
   PreferredSizeWidget _buildAppBar(String title) {
     return AppBar(
-      backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-      title: Text(title),
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Zona Segura'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+            );
+          },
+        ),
     );
   }
 
@@ -194,7 +204,7 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
   Widget _buildContent(BuildContext context, AsyncSnapshot<String> snapshot) {
   if (snapshot.connectionState == ConnectionState.waiting) {
     return Scaffold(
-      appBar: _buildAppBar('Zona Segura'),
+      appBar:  _buildAppBar('Zona Segura'),
       body: const Center(
         child: CircularProgressIndicator(),
       ),
