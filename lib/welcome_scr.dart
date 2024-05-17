@@ -1,4 +1,7 @@
 import 'package:alzheimer_app1/log_in.dart';
+import 'package:alzheimer_app1/patient_mgmt_scr.dart';
+import 'package:alzheimer_app1/patient_profile.dart';
+//import 'package:alzheimer_app1/patient_profile.dart';
 import 'package:alzheimer_app1/patient_selection.dart';
 import 'package:flutter/material.dart';
 import 'package:star_menu/star_menu.dart';
@@ -190,6 +193,24 @@ class WelcomeScreen extends StatelessWidget {
                 ],
               ),
             ),
+            
+            Flexible(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  //PatientManagementScreen patientProfileScr = const PatientManagementScreen();
+                  PatientProfile patientProfileScr = const PatientProfile();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            patientProfileScr), // Navega a la pantalla RegisterScreen
+                  );
+                },
+                icon: const Icon(Icons.person_sharp),
+                label: const Text('Perfil Paciente'),
+              ),
+            ),
+            const SizedBox(height: 10),
             Flexible(
               child: ElevatedButton.icon(
                 onPressed: () {
