@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 final usuariosService = UsuariosService();
-final pacientesService = PacientesService();
+final _pacientesService = PacientesService();
 final geocercaService = GeocercasService();
 final dispositivoService = DispositivosService();
 final tokenUtils = TokenUtils();
@@ -31,7 +31,7 @@ class _PatientSelectionState extends State<PatientSelection> {
   TextEditingController radiusController = TextEditingController();
   Set<Marker> markers = {};
   Circle? geofenceCircle;
-  PacientesService _pacientesService = PacientesService();
+  //PacientesService _pacientesService = PacientesService();
   
   @override
   Widget build(BuildContext context) {
