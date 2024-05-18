@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_file_picker/form_builder_file_picker.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 
 final PersonasService personasService = PersonasService();
@@ -100,12 +101,26 @@ class _FamiliarFormState extends State<FamiliarForm> {
                 ]),
               ),
               const SizedBox(height: 10),
+              /*
               FormBuilderTextField(
                 name: 'fechaNac',
                 decoration: roundedDecoration.copyWith(labelText: 'Fecha de Nacimiento'),
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                   FormBuilderValidators.dateString(),
+                ]),
+              ),*/
+              FormBuilderDateTimePicker(
+                name: 'fechaNac',
+                inputType: InputType.date,
+                //initialDate: widget.usuario?.idPersona?.fechaNacimiento ?? DateTime.now() ,
+                format: DateFormat("yyyy-MM-dd"),
+                decoration: roundedDecoration.copyWith(
+                    labelText: 'Fecha de Nacimiento',
+                ),
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(),
+                  //FormBuilderValidators.dateString(),
                 ]),
               ),
               const SizedBox(height: 10),
@@ -175,9 +190,21 @@ class _FamiliarFormState extends State<FamiliarForm> {
                     ),
                   ),
                 ],
+                /*
                 onChanged: (value) {
                   if (value != null && value.isNotEmpty) {
                     _pdfFile = value.first as File?;  // Assuming single selection
+                  } else {
+                    _pdfFile = null;
+                  }
+                },*/
+                onChanged: (value) {
+                  if (value != null && value.isNotEmpty) {
+                    if (value.first is File) {
+                      _pdfFile = value.first as File;  // Asumimos una selección única
+                    } else {
+                      _pdfFile = null;  // Manejo de error: value.first no es un File
+                    }
                   } else {
                     _pdfFile = null;
                   }

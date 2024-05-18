@@ -804,6 +804,16 @@ class PatientProfile extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Perfil de Paciente'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navega a la pantalla de bienvenida
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+            );
+          },
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.only(top: 20, left: 20, right: 20),
@@ -891,7 +901,7 @@ class PatientProfile extends StatelessWidget {
                       _showDialog(context, paciente, usuario, () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const PatientManagementScreen()),
+                          MaterialPageRoute(builder: (context) => PatientManagementScreen(paciente: paciente)),
                         );
                       });
                     },
