@@ -1,5 +1,6 @@
 //import 'dart:io';
 //formulario para alta de pacientes
+import 'package:alzheimer_app1/carer_form.dart';
 import 'package:alzheimer_app1/models/dispositivos.dart';
 import 'package:alzheimer_app1/models/pacientes.dart';
 import 'package:alzheimer_app1/models/personas.dart';
@@ -25,10 +26,14 @@ Future<String> getProjectDirPath() async {
 
 class UserForm extends StatefulWidget {
   final Pacientes? paciente;
+
+  // Constructor principal
   const UserForm({super.key, this.paciente});
 
+  // Constructor nombrado cuando no se pasa un paciente
+  const UserForm.withoutPaciente({super.key}) : paciente = null;
+
   @override
-  // ignore: library_private_types_in_public_api
   _UserFormState createState() => _UserFormState();
 }
 
@@ -246,6 +251,7 @@ class _UserFormState extends State<UserForm> {
                           idPersona: nuevaPersona
                         );
                         try{
+                          await personasService.actualizarPersonaPorId(nuevaPersona.idPersona!, nuevaPersona);
                           await _pacientesService.actualizarPacientePorId(widget.paciente!.idPaciente, nuevoPaciente);
                           if(!context.mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(

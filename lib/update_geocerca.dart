@@ -22,7 +22,7 @@ final dispositivoService = DispositivosService();
 final tokenUtils = TokenUtils();
 
 class UpdateGeocerca extends StatefulWidget {
-  final Pacientes paciente;
+  final Pacientes? paciente;
   const UpdateGeocerca({
     super.key, required this.paciente
   });
@@ -206,8 +206,8 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
   }
   
   Widget _buildLocationWidget(BuildContext context) {
-          dispositivoPacienteId = widget.paciente.idDispositivo.idDispositivo!;
-          geocercaId = widget.paciente.idDispositivo.idGeocerca?.idGeocerca;
+          dispositivoPacienteId = widget.paciente?.idDispositivo.idDispositivo!;
+          geocercaId = widget.paciente?.idDispositivo.idGeocerca?.idGeocerca;
           if (geocercaId != null) {
             return FutureBuilder<Geocerca>(
                 future: geocercaService.obtenerGeocerca(geocercaId!),

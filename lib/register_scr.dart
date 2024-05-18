@@ -53,7 +53,7 @@ class RegisterScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          const UserForm()), // Navega a la pantalla
+                          const UserForm.withoutPaciente()), // Navega a la pantalla
                 );
               },
               icon: const SizedBox(
