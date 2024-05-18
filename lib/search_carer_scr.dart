@@ -18,9 +18,10 @@ class BuscadorCuidadoresScreen extends StatelessWidget {
 
 import 'package:flutter/material.dart';
 
+/*
 void main() {
   runApp(BuscadorCuidadoresScreen());
-}
+}*/
 
 class BuscadorCuidadoresScreen extends StatelessWidget {
   @override
@@ -76,7 +77,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Buscador - Familiares'),
+        title: const Text('Buscador - Cuidadores'),
       ),
       body: Column(
         children: [
