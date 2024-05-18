@@ -49,7 +49,7 @@ class _MedicineFormState extends State<MedicineForm> {
     return Dialog(
       // Utiliza un contenedor personalizado en lugar de AlertDialog
       child: Container(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -146,7 +146,13 @@ class _MedicineFormState extends State<MedicineForm> {
               const SizedBox(height: 10),
               FormBuilderTextField(
                 name: 'gramajeMed',
-                decoration: _roundedDecoration.copyWith(labelText: 'Gramaje del Medicamento'),
+                decoration: _roundedDecoration.copyWith(labelText: 'Gramaje del Medicamento (mg)'),
+                keyboardType: TextInputType.number,
+                validator: FormBuilderValidators.compose([
+                  FormBuilderValidators.required(),
+                  FormBuilderValidators.numeric(),
+                  FormBuilderValidators.min(0),
+                ]),
               ),
               const SizedBox(height: 10),
               FormBuilderTextField(
@@ -161,9 +167,9 @@ class _MedicineFormState extends State<MedicineForm> {
                     try{
                       final nuevoMedicamento = Medicamentos(
                         nombre: formValues['nombreMed'],
-                        gramaje: double.parse(formValues['gramajeMed']),
+                        gramaje: _parseToDouble(formValues['gramajeMed']),
                         descripcion: formValues['notasMed'],
-                        idPaciente: paciente.idPaciente!
+                        idPaciente: paciente.idPaciente
                       );
                       _medicamentosService.crearMedicamento(nuevoMedicamento).then((value) {
                         ScaffoldMessenger.of(context).showSnackBar(
@@ -195,6 +201,17 @@ class _MedicineFormState extends State<MedicineForm> {
       ),
     );
   }
+
+  double _parseToDouble(String? value) {
+  if (value == null || value.isEmpty) {
+    throw const FormatException("El valor de gramajeMed no puede ser nulo o vacío");
+  }
+  try {
+    return double.parse(value);
+  } catch (e) {
+    throw const FormatException("El valor de gramajeMed debe ser un número válido");
+  }
+}
 
 
 
