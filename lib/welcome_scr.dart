@@ -3,6 +3,7 @@ import 'package:alzheimer_app1/patient_mgmt_scr.dart';
 import 'package:alzheimer_app1/patient_profile.dart';
 //import 'package:alzheimer_app1/patient_profile.dart';
 import 'package:alzheimer_app1/patient_selection.dart';
+import 'package:alzheimer_app1/services/alzheimer_hub.dart';
 import 'package:flutter/material.dart';
 import 'package:star_menu/star_menu.dart';
 import 'check_location_scr.dart';
@@ -22,8 +23,49 @@ void main() {
   ));
 }*/
 
-class WelcomeScreen extends StatelessWidget {
+class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
+
+  @override
+  _WelcomeScreenState createState() => _WelcomeScreenState();
+}
+
+
+void _showConfirmationDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('¿Desea cerrar sesión?'),
+        content: const Text('Se cerrará la sesión actual.'),
+        actions: [
+          TextButton(
+            child: const Text('Sí'),
+            onPressed: () {
+              //Navigator.popUntil(context, ModalRoute.withName('log_in'));
+              const LogInForm();
+            },
+          ),
+          TextButton(
+            child: const Text('No'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen>{
+  final SignalRService _signalRService = SignalRService();
+
+  @override
+  void initState(){
+    super.initState();
+    _signalRService.initSignalR(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,28 +81,28 @@ class WelcomeScreen extends StatelessWidget {
     void navigateToScreen(int index) {
       switch (index) {
         case 0:
-          // Navigate to RegisterScreen
+        // Navigate to RegisterScreen
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const UserProfile()),
           );
           break;
         case 1:
-          // Navigate to RegisterScreen
+        // Navigate to RegisterScreen
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const UserProfile()),
           );
           break;
         case 2:
-          // Navigate to CheckLocation
+        // Navigate to CheckLocation
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const UserMangement()),
           );
           break;
         case 3:
-          // Navigate to CheckLocation
+        // Navigate to CheckLocation
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const MedicineForm()),
@@ -120,12 +162,12 @@ class WelcomeScreen extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: () {
                             RegisterScreen registerScreen =
-                                const RegisterScreen();
+                            const RegisterScreen();
                             Navigator.push(
                               context,
-                              MaterialPageRoute( 
+                              MaterialPageRoute(
                                   builder: (context) =>
-                                      registerScreen), // Navega a la pantalla RegisterScreen
+                                  registerScreen), // Navega a la pantalla RegisterScreen
                             );
                           },
                           icon: const Icon(Icons.edit_note),
@@ -140,7 +182,7 @@ class WelcomeScreen extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => patientSelect
+                                  builder: (context) => patientSelect
                               ),
                             );
                           },
@@ -159,12 +201,12 @@ class WelcomeScreen extends StatelessWidget {
                         child: ElevatedButton.icon(
                           onPressed: () {
                             CheckLocationScr locationScreen =
-                                const CheckLocationScr();
+                            const CheckLocationScr();
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      locationScreen),
+                                  locationScreen),
                             );
                           },
                           icon: const Icon(Icons.pin_drop_outlined),
@@ -180,7 +222,7 @@ class WelcomeScreen extends StatelessWidget {
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      setAlarmScr), // Navega a la pantalla CheckLocation
+                                  setAlarmScr), // Navega a la pantalla CheckLocation
                             );
                           },
                           icon: const Icon(Icons.alarm),
@@ -193,7 +235,7 @@ class WelcomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-            
+
             Flexible(
               child: ElevatedButton.icon(
                 onPressed: () {
@@ -203,7 +245,7 @@ class WelcomeScreen extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            patientProfileScr), // Navega a la pantalla RegisterScreen
+                        patientProfileScr), // Navega a la pantalla RegisterScreen
                   );
                 },
                 icon: const Icon(Icons.person_sharp),
@@ -219,7 +261,7 @@ class WelcomeScreen extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            medicineAlarmScr), // Navega a la pantalla RegisterScreen
+                        medicineAlarmScr), // Navega a la pantalla RegisterScreen
                   );
                 },
                 icon: const Icon(Icons.alarm),
@@ -235,7 +277,7 @@ class WelcomeScreen extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            zoneAlarmScr), // Navega a la pantalla RegisterScreen
+                        zoneAlarmScr), // Navega a la pantalla RegisterScreen
                   );
                 },
                 icon: const Icon(Icons.alarm),
@@ -251,7 +293,7 @@ class WelcomeScreen extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            fallAlarmScr), // Navega a la pantalla RegisterScreen
+                        fallAlarmScr), // Navega a la pantalla RegisterScreen
                   );
                 },
                 icon: const Icon(Icons.alarm),
@@ -263,33 +305,5 @@ class WelcomeScreen extends StatelessWidget {
       ),
     );
   }
+
 }
-
-
-void _showConfirmationDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('¿Desea cerrar sesión?'),
-        content: const Text('Se cerrará la sesión actual.'),
-        actions: [
-          TextButton(
-            child: const Text('Sí'),
-            onPressed: () {
-              //Navigator.popUntil(context, ModalRoute.withName('log_in'));
-              const LogInForm();
-            },
-          ),
-          TextButton(
-            child: const Text('No'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
-
