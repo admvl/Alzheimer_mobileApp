@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "174369835546",
+    "project_id": "alzheimer-af-flutter",
+    "storage_bucket": "alzheimer-af-flutter.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174369835546:android:cf38c805a3445026e0dfa3",
+        "android_client_info": {
+          "package_name": "com.example.alzheimer_app1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNwZs1iV7Ips3zSqf7phM2dbvF9z57g-k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

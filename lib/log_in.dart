@@ -8,6 +8,8 @@ import 'welcome_scr.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:profile_view/profile_view.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() => runApp(const LogInpApp());
 
 class LogInpApp extends StatelessWidget {
@@ -16,6 +18,7 @@ class LogInpApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       routes: {
         '/': (context) => const LogInScreen(),
         '/welcome': (context) => const WelcomeScreen(),
