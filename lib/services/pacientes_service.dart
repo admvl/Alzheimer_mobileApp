@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 
 class PacientesService {
-  final String baseUrl = "http://192.168.131.1:7084/api";
+  final String baseUrl = "http://192.168.68.124:5066/api";
 
   PacientesService();
 

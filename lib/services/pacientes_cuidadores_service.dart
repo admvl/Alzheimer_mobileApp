@@ -6,7 +6,7 @@ import 'dart:convert';
 import '../models/pacientes_cuidadores.dart';
 
 class PacientesCuidadoresService{
-  final String baseUrl = "http://192.168.131.1:7084/api";
+  final String baseUrl = "http://192.168.68.124:5066/api";
 
   PacientesCuidadoresService();
 
