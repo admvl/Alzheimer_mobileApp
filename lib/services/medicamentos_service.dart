@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:alzheimer_app1/models/medicamentos.dart';
 
 class MedicamentosService{
-  final String baseUrl = "http://192.168.131.1:7084/api";
+  final String baseUrl = "http://192.168.0.7:7084/api";
 
   MedicamentosService();
 
@@ -34,6 +34,22 @@ class MedicamentosService{
       throw Exception('Error al obtener persona');
     }
   }
+
+    Future<List<Medicamentos>> obtenerMedicamentosPorId(String id) async {
+    final response = await http.get(Uri.parse('$baseUrl/medicamentospaciente/$id'));
+    //List<Medicamentos> medicamentos = [];
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = jsonDecode(response.body);
+      List<Medicamentos> medicamentos = [];
+      for (var item in jsonData) {
+        medicamentos.add(Medicamentos.fromJson(item));
+      }
+      return medicamentos;
+    } else {
+      throw Exception('Error al obtener lista de medicamentos por ID');
+    }
+  }
+
 
   //Actualizar medicamento
   Future<Medicamentos> actualizarMedicamento(String id, Medicamentos medicamentoActualizado) async{

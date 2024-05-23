@@ -6,13 +6,13 @@ import 'dart:convert';
 import '../models/pacientes_cuidadores.dart';
 
 class PacientesCuidadoresService{
-  final String baseUrl = "http://192.168.131.1:7084/api";
+  final String baseUrl = "http://192.168.0.7:7084/api";
 
   PacientesCuidadoresService();
 
   //Obtener lista de familiares por ID de usuario
   Future<List<PacientesCuidadores>> obtenerCuidadoresPorId(String id) async {
-    final response = await http.get(Uri.parse('$baseUrl/pacientescuidadoreslista/$id'));
+    final response = await http.get(Uri.parse('$baseUrl/pacientecuidadores/$id'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
