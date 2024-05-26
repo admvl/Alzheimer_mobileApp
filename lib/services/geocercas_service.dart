@@ -9,7 +9,7 @@ final storage = FlutterSecureStorage();
 
 class GeocercasService{
 
-  final String baseUrl = "http://192.168.68.124:5066/api";
+  final String baseUrl = "http://192.168.137.1:5066/api";
   GeocercasService();
 
   //crear Geocerca
@@ -32,7 +32,7 @@ class GeocercasService{
   Future<Geocerca> actualizarGeocerca(String id, Geocerca geocercaActualizada) async{
     final response = await http.put(
       Uri.parse(('$baseUrl/geocercas/$id')),
-      headers: {'Content--Type': 'application/json'},
+      headers: {'Content-Type': 'application/json'},
       body: jsonEncode(geocercaActualizada.toJson()),
     );
     if(response.statusCode == 200){

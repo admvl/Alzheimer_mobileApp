@@ -10,7 +10,7 @@ import 'package:signalr_netcore/itransport.dart';
 
 class SignalRService{
   late HubConnection? hubConnection;
-  final String hubUrl= "http://192.168.68.124:5066/notificationHub";
+  final String hubUrl= "http://192.168.137.1:5066/notificationHub";
   bool isZoneAlarmScreenOpen = false;
   bool isFallAlarmScreenOpen = false;
   //final String hubUrl= "https://alzheimernotification.service.signalr.net";
@@ -39,10 +39,12 @@ class SignalRService{
       print('Error connecting to SignalR: $error');
       return;
     }
+    await subscribeToDevices(deviceIds);
     if(context.mounted){
       setupLocationUpdateListener(context);
       setupLocationOut(context);
-      await subscribeToDevices(deviceIds);
+      setupFallListener(context);
+      setupNotFoundListener(context);
       //setupMessageListener(context);
     }
   }
@@ -97,7 +99,7 @@ class SignalRService{
     hubConnection?.on('ReceiveFall', (List<Object?>? message) {
       if(message != null){
         final String mac = message[0] as String;
-        final String fechaHora = message[3] as String;
+        final String fechaHora = message[1] as String;
         // Aquí puedes manejar la actualización de la ubicación
         print('El paciente ha caido: $mac a las $fechaHora');
 
@@ -115,6 +117,33 @@ class SignalRService{
             isFallAlarmScreenOpen = false;
           });
         }
+      }
+    });
+  }
+
+
+  void setupNotFoundListener(BuildContext context){
+    hubConnection?.on('ReceiveNotFound', (List<Object?>? message) {
+      if(message != null){
+        final String mac = message[0] as String;
+        final String fechaHora = message[1] as String;
+        // Aquí puedes manejar la actualización de la ubicación
+        print('El paciente ha perdido la conexion: $mac a las $fechaHora');
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('El paciente ha perdido la conexion: $mac a las $fechaHora')),
+        );
+        /*if(!isFallAlarmScreenOpen) {
+          isFallAlarmScreenOpen = true;
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const FallAlarmScr()
+              )
+          ).then((_) {
+            isFallAlarmScreenOpen = false;
+          });
+        }*/
       }
     });
   }

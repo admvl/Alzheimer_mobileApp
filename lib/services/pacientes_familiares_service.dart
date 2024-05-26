@@ -6,7 +6,7 @@ import 'dart:convert';
 //import 'package:alzheimer_app1/models/familiares.dart';
 
 class PacientesFamiliaresService{
-  final String baseUrl = "http://192.168.68.124:5066/api";
+  final String baseUrl = "http://192.168.137.1:5066/api";
 
   PacientesFamiliaresService();
 
