@@ -39,7 +39,7 @@ class MedicamentosService{
   Future<Medicamentos> actualizarMedicamento(String id, Medicamentos medicamentoActualizado) async{
     final response = await http.put(
       Uri.parse(('$baseUrl/medicamentos/$id')),
-      headers: {'Content--Type': 'application/json'},
+      headers: {'Content-Type': 'application/json'},
       body: jsonEncode(medicamentoActualizado.toJson()),
     );
 
