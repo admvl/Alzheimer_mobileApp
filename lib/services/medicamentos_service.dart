@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:alzheimer_app1/models/medicamentos.dart';
 
 class MedicamentosService{
-  final String baseUrl = "http://192.168.0.7:7084/api";
+  final String baseUrl = "http://192.168.137.1:5066/api";
 
   MedicamentosService();
 
@@ -55,7 +55,7 @@ class MedicamentosService{
   Future<Medicamentos> actualizarMedicamento(String id, Medicamentos medicamentoActualizado) async{
     final response = await http.put(
       Uri.parse(('$baseUrl/medicamentos/$id')),
-      headers: {'Content--Type': 'application/json'},
+      headers: {'Content-Type': 'application/json'},
       body: jsonEncode(medicamentoActualizado.toJson()),
     );
 

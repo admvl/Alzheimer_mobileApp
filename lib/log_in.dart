@@ -2,7 +2,9 @@
 import 'dart:convert';
 
 import 'package:alzheimer_app1/models/log_in.dart';
+import 'package:alzheimer_app1/services/alzheimer_hub.dart';
 import 'package:alzheimer_app1/services/usuarios_service.dart';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'welcome_scr.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
@@ -10,7 +12,12 @@ import 'package:profile_view/profile_view.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
-void main() => runApp(const LogInpApp());
+//void main() => runApp(const LogInpApp());
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized(); // Asegura que los widgets estén inicializados
+  await AndroidAlarmManager.initialize(); // Inicializa el gestor de alarmas
+  runApp(const LogInpApp()); // Ejecuta la aplicación
+}
 
 class LogInpApp extends StatelessWidget {
   const LogInpApp({super.key});
@@ -65,6 +72,7 @@ class _LogInFormState extends State<LogInForm> {
   final _userNameTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
   final _usuariosService = UsuariosService();
+  final _signalRService = SignalRService();
  
   double _formProgress = 0;
   void _showWelcomeScreen() {
@@ -84,9 +92,9 @@ class _LogInFormState extends State<LogInForm> {
     if(response.statusCode == 200) {
       final data = jsonDecode(response.body);
       await storage.write(key: 'token', value: data['token']);
-      if(!mounted){
-        return;
-      }
+      final dispositivos = List<String>.from(data['dispositivos']);
+      if(!mounted)return;
+      await _signalRService.initSignalR(context,dispositivos);
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Inicio de sesión exitoso"))
       );

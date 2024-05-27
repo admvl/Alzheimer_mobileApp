@@ -1,5 +1,6 @@
 //dart
 import 'package:alzheimer_app1/welcome_scr.dart';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 
 class SetAlarmScr extends StatefulWidget {
@@ -157,6 +158,7 @@ class _SetAlarmScrState extends State<SetAlarmScr> {
                 onPressed: () {
                   // Crear la alarma
                   print('Alarma creada!');
+                  _scheduleAlarm();
                   Navigator.pop(context);
                 },
                 child: const Text('Crear Alarma'),
@@ -199,5 +201,42 @@ class _SetAlarmScrState extends State<SetAlarmScr> {
       ),
     );
   }
+// Esta función debe estar fuera de cualquier clase
+  void alarmCallback() {
+    print("La alarma se ha activado!");
+    // Aquí puedes agregar código para mostrar notificaciones, por ejemplo.
+  }
+  void _scheduleAlarm() {
+    final int nowDayOfWeek = DateTime.now().weekday;  // 1 = Monday, 7 = Sunday
+    final DateTime now = DateTime.now();
+
+    // Calcula la próxima fecha de cada día seleccionado
+    for (int i = 0; i < diasSeleccionados.length; i++) {
+      if (diasSeleccionados[i]) {
+        // `i + 1` porque `dias` empieza en Lunes que es `1` en `DateTime.weekday`
+        int daysToAdd = (i + 1 - nowDayOfWeek) % 7;
+        daysToAdd = daysToAdd <= 0 ? daysToAdd + 7 : daysToAdd;  // Asegurarse de que sea en el futuro
+        final nextDay = now.add(Duration(days: daysToAdd));
+        final nextAlarmDateTime = DateTime(
+          nextDay.year,
+          nextDay.month,
+          nextDay.day,
+          _hora.hour,
+          _hora.minute,
+        );
+
+        AndroidAlarmManager.oneShotAt(
+          nextAlarmDateTime,
+          // Usa un ID único para cada alarma basado en el día de la semana
+          i,
+          alarmCallback,
+          exact: true,
+          wakeup: true,
+          rescheduleOnReboot: true,
+        );
+      }
+    }
+  }
+
 
 }

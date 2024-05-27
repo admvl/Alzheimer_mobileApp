@@ -54,60 +54,62 @@ class _CheckLocationScrState extends State<CheckLocationScr> {
   Widget _buildSelectPatientDialog(BuildContext context, String? idUsuario) {
     return Dialog(
       // Utiliza un contenedor personalizado en lugar de AlertDialog
-      child: Container(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Text(
-              'Elige al paciente:',
-              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 16.0),
-            FutureBuilder(
-              future: _pacientesService.obtenerPacientesPorId(idUsuario!),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (snapshot.hasError) {
-                  return SnackBar(content: Text('${snapshot.error}'));
-                  //return Text('Error: ${snapshot.error}');
-                } else {
-                  final List<Pacientes> pacientes = snapshot.data!;
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: pacientes.length,
-                    itemBuilder: (context, index) {
-                      final paciente = pacientes[index];
-                      return ListTile(
-                        title: Text('${paciente.idPersona.nombre} ${paciente.idPersona.apellidoP} ${paciente.idPersona.apellidoM}'),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => _buildLocationWidget(context,paciente),
-                            ),
-                          );
-                          //_buildForm;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(paciente.idPersona.nombre),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  );
-                }
-              },
-            ),
-          ],
+      child: SingleChildScrollView(
+        child:Container(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Text(
+                'Elige al paciente:',
+                style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16.0),
+              FutureBuilder(
+                future: _pacientesService.obtenerPacientesPorId(idUsuario!),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.hasError) {
+                    return SnackBar(content: Text('${snapshot.error}'));
+                    //return Text('Error: ${snapshot.error}');
+                  } else {
+                    final List<Pacientes> pacientes = snapshot.data!;
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: pacientes.length,
+                      itemBuilder: (context, index) {
+                        final paciente = pacientes[index];
+                        return ListTile(
+                          title: Text('${paciente.idPersona.nombre} ${paciente.idPersona.apellidoP} ${paciente.idPersona.apellidoM}'),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => _buildLocationWidget(context,paciente),
+                              ),
+                            );
+                            //_buildForm;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(paciente.idPersona.nombre),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
+            ],
+          ),
         ),
-      ),
+      )
     );
   }
   

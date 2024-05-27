@@ -32,41 +32,94 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 
-void _showConfirmationDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('¿Desea cerrar sesión?'),
-        content: const Text('Se cerrará la sesión actual.'),
-        actions: [
-          TextButton(
-            child: const Text('Sí'),
-            onPressed: () {
-              //Navigator.popUntil(context, ModalRoute.withName('log_in'));
-              const LogInForm();
-            },
-          ),
-          TextButton(
-            child: const Text('No'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
 
 class _WelcomeScreenState extends State<WelcomeScreen>{
   //final SignalRService _signalRService = SignalRService();
+  //late String _locationMessage = 'Esperando ubicacion...';
 
   @override
   void initState(){
     super.initState();
     //_signalRService.initSignalR(context);
+    /*_signalRService.hubConnection?.on('ReceiveLocationUpdate', (List<Object?>? message) {
+      setState(() {
+        final String mac = message![0] as String;
+        final double latitude = message[1] as double;
+        final double longitude = message[2] as double;
+        final String fechaHora = message[3] as String;
+        _locationMessage = 'Ubicación actualizada: $mac está en ($latitude, $longitude) a las $fechaHora';
+      });
+    });*/
   }
+
+  @override
+  void dispose(){
+    //_signalRService.hubConnection?.stop();
+    super.dispose();
+  }
+
+  void _showConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('¿Desea cerrar sesión?'),
+          content: const Text('Se cerrará la sesión actual.'),
+          actions: [
+            TextButton(
+              child: const Text('Sí'),
+              onPressed: () {
+                Navigator.popUntil(context, ModalRoute.withName('log_in'));
+                //const LogInForm();
+              },
+            ),
+            TextButton(
+              child: const Text('No'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void navigateToScreen(int index) {
+    switch (index) {
+      case 0:
+      // Navigate to RegisterScreen
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const UserProfile()),
+        );
+        break;
+      case 1:
+      // Navigate to RegisterScreen
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const UserProfile()),
+        );
+        break;
+      case 2:
+      // Navigate to CheckLocation
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const UserMangement()),
+        );
+        break;
+      case 3:
+      // Navigate to CheckLocation
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const MedicineForm()),
+        );
+        break;
+      default:
+        debugPrint('Unhandled menu item: $index');
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -78,41 +131,6 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
       const Text('Gestionar Usuarios'),
       const Text('Registro de Medicamentos'),
     ];
-
-    void navigateToScreen(int index) {
-      switch (index) {
-        case 0:
-        // Navigate to RegisterScreen
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const UserProfile()),
-          );
-          break;
-        case 1:
-        // Navigate to RegisterScreen
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const UserProfile()),
-          );
-          break;
-        case 2:
-        // Navigate to CheckLocation
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const UserMangement()),
-          );
-          break;
-        case 3:
-        // Navigate to CheckLocation
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const MedicineForm()),
-          );
-          break;
-        default:
-          debugPrint('Unhandled menu item: $index');
-      }
-    }
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
