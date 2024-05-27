@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:alzheimer_app1/fall_alarm_scr.dart';
 import 'package:alzheimer_app1/zone_alarm_scr.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class SignalRService{
   final String hubUrl= "http://192.168.137.1:5066/notificationHub";
   bool isZoneAlarmScreenOpen = false;
   bool isFallAlarmScreenOpen = false;
+  Timer? _notificationTimer;
   //final String hubUrl= "https://alzheimernotification.service.signalr.net";
 
   Future<void> initSignalR(BuildContext context, List<String> deviceIds) async{
@@ -69,7 +71,7 @@ class SignalRService{
 
   void setupLocationOut(BuildContext context){
     hubConnection?.on('ReceiveLocationOut', (List<Object?>? message) {
-      if(message != null){
+      if(message != null && (_notificationTimer==null || !_notificationTimer!.isActive)){
         final String mac = message[0] as String;
         final double latitude = message[1] as double;
         final double longitude = message[2] as double;
@@ -91,6 +93,10 @@ class SignalRService{
             isZoneAlarmScreenOpen = false;
           });
         }
+
+        _notificationTimer = Timer(const Duration(minutes: 5),(){
+          _notificationTimer = null;
+        });
       }
     });
   }
@@ -124,7 +130,7 @@ class SignalRService{
 
   void setupNotFoundListener(BuildContext context){
     hubConnection?.on('ReceiveNotFound', (List<Object?>? message) {
-      if(message != null){
+      if(message != null &&(_notificationTimer==null || !_notificationTimer!.isActive)){
         final String mac = message[0] as String;
         final String fechaHora = message[1] as String;
         // Aquí puedes manejar la actualización de la ubicación
@@ -144,6 +150,9 @@ class SignalRService{
             isFallAlarmScreenOpen = false;
           });
         }*/
+        _notificationTimer = Timer(const Duration(minutes: 5),(){
+          _notificationTimer = null;
+        });
       }
     });
   }
