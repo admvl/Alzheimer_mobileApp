@@ -1,195 +1,396 @@
-//log-in app
+/* version ok
+import 'package:alzheimer_app1/medicine_form.dart';
+import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
-import 'welcome_scr.dart';
 
-class MedicineMgmtApp extends StatelessWidget {
-  const MedicineMgmtApp({super.key});
+class Medicine {
+  final String name;
+  Medicine(this.name);
+}
+
+class MedicineMgmtScreen extends StatefulWidget {
+  const MedicineMgmtScreen({super.key});
+
+  @override
+  _MedicineMgmtScreenState createState() => _MedicineMgmtScreenState();
+}
+
+class _MedicineMgmtScreenState extends State<MedicineMgmtScreen> {
+  // Sample list of medicines
+  List<Medicine> medicines = [];
+
+  // Function to remove medicine
+  void _removeMedicine(int index) {
+    setState(() {
+      medicines.removeAt(index);
+    });
+  }
+
+  // Function to navigate to MedicineForm screen
+  void _navigateToMedicineForm() {
+    // Implement navigation to MedicineForm screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const MedicineForm()),
+    ).then((newMedicine) {
+      if (newMedicine != null) {
+        setState(() {
+          medicines.add(newMedicine);
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      routes: {
-        '/': (context) => const MedicineMgmt(),
-        '/welcome': (context) => const WelcomeScreen(),
-      },
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 3, 145, 189)),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Medicamentos del Paciente'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navega a la pantalla de bienvenida
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+            );
+          },
+        ),
+      ),
+      body: ListView.builder(
+        itemCount: medicines.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(medicines[index].name),
+            trailing: IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () => _removeMedicine(index),
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _navigateToMedicineForm,
+        child: const Icon(Icons.add),
       ),
     );
   }
 }
 
-class MedicineMgmt extends StatelessWidget {
-  const MedicineMgmt({super.key});
+
+//reemplazado
+class MedicineFormScreen extends StatefulWidget {
+  const MedicineFormScreen({super.key});
+
+  @override
+  _MedicineFormScreenState createState() => _MedicineFormScreenState();
+}
+
+class _MedicineFormScreenState extends State<MedicineFormScreen> {
+  final _formKey = GlobalKey<FormState>();
+  String _medicineName = '';
+
+  // Function to submit form
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      Navigator.pop(context, Medicine(_medicineName));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      //backgroundColor: Colors.grey[200],
-      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-      body: const Center(
-        child: SizedBox(
-          width: 400,
-          child: Card(
-            child: LogInForm(),
+      appBar: AppBar(
+        title: const Text('Agregar Medicamento'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                decoration: const InputDecoration(labelText: 'Nombre del Medicamento'),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor ingrese un nombre';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _medicineName = value!;
+                },
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _submitForm,
+                child: const Text('Guardar'),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 }
+*/
 
-class LogInForm extends StatefulWidget {
-  const LogInForm({super.key});
+/* version prueba
+import 'package:alzheimer_app1/medicine_form.dart';
+import 'package:alzheimer_app1/welcome_scr.dart';
+import 'package:flutter/material.dart';
 
-  @override
-  State<LogInForm> createState() => _LogInFormState();
+class Medicine {
+  final String name;
+  Medicine(this.name);
 }
 
-class _LogInFormState extends State<LogInForm> {
-  final _userNameTextController = TextEditingController();
-  final _passwordTextController = TextEditingController();
-
-  double _formProgress = 0;
-  void _showWelcomeScreen() {
-    Navigator.of(context).pushNamed('/welcome');
-  }
+class MedicineMgmtScreen extends StatefulWidget {
+  const MedicineMgmtScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return Form(
-      onChanged: _updateFormProgress, // NEW
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          //LinearProgressIndicator(value: _formProgress),
-          AnimatedProgressIndicator(value: _formProgress), // NEW
-          const SizedBox(height: 20),
-          Text('Inicio de Sesión',
-              style: Theme.of(context).textTheme.headlineMedium),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: TextFormField(
-              controller: _userNameTextController,
-              decoration: const InputDecoration(hintText: 'Usuario'),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: TextFormField(
-              controller: _passwordTextController,
-              decoration: const InputDecoration(hintText: 'Contraseña'),
-              obscureText: true,
-            ),
-          ),
-          TextButton(
-            style: ButtonStyle(
-              foregroundColor: MaterialStateProperty.resolveWith((states) {
-                return states.contains(MaterialState.disabled)
-                    ? null
-                    //: Theme.of(context).colorScheme.primary;
-                    : Theme.of(context).colorScheme.inverseSurface;
-              }),
-              backgroundColor: MaterialStateProperty.resolveWith((states) {
-                return states.contains(MaterialState.disabled)
-                    ? null
-                    : Theme.of(context).colorScheme.primaryContainer;
-              }),
-            ),
-            //onPressed: null,
-            //onPressed: _showWelcomeScreen,
-            onPressed:
-                _formProgress == 1 ? _showWelcomeScreen : null, // UPDATED
-            child: const Text('Iniciar Sesion'),
-          ),
-          const SizedBox(height: 10),
-        ],
-      ),
-    );
-  }
+  _MedicineMgmtScreenState createState() => _MedicineMgmtScreenState();
+}
 
-  void _updateFormProgress() {
-    var progress = 0.0;
-    final controllers = [
-      _userNameTextController,
-      _passwordTextController,
-    ];
+class _MedicineMgmtScreenState extends State<MedicineMgmtScreen> {
+  // Sample list of medicines
+  List<Medicine> medicines = [];
 
-    for (final controller in controllers) {
-      if (controller.value.text.isNotEmpty) {
-        progress += 1 / controllers.length;
-      }
-    }
-
+  // Function to remove medicine
+  void _removeMedicine(int index) {
     setState(() {
-      _formProgress = progress;
+      medicines.removeAt(index);
     });
   }
-}
 
-class AnimatedProgressIndicator extends StatefulWidget {
-  final double value;
-
-  const AnimatedProgressIndicator({
-    super.key,
-    required this.value,
-  });
-
-  @override
-  State<AnimatedProgressIndicator> createState() {
-    return _AnimatedProgressIndicatorState();
-  }
-}
-
-class _AnimatedProgressIndicatorState extends State<AnimatedProgressIndicator>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<Color?> _colorAnimation;
-  late Animation<double> _curveAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = AnimationController(
-      duration: const Duration(milliseconds: 1200),
-      vsync: this,
-    );
-
-    // No accedas al contexto aquí
-  }
-
-  @override
-  void didUpdateWidget(oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    _controller.animateTo(widget.value);
+  // Function to navigate to MedicineForm screen
+  void _navigateToMedicineForm() {
+    // Implement navigation to MedicineForm screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const MedicineForm()),
+    ).then((newMedicines) {
+      if (newMedicines != null && newMedicines is List<Medicine>) {
+        setState(() {
+          medicines.addAll(newMedicines);
+        });
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final colorTween = ColorTween(
-      //begin: Theme.of(context).colorScheme.primaryContainer,
-      begin: Theme.of(context).colorScheme.onSecondaryContainer,
-      end: Theme.of(context).colorScheme.onSecondaryContainer,
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Medicamentos del Paciente'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navega a la pantalla de bienvenida
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+            );
+          },
+        ),
+      ),
+      body: ListView.builder(
+        itemCount: medicines.length,
+        itemBuilder: (context, index) {
+          return ListTile(
+            title: Text(medicines[index].name),
+            trailing: IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: () => _removeMedicine(index),
+            ),
+          );
+        },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _navigateToMedicineForm,
+        child: const Icon(Icons.add),
+      ),
     );
+  }
+}
 
-    _colorAnimation = _controller.drive(colorTween);
-    _curveAnimation = _controller.drive(CurveTween(curve: Curves.easeIn));
+*/
 
-    return AnimatedBuilder(
-      animation: _controller,
-      builder: (context, child) => LinearProgressIndicator(
-        value: _curveAnimation.value,
-        valueColor: _colorAnimation,
-        backgroundColor: _colorAnimation.value?.withOpacity(0.4),
+
+import 'package:alzheimer_app1/medicine_form.dart';
+import 'package:alzheimer_app1/models/medicamentos.dart';
+import 'package:alzheimer_app1/models/pacientes.dart';
+import 'package:alzheimer_app1/services/medicamentos_service.dart';
+import 'package:alzheimer_app1/services/pacientes_service.dart';
+import 'package:alzheimer_app1/utils/token_utils.dart';
+import 'package:alzheimer_app1/welcome_scr.dart';
+import 'package:flutter/material.dart';
+
+class Medicine {
+  final String name;
+  Medicine(this.name);
+}
+
+class MedicineMgmtScreen extends StatefulWidget {
+  const MedicineMgmtScreen({super.key});
+
+  @override
+  _MedicineMgmtScreenState createState() => _MedicineMgmtScreenState();
+}
+
+class _MedicineMgmtScreenState extends State<MedicineMgmtScreen> {
+  final PacientesService _pacientesService = PacientesService();
+  final MedicamentosService _medicamentosService = MedicamentosService();
+  final tokenUtils = TokenUtils();
+  
+  // Sample list of medicines
+  List<Medicine> medicines = [];
+
+  // Function to remove medicine
+  void _removeMedicine(int index) {
+    setState(() {
+      medicines.removeAt(index);
+    });
+  }
+
+  // Function to navigate to MedicineForm screen
+  void _navigateToMedicineForm() {
+    // Implement navigation to MedicineForm screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const MedicineForm()),
+    ).then((newMedicines) {
+      if (newMedicines != null && newMedicines is List<Medicine>) {
+        setState(() {
+          medicines.addAll(newMedicines);
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: tokenUtils.getIdUsuarioToken(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          return _buildSelectPatientDialog(context, snapshot.data);
+        }
+      },
+    );
+  }
+
+  Widget _buildSelectPatientDialog(BuildContext context, String? idUsuario) {
+    return Dialog(
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text(
+              'Elige al paciente al que agregarás medicamentos',
+              style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 16.0),
+            FutureBuilder(
+              future: _pacientesService.obtenerPacientesPorId(idUsuario!),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else {
+                  final List<Pacientes> pacientes = snapshot.data!;
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: pacientes.length,
+                    itemBuilder: (context, index) {
+                      final paciente = pacientes[index];
+                      return ListTile(
+                        title: Text('${paciente.idPersona.nombre} ${paciente.idPersona.apellidoP} ${paciente.idPersona.apellidoM}'),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => _buildScreen(context, paciente),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  //@override
+  Widget _buildScreen(BuildContext context, Pacientes paciente) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Medicamentos'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+            );
+          },
+        ),
+      ),
+      body: FutureBuilder(
+        future: _medicamentosService.obtenerMedicamentosPorId(paciente.idPaciente!),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else {
+            FloatingActionButton(
+              onPressed: _navigateToMedicineForm,
+              child: const Icon(Icons.add),
+            );
+            final List<Medicamentos> medicamentos = snapshot.data!;
+            return ListView.builder(
+              shrinkWrap: true,
+              itemCount: medicamentos.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text('${medicamentos[index].nombre}' ' - '' ${medicamentos[index].gramaje}''mg'),
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MedicineForm(medicamento: medicamentos[index]),
+                      ),
+                    );
+                  },
+                  trailing: IconButton(
+                    icon: const Icon(Icons.delete),
+                    onPressed: () => _removeMedicine(index),
+                  ),
+                );
+              },
+            );  
+          }
+        }
+      ),
+    );
   }
 }

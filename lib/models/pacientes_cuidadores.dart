@@ -19,7 +19,7 @@ class PacientesCuidadores{
 
   factory PacientesCuidadores.fromJson(Map<String, dynamic> json){
     return PacientesCuidadores(
-      idCuidaPaciente: json['IdCuidaPaciente']as String,
+      idCuidaPaciente: json['IdCuidaPaciente']as String?,
       idPaciente: Pacientes.fromJson(json['IdPacienteNavigation']),
       idCuidador: Cuidadores.fromJson(json['IdCuidadorNavigation']),
       horaInicio: DateTime.parse(json['HoraInicio']as String),
