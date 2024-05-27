@@ -153,142 +153,137 @@ class _UserFormState extends State<UserForm> {
                 ]),
               ),
               const SizedBox(height: 10),
-              FormBuilderDropdown(
-                  name: 'dispositivo',
-                  decoration: _roundedDecoration.copyWith(
-                    labelText: 'Dispositivo',
-                  ),
-                items: dispositivos.map((dispositivo) {
-                  print("************* dispositivo ***********");
-                  print(dispositivo.idDispositivo);
-                  return DropdownMenuItem(
-                    value: dispositivo.idDispositivo, // Suponiendo que el id del dispositivo es un String
-                    child: Text(dispositivo.idDispositivo!),
-                  );
-                  
-                }).toList(),
-                onChanged: (String? value) {
-                  setState(() {
-                    // Busca el dispositivo seleccionado en la lista de dispositivos usando su ID
-                    selectedDispositivo = dispositivos.firstWhere((dispositivo) => dispositivo.idDispositivo == value);
-                    print("*********** new disp value ********************");
-                    print(value);
-
-                    print("*********** selected disp ********************");
-                    print(selectedDispositivo);
-                  });
-                },
-              ),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  if (_fbKey.currentState!.saveAndValidate()) {
-                    final formValues = _fbKey.currentState!.value;
-                    if(widget.paciente == null){
-                      final nuevaPersona = Personas(
-                        nombre: formValues['nombre'],
-                        apellidoP: formValues['apellidoPaterno'],
-                        apellidoM: formValues['apellidoMaterno'],
-                        fechaNacimiento: formValues['fechaNac'],
-                        numeroTelefono: formValues['telefono'],
+            FormBuilderDropdown(
+                name: 'dispositivo',
+                decoration: _roundedDecoration.copyWith(
+                  labelText: 'Dispositivo',
+                ),
+              items: dispositivos.map((dispositivo) {
+                print("************* dispositivo ***********");
+                print(dispositivo.idDispositivo);
+                return DropdownMenuItem(
+                  value: dispositivo.idDispositivo, // Suponiendo que el id del dispositivo es un String
+                  child: Text(dispositivo.idDispositivo!),
+                );
+                
+              }).toList(),
+              onChanged: (String? value) {
+                setState(() {
+                  // Busca el dispositivo seleccionado en la lista de dispositivos usando su ID
+                  selectedDispositivo = dispositivos.firstWhere((dispositivo) => dispositivo.idDispositivo == value);
+                });
+              },
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () async {
+                if (_fbKey.currentState!.saveAndValidate()) {
+                  final formValues = _fbKey.currentState!.value;
+                  if(widget.paciente == null){
+                    /*final nuevaPersona = Personas(
+                      nombre: formValues['nombre'],
+                      apellidoP: formValues['apellidoPaterno'],
+                      apellidoM: formValues['apellidoMaterno'],
+                      fechaNacimiento: formValues['fechaNac'],
+                      numeroTelefono: formValues['telefono'],
+                    );*/
+                    try {
+                      print(_fbKey.currentState!.value);
+                      Personas nuevaPersona = Personas(
+                          nombre: formValues['nombre'],
+                          apellidoP: formValues['apellidoPaterno'],
+                          apellidoM: formValues['apellidoMaterno'],
+                          fechaNacimiento: formValues['fechaNac']
                       );
-                      try {
-                        print(_fbKey.currentState!.value);
-                        Personas nuevaPersona = Personas(
-                            nombre: formValues['nombre'],
-                            apellidoP: formValues['apellidoPaterno'],
-                            apellidoM: formValues['apellidoMaterno'],
-                            fechaNacimiento: formValues['fechaNac']
+                      nuevaPersona = await _personasService.crearPersona(nuevaPersona);
+                      try{
+                        Pacientes nuevoPaciente = Pacientes(
+                            idPaciente: formValues['curp'],
+                            idDispositivo: selectedDispositivo!,
+                            idPersona: nuevaPersona
                         );
-                        nuevaPersona = await _personasService.crearPersona(nuevaPersona);
-                        try{
-                          Pacientes nuevoPaciente = Pacientes(
-                              idPaciente: formValues['curp'],
-                              idDispositivo: selectedDispositivo!,
-                              idPersona: nuevaPersona
-                          );
-                          _pacientesService.crearPersona(nuevoPaciente);
-                          if(!context.mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Paciente registrado con éxito')),
-                          );
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const WelcomeScreen(),
-                              )
-                          );
-                        }catch(e){
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text('Error al crear al registrar el paciente: $e')
-                              )
-                          );
-                        }
+                        _pacientesService.crearPersona(nuevoPaciente);
+                        if(!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Paciente registrado con éxito')),
+                        );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const WelcomeScreen(),
+                          )
+                        );
                       }catch(e){
                         ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text('Error al crear al registrar los datos del paciente: $e')
+                                content: Text('Error al crear al registrar el paciente: $e')
                             )
                         );
                       }
-                    } else {
-                      final nuevaPersona = Personas(
-                        idPersona: widget.paciente?.idPersona.idPersona!,
-                        nombre: formValues['nombre'],
-                        apellidoP: formValues['apellidoPaterno'],
-                        apellidoM: formValues['apellidoMaterno'],
-                        fechaNacimiento: formValues['fechaNac'],
-                        numeroTelefono: formValues['telefono'],
+                    }catch(e){
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content: Text('Error al crear al registrar los datos del paciente: $e')
+                          )
+                      );
+                    }
+                  } else {
+                    final nuevaPersona = Personas(
+                      idPersona: widget.paciente?.idPersona.idPersona!,
+                      nombre: formValues['nombre'],
+                      apellidoP: formValues['apellidoPaterno'],
+                      apellidoM: formValues['apellidoMaterno'],
+                      fechaNacimiento: formValues['fechaNac'],
+                      numeroTelefono: formValues['telefono'],
+                    );
+                    try{
+                      Pacientes nuevoPaciente = Pacientes(
+                        //idPaciente: formValues['curp'],
+                        idPaciente: widget.paciente!.idPaciente,
+                        //idDispositivo: selectedDispositivo!,
+                        idDispositivo: widget.paciente!.idDispositivo,
+                        idPersona: nuevaPersona
                       );
                       try{
-                        Pacientes nuevoPaciente = Pacientes(
-                          //idPaciente: formValues['curp'],
-                          idPaciente: widget.paciente!.idPaciente,
-                          //idDispositivo: selectedDispositivo!,
-                          idDispositivo: widget.paciente!.idDispositivo,
-                          idPersona: nuevaPersona
+                        await personasService.actualizarPersonaPorId(nuevaPersona.idPersona!, nuevaPersona);
+                        await _pacientesService.actualizarPacientePorId(widget.paciente!.idPaciente!, nuevoPaciente);
+                        if(!context.mounted) return;
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text('Paciente actualizado con éxito')),
                         );
-                        try{
-                          await personasService.actualizarPersonaPorId(nuevaPersona.idPersona!, nuevaPersona);
-                          await _pacientesService.actualizarPacientePorId(widget.paciente!.idPaciente, nuevoPaciente);
-                          if(!context.mounted) return;
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Paciente actualizado con éxito')),
-                          );
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const PatientProfile(),
-                              )
-                          );
-                        } catch (e) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text('Error al actualizar Paciente: $e')),
-                          );
-                        }
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const PatientProfile(),
+                            )
+                        );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
-                              content: Text('Error al obtener permisos: $e')),
+                              content: Text('Error al actualizar Paciente: $e')),
                         );
                       }
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                            content: Text('Error al obtener permisos: $e')),
+                      );
                     }
-
                   }
-                  /* Validar existencia correo en BD
-                  if(await checkIfEmailExists()){
-                    // Either invalidate using Form Key
-                    _formKey.currentState?.fields['email']?.invalidate('Email already taken');
-                    // OR invalidate using Field Key
-                    _emailFieldKey.currentState?.invalidate('Email already taken');
-                  }*/
-                },
-                child: Text(widget.paciente == null ? 'Registrar':'Actualizar'),
-              ),
+
+                }
+                /* Validar existencia correo en BD
+                if(await checkIfEmailExists()){
+                  // Either invalidate using Form Key
+                  _formKey.currentState?.fields['email']?.invalidate('Email already taken');
+                  // OR invalidate using Field Key
+                  _emailFieldKey.currentState?.invalidate('Email already taken');
+                }*/
+              },
+              child: Text(widget.paciente == null ? 'Registrar':'Actualizar'),
+            ),
             ],
           ),
         ),

@@ -35,6 +35,22 @@ class MedicamentosService{
     }
   }
 
+    Future<List<Medicamentos>> obtenerMedicamentosPorId(String id) async {
+    final response = await http.get(Uri.parse('$baseUrl/medicamentospaciente/$id'));
+    //List<Medicamentos> medicamentos = [];
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = jsonDecode(response.body);
+      List<Medicamentos> medicamentos = [];
+      for (var item in jsonData) {
+        medicamentos.add(Medicamentos.fromJson(item));
+      }
+      return medicamentos;
+    } else {
+      throw Exception('Error al obtener lista de medicamentos por ID');
+    }
+  }
+
+
   //Actualizar medicamento
   Future<Medicamentos> actualizarMedicamento(String id, Medicamentos medicamentoActualizado) async{
     final response = await http.put(

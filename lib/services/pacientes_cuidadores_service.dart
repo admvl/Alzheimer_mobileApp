@@ -12,7 +12,7 @@ class PacientesCuidadoresService{
 
   //Obtener lista de familiares por ID de usuario
   Future<List<PacientesCuidadores>> obtenerCuidadoresPorId(String id) async {
-    final response = await http.get(Uri.parse('$baseUrl/pacientescuidadoreslista/$id'));
+    final response = await http.get(Uri.parse('$baseUrl/pacientecuidadores/$id'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
