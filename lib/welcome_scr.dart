@@ -1,4 +1,5 @@
 import 'package:alzheimer_app1/log_in.dart';
+import 'package:alzheimer_app1/medicine_mgmt.dart';
 import 'package:alzheimer_app1/patient_mgmt_scr.dart';
 import 'package:alzheimer_app1/patient_profile.dart';
 //import 'package:alzheimer_app1/patient_profile.dart';
@@ -59,12 +60,12 @@ void _showConfirmationDialog(BuildContext context) {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen>{
-  final SignalRService _signalRService = SignalRService();
+  //final SignalRService _signalRService = SignalRService();
 
   @override
   void initState(){
     super.initState();
-    _signalRService.initSignalR(context);
+    //_signalRService.initSignalR(context);
   }
 
   @override
@@ -191,6 +192,23 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
                         ),
                       ),
                       const SizedBox(height: 10),
+                      Flexible(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            //PatientManagementScreen patientProfileScr = const PatientManagementScreen();
+                            PatientProfile patientProfileScr = const PatientProfile();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                  patientProfileScr), // Navega a la pantalla RegisterScreen
+                            );
+                          },
+                          icon: const Icon(Icons.person_outline_outlined),
+                          label: const Text('Perfil Paciente'),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
                     ],
                   ),
                   Column(
@@ -230,12 +248,28 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
                         ),
                       ),
                       const SizedBox(height: 10),
+                      Flexible(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            //SetAlarmScr setAlarmScr = const SetAlarmScr();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                  MedicineMgmtScreen()), // Navega a la pantalla CheckLocation
+                            );
+                          },
+                          icon: const Icon(Icons.medical_services_outlined),
+                          label: const Text('Medicamentos'),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
                     ],
                   ),
                 ],
               ),
             ),
-
+            /*
             Flexible(
               child: ElevatedButton.icon(
                 onPressed: () {
@@ -251,7 +285,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
                 icon: const Icon(Icons.person_sharp),
                 label: const Text('Perfil Paciente'),
               ),
-            ),
+            ),*/
             const SizedBox(height: 10),
             Flexible(
               child: ElevatedButton.icon(

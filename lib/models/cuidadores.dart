@@ -15,7 +15,7 @@ class Cuidadores{
 
   factory Cuidadores.fromJson(Map<String, dynamic> json){
     return Cuidadores(
-      idCuidador: json['IdCuidador']as String,
+      idCuidador: json['IdCuidador']as String?,
       idUsuario: Usuarios.fromJson(json['IdUsuarioNavigation']),
       idFamiliar: Familiares.fromJson(json['IdFamiliarNavigation']),
     );

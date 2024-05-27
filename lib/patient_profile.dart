@@ -853,7 +853,7 @@ class PatientProfile extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 20),
                     child: CustomIconRow(
                       icon: Icons.document_scanner_outlined,
-                      text: paciente.idPaciente,
+                      text: paciente.idPaciente!,
                       dividerColor: dividerColor,
                     ),
                   ),
