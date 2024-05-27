@@ -435,6 +435,7 @@ class _MedicineFormState extends State<MedicineForm> {
 
 import 'package:alzheimer_app1/medicine_mgmt.dart';
 import 'package:alzheimer_app1/models/pacientes.dart';
+import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -445,12 +446,13 @@ import 'package:alzheimer_app1/utils/token_utils.dart';
 
 class MedicineForm extends StatefulWidget {
   final Medicamentos? medicamento;
+  final Pacientes? paciente;
 
   // Constructor principal
-  const MedicineForm({super.key, this.medicamento});
+  const MedicineForm({super.key, this.medicamento, this.paciente});
 
   // Constructor nombrado cuando no se pasa un paciente
-  const MedicineForm.withoutPaciente({super.key}) : medicamento = null;
+  const MedicineForm.withoutPaciente({super.key}) : medicamento = null, paciente = null;
 
   @override
   _MedicineFormState createState() => _MedicineFormState();
@@ -462,6 +464,8 @@ class _MedicineFormState extends State<MedicineForm> {
   final MedicamentosService _medicamentosService = MedicamentosService();
   final tokenUtils = TokenUtils();
 
+
+/*
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -527,8 +531,9 @@ class _MedicineFormState extends State<MedicineForm> {
       ),
     );
   }
-
-  Widget _buildForm(BuildContext context, Pacientes paciente) {
+*/
+  @override
+  Widget build(BuildContext context) {
     final _roundedDecoration = InputDecoration(
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(10),
@@ -549,7 +554,18 @@ class _MedicineFormState extends State<MedicineForm> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Registro de Medicamentos'),
+        //title: const Text('Registro de Medicamentos'),
+        title: Text(widget.medicamento == null?'Registro de Medicamento':'Actualizar Medicamento'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navega a la pantalla de bienvenida
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+            );
+          },
+        ),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -594,10 +610,10 @@ class _MedicineFormState extends State<MedicineForm> {
                           nombre: formValues['nombreMed'],
                           gramaje: _parseToDouble(formValues['gramajeMed']),
                           descripcion: formValues['notasMed'],
-                          idPaciente: paciente.idPaciente!,
+                          idPaciente: widget.paciente!.idPaciente!,
                         );
                         await _medicamentosService.crearMedicamento(nuevoMedicamento).then((_) async {
-                          final List<Medicamentos> updatedMedicinas = await _medicamentosService.obtenerMedicamentosPorId(paciente.idPaciente!);
+                          final List<Medicamentos> updatedMedicinas = await _medicamentosService.obtenerMedicamentosPorId(widget.paciente!.idPaciente!);
                           Navigator.pop(context, updatedMedicinas.map((medicina) => Medicine(medicina.nombre)).toList());
                         });
                       } catch (e) {
@@ -610,7 +626,7 @@ class _MedicineFormState extends State<MedicineForm> {
                         nombre: formValues['nombreMed'],
                         gramaje: _parseToDouble(formValues['gramajeMed']),
                         descripcion: formValues['notasMed'],
-                        idPaciente: paciente.idPaciente!,
+                        idPaciente: widget.paciente!.idPaciente!,
                       );
                       try {
                         /*Medicamentos nuevoMedicamento = Medicamentos(
@@ -640,7 +656,7 @@ class _MedicineFormState extends State<MedicineForm> {
                                 builder: (context) => const PatientProfile(),
                               )
                           );*/
-                          final List<Medicamentos> updatedMedicinas = await _medicamentosService.obtenerMedicamentosPorId(paciente.idPaciente!);
+                          final List<Medicamentos> updatedMedicinas = await _medicamentosService.obtenerMedicamentosPorId(widget.paciente!.idPaciente!);
                           Navigator.pop(context, updatedMedicinas.map((medicina) => Medicine(medicina.nombre)).toList());
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(

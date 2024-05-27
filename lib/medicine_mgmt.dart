@@ -342,7 +342,7 @@ class _MedicineMgmtScreenState extends State<MedicineMgmtScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Medicamentos del Paciente'),
+        title: const Text('Medicamentos'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
