@@ -366,6 +366,8 @@ class _MedicineMgmtScreenState extends State<MedicineMgmtScreen> {
               child: const Icon(Icons.add),
             );
             final List<Medicamentos> medicamentos = snapshot.data!;
+            print("*************** MEDICAMENTOS **********");
+            print(medicamentos);
             return ListView.builder(
               shrinkWrap: true,
               itemCount: medicamentos.length,
@@ -377,7 +379,7 @@ class _MedicineMgmtScreenState extends State<MedicineMgmtScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => MedicineForm(medicamento: medicamentos[index]),
+                        builder: (context) => MedicineForm(medicamento: medicamentos[index], paciente: paciente),
                       ),
                     );
                   },
