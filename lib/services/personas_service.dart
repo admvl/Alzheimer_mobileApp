@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/personas.dart'; // Importa tu clase Personas aquí
 
 class PersonasService {
-  final String baseUrl = "http://192.168.137.1:5066/api";
+  final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
 
   PersonasService();
 

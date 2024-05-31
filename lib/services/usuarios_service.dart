@@ -9,7 +9,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 final storage = FlutterSecureStorage();
 
 class UsuariosService {
-  final String baseUrl = "http://192.168.137.1:5066/api";
+  final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
 
   UsuariosService();
 
@@ -21,6 +21,7 @@ class UsuariosService {
     );
     return response;
   }
+
   // Crear una nueva persona
   Future<Usuarios> crearUsuario(Users nuevoUsuario) async {
     final response = await http.post(
@@ -36,6 +37,7 @@ class UsuariosService {
       throw Exception('Error al crear un nuevo Usuario');
     }
   }
+
   // Actualizar una nueva persona
   Future<Usuarios> actualizarUsuario(Users actualizarUsuario) async {
     final response = await http.put(
@@ -63,16 +65,19 @@ class UsuariosService {
       throw Exception('Error al obtener persona por ID');
     }
   }
-  Future<TiposUsuarios> obtenerTipoUsuario(String tipoUsuario) async{
-    final response = await http.get(Uri.parse('$baseUrl/tiposusuarios/$tipoUsuario'));
 
-    if(response.statusCode == 200){
-      final Map<String,dynamic> jsonData = jsonDecode(response.body);
+  Future<TiposUsuarios> obtenerTipoUsuario(String tipoUsuario) async {
+    final response =
+        await http.get(Uri.parse('$baseUrl/tiposusuarios/$tipoUsuario'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonData = jsonDecode(response.body);
       return TiposUsuarios.fromJson(jsonData);
-    }else{
+    } else {
       throw Exception('Error al obtener el tipo de usuario');
     }
   }
+
   // Actualizar una persona por ID
   Future<Usuarios> actualizarUsuarioPorId(
       String id, Usuarios usuarioActualizado) async {

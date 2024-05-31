@@ -2,9 +2,8 @@ import 'dart:convert';
 import 'package:alzheimer_app1/models/pacientes.dart';
 import 'package:http/http.dart' as http;
 
-
 class PacientesService {
-  final String baseUrl = "http://192.168.137.1:5066/api";
+  final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
 
   PacientesService();
 
@@ -35,6 +34,7 @@ class PacientesService {
       throw Exception('Error al obtener paciente por ID');
     }
   }
+
   //Obtener pacientes por ID de usuario loggeado
   Future<List<Pacientes>> obtenerPacientesPorId(String id) async {
     final response = await http.get(Uri.parse('$baseUrl/pacienteslista/$id'));
@@ -53,6 +53,7 @@ class PacientesService {
       throw Exception('Error al obtener paciente por ID');
     }
   }
+
   // Actualizar una persona por ID
   Future<Pacientes> actualizarPacientePorId(
       String id, Pacientes pacienteActualizado) async {

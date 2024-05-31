@@ -1,4 +1,3 @@
-
 import 'package:alzheimer_app1/models/familiares.dart';
 import 'package:alzheimer_app1/models/pacientes_familiares.dart';
 import 'package:http/http.dart' as http;
@@ -6,8 +5,8 @@ import 'dart:convert';
 
 //import 'package:alzheimer_app1/models/familiares.dart';
 
-class PacientesFamiliaresService{
-  final String baseUrl = "http://192.168.0.7:5066/api";
+class PacientesFamiliaresService {
+  final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
 
   PacientesFamiliaresService();
 
@@ -27,24 +26,26 @@ class PacientesFamiliaresService{
     }
   }
 
-  Future<PacientesFamiliares> crearPacienteFamiliar(PacientesFamiliares nuevaRelacion) async{
+  Future<PacientesFamiliares> crearPacienteFamiliar(
+      PacientesFamiliares nuevaRelacion) async {
     final response = await http.post(
       Uri.parse('$baseUrl/creapacientesfamiliares'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(nuevaRelacion.toJson()),
     );
 
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
       return PacientesFamiliares.fromJson(jsonData);
     } else {
-      throw Exception ('Error al crear relacion paciente - familiar');
+      throw Exception('Error al crear relacion paciente - familiar');
     }
   }
 
-    // Obtener una relacion por ID
+  // Obtener una relacion por ID
   Future<PacientesFamiliares> obtenerPacienteFamiliarPorId(String id) async {
-    final response = await http.get(Uri.parse('$baseUrl/pacientesfamiliares/$id'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/pacientesfamiliares/$id'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -54,8 +55,9 @@ class PacientesFamiliaresService{
     }
   }
 
-    // Actualizar una persona por ID
-  Future<PacientesFamiliares> actualizarPacienteFamiliarPorId(String id, PacientesFamiliares pacienteFamiliarActualizado) async {
+  // Actualizar una persona por ID
+  Future<PacientesFamiliares> actualizarPacienteFamiliarPorId(
+      String id, PacientesFamiliares pacienteFamiliarActualizado) async {
     final response = await http.put(
       Uri.parse('$baseUrl/pacientesfamiliares/$id'),
       headers: {'Content-Type': 'application/json'},
@@ -66,13 +68,15 @@ class PacientesFamiliaresService{
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
       return PacientesFamiliares.fromJson(jsonData);
     } else {
-      throw Exception('Error al actualizar relacion paciente - familiar por ID');
+      throw Exception(
+          'Error al actualizar relacion paciente - familiar por ID');
     }
   }
 
   // Eliminar una persona por ID
   Future<bool> eliminarPacienteFamiliarPorId(String id) async {
-    final response = await http.delete(Uri.parse('$baseUrl/pacientesfamiliares/$id'));
+    final response =
+        await http.delete(Uri.parse('$baseUrl/pacientesfamiliares/$id'));
 
     if (response.statusCode == 204) {
       return true;
@@ -82,8 +86,4 @@ class PacientesFamiliaresService{
       throw Exception('Error al eliminar relacion paciente - familiar por ID');
     }
   }
-
-
-
-  
 }
