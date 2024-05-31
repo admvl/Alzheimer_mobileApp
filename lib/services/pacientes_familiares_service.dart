@@ -1,3 +1,4 @@
+import 'package:alzheimer_app1/models/familiares.dart';
 import 'package:alzheimer_app1/models/pacientes_familiares.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -10,15 +11,14 @@ class PacientesFamiliaresService {
   PacientesFamiliaresService();
 
   //Obtener lista de familiares por ID de usuario
-  Future<List<PacientesFamiliares>> obtenerFamiliaresPorId(String id) async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/pacientesfamiliareslista/$id'));
+  Future<List<Familiares>> obtenerFamiliaresPorId(String id) async {
+    final response = await http.get(Uri.parse('$baseUrl/pacientefamiliares/$id'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
-      List<PacientesFamiliares> familiares = [];
+      List<Familiares> familiares = [];
       for (var item in jsonData) {
-        familiares.add(PacientesFamiliares.fromJson(item));
+        familiares.add(Familiares.fromJson(item));
       }
       return familiares;
     } else {

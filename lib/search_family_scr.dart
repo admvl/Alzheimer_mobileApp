@@ -16,25 +16,17 @@ class BuscadorFamiliaresScreen extends StatelessWidget {
   }
 }*/
 
+import 'package:alzheimer_app1/models/pacientes.dart';
+import 'package:alzheimer_app1/patient_mgmt_scr.dart';
 import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
 
-/*
-class BuscadorFamiliaresScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Buscador de Familiares',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: SearchScreen(),
-    );
-  }
-}*/
-
 class BuscadorFamiliaresScreen extends StatefulWidget {
-  const BuscadorFamiliaresScreen ({super.key});
+  final Pacientes? paciente;
+  const BuscadorFamiliaresScreen ({super.key, this.paciente});
+
+  const BuscadorFamiliaresScreen.withoutPaciente ({super.key}) : paciente = null;
+
   @override
   _BuscadorFamiliaresScreenState createState() => _BuscadorFamiliaresScreenState();
 }

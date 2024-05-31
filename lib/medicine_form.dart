@@ -572,8 +572,9 @@ class _MedicineFormState extends State<MedicineForm> {
         child: FormBuilder(
           key: _fbKey,
           initialValue: {
+            'idMedicamento': widget.medicamento?.idMedicamento,
             'nombreMed': widget.medicamento?.nombre,
-            'gramajeMed':widget.medicamento?.gramaje,
+            'gramajeMed': widget.medicamento?.gramaje?.toString() ?? '',
             'notasMed':widget.medicamento?.descripcion,
           },
           child: Column(
@@ -606,48 +607,70 @@ class _MedicineFormState extends State<MedicineForm> {
                     final formValues = _fbKey.currentState!.value;
                     if(widget.medicamento == null){
                       try {
-                        final nuevoMedicamento = Medicamentos(
+                        Medicamentos nuevoMedicamento = Medicamentos(
                           nombre: formValues['nombreMed'],
                           gramaje: _parseToDouble(formValues['gramajeMed']),
                           descripcion: formValues['notasMed'],
                           idPaciente: widget.paciente!.idPaciente!,
                         );
+                        /*
                         await _medicamentosService.crearMedicamento(nuevoMedicamento).then((_) async {
                           final List<Medicamentos> updatedMedicinas = await _medicamentosService.obtenerMedicamentosPorId(widget.paciente!.idPaciente!);
                           Navigator.pop(context, updatedMedicinas.map((medicina) => Medicine(medicina.nombre)).toList());
-                        });
+                        });*/
+
+                        nuevoMedicamento = await _medicamentosService.crearMedicamento(nuevoMedicamento);
+                        final List<Medicamentos> updatedMedicinas = await _medicamentosService.obtenerMedicamentosPorId(widget.paciente!.idPaciente!);
+                        Navigator.pop(context, updatedMedicinas.map((medicina) => Medicine(medicina.nombre)).toList());
+
+
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Error al registrar el medicamento: $e')),
                         );
                       }
                     } else {
+                      /*
                       final nuevoMedicamento = Medicamentos(
                         nombre: formValues['nombreMed'],
                         gramaje: _parseToDouble(formValues['gramajeMed']),
                         descripcion: formValues['notasMed'],
                         idPaciente: widget.paciente!.idPaciente!,
-                      );
+                      );*/
                       try {
-                        /*Medicamentos nuevoMedicamento = Medicamentos(
-                          nombre: formValues['nombreMed'],
-                          gramaje: _parseToDouble(formValues['gramajeMed']),
-                          descripcion: formValues['notasMed'],
-                          idPaciente: paciente.idPaciente!,
-                        );*/
+                        /*
                         Medicamentos nuevoMedicamento = Medicamentos(
                           idMedicamento: widget.medicamento!.idMedicamento,
                           nombre: widget.medicamento!.nombre,
                           gramaje: widget.medicamento!.gramaje,
                           descripcion: widget.medicamento!.descripcion,
                           idPaciente: widget.medicamento!.idPaciente,
+                        );*/
+                        final nuevoMedicamento = Medicamentos(
+                        idMedicamento: widget.medicamento?.idMedicamento!,
+                        nombre: formValues['nombreMed'],
+                        gramaje: _parseToDouble(formValues['gramajeMed']),
+                        descripcion: formValues['notasMed'],
+                        idPaciente: widget.paciente!.idPaciente!,
                         );
-                        try{
-                          await _medicamentosService.actualizarMedicamento(widget.medicamento!.idMedicamento!, nuevoMedicamento);
+                        await _medicamentosService.actualizarMedicamento(nuevoMedicamento.idMedicamento!, nuevoMedicamento);
                           if(!context.mounted) return;
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
-                                content: Text('Paciente actualizado con éxito')),
+                                content: Text('Medicamento actualizado con éxito')),
+                        );
+
+                        final List<Medicamentos> updatedMedicinas = await _medicamentosService.obtenerMedicamentosPorId(widget.paciente!.idPaciente!);
+                          Navigator.pop(context, updatedMedicinas.map((medicina) => Medicine(medicina.nombre)).toList());
+
+                        /*
+                        try{
+                          //await _medicamentosService.actualizarMedicamento(widget.medicamento!.idMedicamento!, nuevoMedicamento);
+                          await _medicamentosService.actualizarMedicamento(nuevoMedicamento.idMedicamento!, nuevoMedicamento);
+                          if(!context.mounted) return;
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text('Medicamento actualizado con éxito')),
                           );
                           /*
                           Navigator.push(
@@ -661,9 +684,9 @@ class _MedicineFormState extends State<MedicineForm> {
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text('Error al actualizar Paciente: $e')),
+                                content: Text('Error al actualizar Medicamento: $e')),
                           );
-                        }
+                        }*/
                         /*
                         await _medicamentosService.crearMedicamento(nuevoMedicamento).then((_) async {
                           final List<Medicamentos> updatedMedicinas = await _medicamentosService.obtenerMedicamentosPorId(paciente.idPaciente!);
@@ -677,7 +700,7 @@ class _MedicineFormState extends State<MedicineForm> {
                     }
                   }
                 },
-                child: const Text('Registrar'),
+                child: const Text('Guardar'),
               ),
             ],
           ),

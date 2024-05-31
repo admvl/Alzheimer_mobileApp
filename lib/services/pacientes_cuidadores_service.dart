@@ -1,3 +1,4 @@
+import 'package:alzheimer_app1/models/cuidadores.dart';
 import 'package:alzheimer_app1/models/pacientes_familiares.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -10,15 +11,14 @@ class PacientesCuidadoresService {
   PacientesCuidadoresService();
 
   //Obtener lista de familiares por ID de usuario
-  Future<List<PacientesCuidadores>> obtenerCuidadoresPorId(String id) async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/pacientecuidadores/$id'));
+  Future<List<Cuidadores>> obtenerCuidadoresPorId(String id) async {
+    final response = await http.get(Uri.parse('$baseUrl/pacientecuidadores/$id'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
-      List<PacientesCuidadores> cuidadores = [];
+      List<Cuidadores> cuidadores = [];
       for (var item in jsonData) {
-        cuidadores.add(PacientesCuidadores.fromJson(item));
+        cuidadores.add(Cuidadores.fromJson(item));
       }
       return cuidadores;
     } else {
@@ -44,8 +44,7 @@ class PacientesCuidadoresService {
 
   // Obtener una relacion por ID
   Future<PacientesCuidadores> obtenerPacienteCuidadorPorId(String id) async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/pacientescuidadores/$id'));
+    final response = await http.get(Uri.parse('$baseUrl/pacientecuidadores/$id'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);

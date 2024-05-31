@@ -1,15 +1,20 @@
+import 'package:alzheimer_app1/models/cuidadores.dart';
+import 'package:alzheimer_app1/models/familiares.dart';
 import 'package:alzheimer_app1/models/pacientes.dart';
 import 'package:alzheimer_app1/models/pacientes_cuidadores.dart';
+import 'package:alzheimer_app1/models/pacientes_familiares.dart';
 import 'package:alzheimer_app1/models/personas.dart';
 import 'package:alzheimer_app1/search_carer_scr.dart';
 import 'package:alzheimer_app1/search_family_scr.dart';
 import 'package:alzheimer_app1/services/pacientes_cuidadores_service.dart';
+import 'package:alzheimer_app1/services/pacientes_familiares_service.dart';
 import 'package:alzheimer_app1/services/pacientes_service.dart';
 import 'package:alzheimer_app1/services/personas_service.dart';
 import 'package:flutter/material.dart';
 
 final personaService = PersonasService();
 final cuidadoresService = PacientesCuidadoresService();
+final familiareservice = PacientesFamiliaresService();
 final pacientesService = PacientesService();
 
 class PatientManagementScreen extends StatefulWidget {
@@ -39,7 +44,7 @@ class _PatientManagementScreenState extends State<PatientManagementScreen> {
         ),
         body: TabBarView(
           children: [
-            const FamiliaresTab(),
+            FamiliaresTab(paciente: widget.paciente),
             CuidadoresTab(paciente: widget.paciente),
           ],
         ),
@@ -49,8 +54,10 @@ class _PatientManagementScreenState extends State<PatientManagementScreen> {
 }
 
 class FamiliaresTab extends StatelessWidget {
-  const FamiliaresTab({super.key});
+  final Pacientes? paciente;
+  const FamiliaresTab({super.key, this.paciente});
 
+/*
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -61,7 +68,7 @@ class FamiliaresTab extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => BuscadorFamiliaresScreen()),
+                MaterialPageRoute(builder: (context) => BuscadorFamiliaresScreen(paciente: paciente)),
               );
             },
             child: const Text('+ADD'),
@@ -80,19 +87,13 @@ class FamiliaresTab extends StatelessWidget {
         ),
       ],
     );
-  }
-}
-
-class CuidadoresTab extends StatelessWidget {
-  final Pacientes? paciente;
-
-  const CuidadoresTab({super.key, required this.paciente});
-  Future<List<Personas>> obtenerDetallesCuidadores(List<PacientesCuidadores> cuidadores) async {
-    List<Future<Personas>> futures = cuidadores.map((cuidador) => personaService.obtenerPersonaPorId(cuidador.idCuidador.idUsuario.idPersona!.idPersona!)).toList();
+  }*/
+  Future<List<Personas>> obtenerDetallesFamiliares(List<Familiares> familiares) async {
+    List<Future<Personas>> futures = familiares.map((familiar) => personaService.obtenerPersonaPorId(familiar.idUsuario.idPersona!.idPersona!)).toList();
+    //List<Future<Personas>> futures = familiares.map((familiar) => personaService.obtenerPersonaPorId(familiar.idFamiliar.idUsuario.idPersona!.idPersona!)).toList();
     return await Future.wait(futures);
   }
-
-  /*
+  
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -103,42 +104,41 @@ class CuidadoresTab extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => BuscadorCuidadoresScreen()),
+                MaterialPageRoute(builder: (context) => BuscadorFamiliaresScreen()),
               );
             },
             child: const Text('+ADD'),
           ),
         ),
         Expanded(
-          child: FutureBuilder<List<PacientesCuidadores>>(
-            future: cuidadoresService.obtenerCuidadoresPorId(paciente!.idPaciente!),
+          child: FutureBuilder<List<Familiares>>(
+            future: familiareservice.obtenerFamiliaresPorId(paciente!.idPaciente!),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
                 return Center(child: Text('Error: ${snapshot.error}'));
               } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                return const Center(child: Text('No hay cuidadores disponibles'));
+                return const Center(child: Text('No hay familiares disponibles'));
               } else {
-                final cuidadores = snapshot.data!;
+                final familiares = snapshot.data!;
                 return FutureBuilder<List<Personas>>(
-                  future: obtenerDetallesCuidadores(cuidadores),
+                  future: obtenerDetallesFamiliares(familiares),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return const Center(child: Text('No se pudo obtener los detalles de los cuidadores'));
+                      return const Center(child: Text('No se pudo obtener los detalles de los familiares'));
                     } else {
-                      final detallesCuidadores = snapshot.data!;
+                      final detallesFamiliares = snapshot.data!;
                       return ListView.builder(
-                        itemCount: detallesCuidadores.length,
+                        itemCount: detallesFamiliares.length,
                         itemBuilder: (context, index) {
-                          final cuidador = detallesCuidadores[index];
+                          final familiar = detallesFamiliares[index];
                           return ListTile(
-                            title: Text('Cuidador ${cuidador.nombre}'),
-                            subtitle: Text('Detalle del Cuidador ${cuidador.nombre}'),
+                            title: Text('Familiar ${index +1 } : ${familiar.nombre ?? 'Sin detalle disponible'} ${familiar.apellidoP} ${familiar.apellidoM}'),
                           );
                         },
                       );
@@ -151,8 +151,18 @@ class CuidadoresTab extends StatelessWidget {
         ),
       ],
     );
-  }*/
+  }
+}
 
+class CuidadoresTab extends StatelessWidget {
+  final Pacientes? paciente;
+
+  const CuidadoresTab({super.key, required this.paciente});
+  Future<List<Personas>> obtenerDetallesCuidadores(List<Cuidadores> cuidadores) async {
+    //List<Future<Personas>> futures = cuidadores.map((cuidador) => personaService.obtenerPersonaPorId(cuidador.idCuidador.idUsuario.idPersona!.idPersona!)).toList();
+    List<Future<Personas>> futures = cuidadores.map((cuidador) => personaService.obtenerPersonaPorId(cuidador.idUsuario.idPersona!.idPersona!)).toList();
+    return await Future.wait(futures);
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -171,7 +181,7 @@ class CuidadoresTab extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: FutureBuilder<List<PacientesCuidadores>>(
+          child: FutureBuilder<List<Cuidadores>>(
             future: cuidadoresService.obtenerCuidadoresPorId(paciente!.idPaciente!),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
@@ -198,8 +208,7 @@ class CuidadoresTab extends StatelessWidget {
                         itemBuilder: (context, index) {
                           final cuidador = detallesCuidadores[index];
                           return ListTile(
-                            title: Text('Cuidador ${cuidador.nombre}'),
-                            subtitle: Text('Detalle del Cuidador ${cuidador.nombre ?? 'Sin detalle disponible'}'),
+                            title: Text('Cuidador ${index +1 } : ${cuidador.nombre ?? 'Sin detalle disponible'} ${cuidador.apellidoP} ${cuidador.apellidoM}'),
                           );
                         },
                       );
