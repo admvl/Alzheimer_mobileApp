@@ -1,3 +1,4 @@
+import 'package:alzheimer_app1/bluetooth_scr.dart';
 import 'package:alzheimer_app1/log_in.dart';
 import 'package:alzheimer_app1/medicine_mgmt.dart';
 import 'package:alzheimer_app1/patient_mgmt_scr.dart';
@@ -350,6 +351,22 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
                 },
                 icon: const Icon(Icons.alarm),
                 label: const Text('Alarma Caída'),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Flexible(
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  BluetoothScr bluetoothScr = const BluetoothScr();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                        bluetoothScr), // Navega a la pantalla RegisterScreen
+                  );
+                },
+                icon: const Icon(Icons.alarm),
+                label: const Text('Configurar Dispositivo'),
               ),
             ),
           ],
