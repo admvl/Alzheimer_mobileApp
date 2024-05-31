@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:alzheimer_app1/device_conection_scr.dart';
 import 'package:alzheimer_app1/fall_alarm_scr.dart';
 import 'package:alzheimer_app1/zone_alarm_scr.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,7 @@ class SignalRService {
       "https://alzheimerwebapi.azurewebsites.net/notificationHub";
   bool isZoneAlarmScreenOpen = false;
   bool isFallAlarmScreenOpen = false;
+  bool isDisconnectedScreenOpen = false;
   Timer? _notificationTimer;
   //final String hubUrl= "https://alzheimernotification.service.signalr.net";
 
@@ -146,17 +148,17 @@ class SignalRService {
               content: Text(
                   'El paciente ha perdido la conexion: $mac a las $fechaHora')),
         );
-        /*if(!isFallAlarmScreenOpen) {
-          isFallAlarmScreenOpen = true;
+        if(!isDisconnectedScreenOpen) {
+          isDisconnectedScreenOpen = true;
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const FallAlarmScr()
+                  builder: (context) => const ConnectionStatusPage()
               )
           ).then((_) {
-            isFallAlarmScreenOpen = false;
+            isDisconnectedScreenOpen = false;
           });
-        }*/
+        }
         _notificationTimer = Timer(const Duration(minutes: 1), () {
           _notificationTimer = null;
         });
