@@ -359,6 +359,10 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
               child: ElevatedButton.icon(
                 onPressed: () {
                   BluetoothScr bluetoothScr = const BluetoothScr();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
                         bluetoothScr), // Navega a la pantalla RegisterScreen
                   );
                 },
@@ -374,7 +378,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                        ConnectionStatusPage()), // Navega a la pantalla RegisterScreen
+                        const ConnectionStatusPage()), // Navega a la pantalla RegisterScreen
                   );
                 },
                 icon: const Icon(Icons.alarm),
