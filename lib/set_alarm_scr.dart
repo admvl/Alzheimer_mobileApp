@@ -1,7 +1,7 @@
-//dart
 import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class SetAlarmScr extends StatefulWidget {
   const SetAlarmScr({super.key});
@@ -12,7 +12,8 @@ class SetAlarmScr extends StatefulWidget {
 
 class _SetAlarmScrState extends State<SetAlarmScr> {
   TimeOfDay _hora = TimeOfDay.now();
-  
+  FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
   // Lista de días para la alarma
   List<String> dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
   List<bool> diasSeleccionados = List.filled(7, false);
@@ -30,6 +31,106 @@ class _SetAlarmScrState extends State<SetAlarmScr> {
   String medicamentosSeleccionados = 'medicamentoA';
 
   @override
+  void initState() {
+    super.initState();
+
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
+    final InitializationSettings initializationSettings = InitializationSettings(android: initializationSettingsAndroid);
+    flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        if (response.payload != null) {
+          Navigator.pushNamed(context, '/medicineAlarm');
+        }
+      },
+    );
+
+    flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(AndroidNotificationChannel(
+      'alarm_notif',
+      'alarm_notif',
+      importance: Importance.max,
+    ));
+  }
+
+  Future<void> _showNotification() async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails('alarm_notif', 'alarm_notif', importance: Importance.max, priority: Priority.high, showWhen: false);
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(
+        0, 'Alarma', 'Es hora de tomar tu medicamento', platformChannelSpecifics,
+        payload: 'medicineAlarm');
+  }
+
+  void alarmCallback() {
+    print("La alarma se ha activado!");
+    _showNotification();
+  }
+
+  void _scheduleAlarm() {
+    final int nowDayOfWeek = DateTime.now().weekday;  // 1 = Monday, 7 = Sunday
+    final DateTime now = DateTime.now();
+
+    for (int i = 0; i < diasSeleccionados.length; i++) {
+      if (diasSeleccionados[i]) {
+        int daysToAdd = (i + 1 - nowDayOfWeek) % 7;
+        daysToAdd = daysToAdd <= 0 ? daysToAdd + 7 : daysToAdd;
+        final nextDay = now.add(Duration(days: daysToAdd));
+        final nextAlarmDateTime = DateTime(
+          nextDay.year,
+          nextDay.month,
+          nextDay.day,
+          _hora.hour,
+          _hora.minute,
+        );
+
+        AndroidAlarmManager.oneShotAt(
+          nextAlarmDateTime,
+          i,
+          alarmCallback,
+          exact: true,
+          wakeup: true,
+          rescheduleOnReboot: true,
+        );
+      }
+    }
+  }
+
+  Future<void> _mostrarDialogoDias() async {
+    await showDialog(
+      context: context,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text('Seleccionar días'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: dias.map((dia) {
+                return CheckboxListTile(
+                  title: Text(dia),
+                  value: diasSeleccionados[dias.indexOf(dia)],
+                  onChanged: (value) {
+                    setState(() {
+                      diasSeleccionados[dias.indexOf(dia)] = value!;
+                    });
+                  },
+                );
+              }).toList(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cerrar'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -38,7 +139,6 @@ class _SetAlarmScrState extends State<SetAlarmScr> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            // Navega a la pantalla de bienvenida
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const WelcomeScreen()),
@@ -92,7 +192,7 @@ class _SetAlarmScrState extends State<SetAlarmScr> {
                 ],
               ),
 
-              //lista medicamentos
+              // Lista de medicamentos
               const SizedBox(height: 20.0),
               const Text('Medicamento:'),
               const SizedBox(height: 2.0),
@@ -169,74 +269,4 @@ class _SetAlarmScrState extends State<SetAlarmScr> {
       ),
     );
   }
-  
-  Future<void> _mostrarDialogoDias() async {
-    await showDialog(
-      context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context,setState) => AlertDialog(
-          title: const Text('Seleccionar días'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: dias.map((dia) {
-                return CheckboxListTile(
-                  title: Text(dia),
-                  value: diasSeleccionados[dias.indexOf(dia)],
-                  onChanged: (value) {
-                    setState(() {
-                      diasSeleccionados[dias.indexOf(dia)] = value!;
-                    });
-                  },
-                );
-              }).toList(),
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cerrar'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-// Esta función debe estar fuera de cualquier clase
-  void alarmCallback() {
-    print("La alarma se ha activado!");
-    // Aquí puedes agregar código para mostrar notificaciones, por ejemplo.
-  }
-  void _scheduleAlarm() {
-    final int nowDayOfWeek = DateTime.now().weekday;  // 1 = Monday, 7 = Sunday
-    final DateTime now = DateTime.now();
-
-    // Calcula la próxima fecha de cada día seleccionado
-    for (int i = 0; i < diasSeleccionados.length; i++) {
-      if (diasSeleccionados[i]) {
-        // `i + 1` porque `dias` empieza en Lunes que es `1` en `DateTime.weekday`
-        int daysToAdd = (i + 1 - nowDayOfWeek) % 7;
-        daysToAdd = daysToAdd <= 0 ? daysToAdd + 7 : daysToAdd;  // Asegurarse de que sea en el futuro
-        final nextDay = now.add(Duration(days: daysToAdd));
-        final nextAlarmDateTime = DateTime(
-          nextDay.year,
-          nextDay.month,
-          nextDay.day,
-          _hora.hour,
-          _hora.minute,
-        );
-
-        AndroidAlarmManager.oneShotAt(
-          nextAlarmDateTime,
-          // Usa un ID único para cada alarma basado en el día de la semana
-          i,
-          alarmCallback,
-          exact: true,
-          wakeup: true,
-          rescheduleOnReboot: true,
-        );
-      }
-    }
-  }
-
-
 }

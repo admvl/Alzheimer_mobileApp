@@ -43,10 +43,11 @@ class _ConnectionStatusPageState extends State<ConnectionStatusPage> {
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
             // Navega a la pantalla de bienvenida
-            Navigator.pushReplacement(
+            Navigator.pop(context);
+            /*Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const WelcomeScreen()),
-            );
+            );*/
           },
         ),
       ),
