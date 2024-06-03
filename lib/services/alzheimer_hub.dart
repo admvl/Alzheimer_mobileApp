@@ -1,14 +1,18 @@
 import 'dart:async';
 import 'package:alzheimer_app1/device_conection_scr.dart';
 import 'package:alzheimer_app1/fall_alarm_scr.dart';
+import 'package:alzheimer_app1/services/location_provider.dart';
 import 'package:alzheimer_app1/zone_alarm_scr.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:signalr_netcore/http_connection_options.dart';
 import 'package:signalr_netcore/hub_connection.dart';
 import 'package:signalr_netcore/hub_connection_builder.dart';
 import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:signalr_netcore/itransport.dart';
+
+import '../models/location_data.dart';
 
 class SignalRService {
   late HubConnection? hubConnection;
@@ -69,7 +73,8 @@ class SignalRService {
         // Aquí puedes manejar la actualización de la ubicación
         print(
             'Location update: $mac is at ($latitude, $longitude) at $fechaHora');
-
+        final locationProvider = Provider.of<LocationProvider>(context,listen: false);
+        locationProvider.updateLocation(LocationData(mac:mac,latitude:latitude,longitude:longitude,fechaHora:fechaHora));
         //ScaffoldMessenger.of(context).showSnackBar(
         //  SnackBar(content: Text('Ubicación actualizada: $mac está en ($latitude, $longitude) a las $fechaHora')),
         //);

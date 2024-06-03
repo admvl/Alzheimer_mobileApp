@@ -3,12 +3,15 @@ import 'dart:convert';
 
 import 'package:alzheimer_app1/models/log_in.dart';
 import 'package:alzheimer_app1/services/alzheimer_hub.dart';
+import 'package:alzheimer_app1/services/location_provider.dart';
 import 'package:alzheimer_app1/services/usuarios_service.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'welcome_scr.dart';
 import 'package:circular_profile_avatar/circular_profile_avatar.dart';
 import 'package:profile_view/profile_view.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -16,7 +19,14 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async{
   WidgetsFlutterBinding.ensureInitialized(); // Asegura que los widgets estén inicializados
   await AndroidAlarmManager.initialize(); // Inicializa el gestor de alarmas
-  runApp(const LogInpApp()); // Ejecuta la aplicación
+  runApp(
+    MultiProvider(
+        providers: [
+          ChangeNotifierProvider(create: (_)=> LocationProvider()),
+      ],
+      child: const LogInpApp(),
+    ),
+  ); // Ejecuta la aplicación
 }
 
 class LogInpApp extends StatelessWidget {

@@ -127,7 +127,7 @@ class _UpdateGeocercaState extends State<UpdateGeocerca> {
     if (mapController != null && markers.isNotEmpty) {
       LatLng markerPosition = markers.first.position;
       double radius = double.tryParse(radiusController.text) ?? 0;
-      if (radius > 15 && radius < 45) {
+      if (radius >= 15 && radius <= 45) {
         final nuevaGeocerca = Geocerca(
           radioGeocerca: radius,
           fecha: DateTime.now(),
