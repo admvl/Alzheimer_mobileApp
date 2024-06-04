@@ -9,7 +9,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 final storage = FlutterSecureStorage();
 
 class UsuariosService {
-  final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
+  //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
+  final String baseUrl = "http://192.168.0.15:5066/api";
 
   UsuariosService();
 

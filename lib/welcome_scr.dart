@@ -2,7 +2,7 @@ import 'package:alzheimer_app1/bluetooth_scr.dart';
 import 'package:alzheimer_app1/log_in.dart';
 import 'package:alzheimer_app1/device_conection_scr.dart';
 import 'package:alzheimer_app1/medicine_mgmt.dart';
-import 'package:alzheimer_app1/patient_mgmt_scr.dart';
+import 'package:alzheimer_app1/people_mgmt_scr.dart';
 import 'package:alzheimer_app1/patient_profile.dart';
 //import 'package:alzheimer_app1/patient_profile.dart';
 import 'package:alzheimer_app1/patient_selection.dart';

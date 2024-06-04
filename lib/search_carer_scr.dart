@@ -114,7 +114,7 @@ class _SearchScreenState extends State<SearchScreen> {
 */
 
 import 'package:alzheimer_app1/models/pacientes.dart';
-import 'package:alzheimer_app1/patient_mgmt_scr.dart';
+import 'package:alzheimer_app1/people_mgmt_scr.dart';
 import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
 

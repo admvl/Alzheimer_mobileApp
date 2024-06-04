@@ -6,7 +6,8 @@ import 'dart:convert';
 import '../models/pacientes_cuidadores.dart';
 
 class PacientesCuidadoresService {
-  final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
+  //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
+  final String baseUrl = "http://192.168.0.15:5066/api";
 
   PacientesCuidadoresService();
 

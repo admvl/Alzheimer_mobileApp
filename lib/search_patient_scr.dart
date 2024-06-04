@@ -1,63 +1,45 @@
-/*import 'package:flutter/material.dart';
-
-class BuscadorFamiliaresScreen extends StatelessWidget {
-  const BuscadorFamiliaresScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Buscador'),
-      ),
-      body: const Center(
-        child: Text('Pantalla de búsqueda de familiares'),
-      ),
-    );
-  }
-}*/
-
 import 'package:alzheimer_app1/models/pacientes.dart';
 import 'package:alzheimer_app1/people_mgmt_scr.dart';
 import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
 
-class BuscadorFamiliaresScreen extends StatefulWidget {
+class BuscadorPacientesScreen extends StatefulWidget {
   final Pacientes? paciente;
-  const BuscadorFamiliaresScreen ({super.key, this.paciente});
+  const BuscadorPacientesScreen ({super.key, this.paciente});
 
-  const BuscadorFamiliaresScreen.withoutPaciente ({super.key}) : paciente = null;
+  const BuscadorPacientesScreen.withoutPaciente ({super.key}) : paciente = null;
 
   @override
-  _BuscadorFamiliaresScreenState createState() => _BuscadorFamiliaresScreenState();
+  _BuscadorPacientesScreenState createState() => _BuscadorPacientesScreenState();
 }
 
-class _BuscadorFamiliaresScreenState extends State<BuscadorFamiliaresScreen> {
+class _BuscadorPacientesScreenState extends State<BuscadorPacientesScreen> {
   final TextEditingController _searchController = TextEditingController();
-  final List<String> _allCaregivers = [
+  final List<String> _allPatients = [
     'Juan Pérez',
     'María Gómez',
     'Carlos López',
     'Ana Martínez',
     'Pedro Sánchez',
   ];
-  List<String> _filteredCaregivers = [];
+  List<String> _filteredPatients = [];
 
   @override
   void initState() {
     super.initState();
-    _filteredCaregivers = _allCaregivers;
+    _filteredPatients = _allPatients;
   }
 
-  void _filterCaregivers(String query) {
+  void _filterPatients(String query) {
     if (query.isEmpty) {
       setState(() {
-        _filteredCaregivers = _allCaregivers;
+        _filteredPatients = _allPatients;
       });
     } else {
       setState(() {
-        _filteredCaregivers = _allCaregivers
-            .where((caregiver) =>
-                caregiver.toLowerCase().contains(query.toLowerCase()))
+        _filteredPatients = _allPatients
+            .where((patient) =>
+                patient.toLowerCase().contains(query.toLowerCase()))
             .toList();
       });
     }
@@ -68,7 +50,7 @@ class _BuscadorFamiliaresScreenState extends State<BuscadorFamiliaresScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Buscador - Familiares'),
+        title: const Text('Buscador - Pacientes'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
@@ -87,18 +69,18 @@ class _BuscadorFamiliaresScreenState extends State<BuscadorFamiliaresScreen> {
             child: TextField(
               controller: _searchController,
               decoration: const InputDecoration(
-                labelText: 'Buscar familiares',
+                labelText: 'Buscar pacientes',
                 border: OutlineInputBorder(),
               ),
-              onChanged: _filterCaregivers,
+              onChanged: _filterPatients,
             ),
           ),
           Expanded(
             child: ListView.builder(
-              itemCount: _filteredCaregivers.length,
+              itemCount: _filteredPatients.length,
               itemBuilder: (context, index) {
                 return ListTile(
-                  title: Text(_filteredCaregivers[index]),
+                  title: Text(_filteredPatients[index]),
                 );
               },
             ),

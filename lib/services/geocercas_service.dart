@@ -7,7 +7,8 @@ import 'package:http/http.dart' as http;
 final storage = FlutterSecureStorage();
 
 class GeocercasService {
-  final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
+  //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
+  final String baseUrl = "http://192.168.0.15:5066/api";
   GeocercasService();
 
   //crear Geocerca
