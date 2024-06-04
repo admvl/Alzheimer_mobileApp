@@ -1,7 +1,9 @@
+import 'package:alzheimer_app1/check_location_scr.dart';
 import 'package:flutter/material.dart';
 
 class FallAlarmScr extends StatefulWidget {
-  const FallAlarmScr({super.key});
+  final String? nombrepaciente;
+  const FallAlarmScr({super.key,this.nombrepaciente});
 
   @override
   State<FallAlarmScr> createState() => _FallAlarmScrState();
@@ -36,9 +38,9 @@ class _FallAlarmScrState extends State<FallAlarmScr> {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              "Caída registrada",
-              style: TextStyle(
+            Text(
+              "El paciente ${widget.nombrepaciente} Caída registrada",
+              style: const TextStyle(
                 fontSize: 20,
                 color: Colors.black,
               ),
@@ -46,7 +48,8 @@ class _FallAlarmScrState extends State<FallAlarmScr> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.push(context,MaterialPageRoute(builder: (context)=>
+                const CheckLocationScr()));
               },
               child: const Text("Consultar Ubicación Actual"),
             ),

@@ -4,12 +4,11 @@ import 'package:alzheimer_app1/fall_alarm_scr.dart';
 import 'package:alzheimer_app1/services/location_provider.dart';
 import 'package:alzheimer_app1/zone_alarm_scr.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:provider/provider.dart';
 import 'package:signalr_netcore/http_connection_options.dart';
 import 'package:signalr_netcore/hub_connection.dart';
 import 'package:signalr_netcore/hub_connection_builder.dart';
-import 'dart:convert';
-import 'package:crypto/crypto.dart';
 import 'package:signalr_netcore/itransport.dart';
 
 import '../models/location_data.dart';
@@ -22,14 +21,11 @@ class SignalRService {
   bool isFallAlarmScreenOpen = false;
   bool isDisconnectedScreenOpen = false;
   Timer? _notificationTimer;
-  //final String hubUrl= "https://alzheimernotification.service.signalr.net";
+  final storage = const FlutterSecureStorage();
+  List<String> _deviceIds =[];
 
   Future<void> initSignalR(BuildContext context, List<String> deviceIds) async {
-    /*hubConnection = HubConnectionBuilder()
-        .withUrl(hubUrl,options: HttpConnectionOptions(
-          accessTokenFactory: () async => createJwt("https://alzheimernotification.service.signalr.net","55bk4htt6YS9gkmL2Gm88jyBmQ2/q3L4iZv3nI0ASis=")
-        ))
-        .build();*/
+    _deviceIds = deviceIds;
     hubConnection = HubConnectionBuilder()
         .withUrl(
           hubUrl,
@@ -75,15 +71,12 @@ class SignalRService {
             'Location update: $mac is at ($latitude, $longitude) at $fechaHora');
         final locationProvider = Provider.of<LocationProvider>(context,listen: false);
         locationProvider.updateLocation(LocationData(mac:mac,latitude:latitude,longitude:longitude,fechaHora:fechaHora));
-        //ScaffoldMessenger.of(context).showSnackBar(
-        //  SnackBar(content: Text('Ubicación actualizada: $mac está en ($latitude, $longitude) a las $fechaHora')),
-        //);
       }
     });
   }
 
   void setupLocationOut(BuildContext context) {
-    hubConnection?.on('ReceiveLocationOut', (List<Object?>? message) {
+    hubConnection?.on('ReceiveLocationOut', (List<Object?>? message) async {
       if (message != null &&
           (_notificationTimer == null || !_notificationTimer!.isActive)) {
         final String mac = message[0] as String;
@@ -100,9 +93,11 @@ class SignalRService {
                   'Fuera de zona segura el dispositivo: $mac está en ($latitude, $longitude) a las $fechaHora')),
         );
         if (!isZoneAlarmScreenOpen) {
+          final nombrepaciente = await storage.read(key: mac);
           isZoneAlarmScreenOpen = true;
+          if(!context.mounted)return;
           Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const ZoneAlarmScr()))
+                  MaterialPageRoute(builder: (context) => ZoneAlarmScr(nombrepaciente: nombrepaciente,)))
               .then((_) {
             isZoneAlarmScreenOpen = false;
           });
@@ -116,7 +111,7 @@ class SignalRService {
   }
 
   void setupFallListener(BuildContext context) {
-    hubConnection?.on('ReceiveFall', (List<Object?>? message) {
+    hubConnection?.on('ReceiveFall', (List<Object?>? message) async {
       if (message != null) {
         final String mac = message[0] as String;
         final String fechaHora = message[1] as String;
@@ -128,9 +123,11 @@ class SignalRService {
               content: Text('El paciente ha caido: $mac a las $fechaHora')),
         );
         if (!isFallAlarmScreenOpen) {
+          final nombrepaciente = await storage.read(key: mac);
           isFallAlarmScreenOpen = true;
+          if(!context.mounted)return;
           Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const FallAlarmScr()))
+                  MaterialPageRoute(builder: (context) => FallAlarmScr(nombrepaciente: nombrepaciente,)))
               .then((_) {
             isFallAlarmScreenOpen = false;
           });
@@ -140,7 +137,7 @@ class SignalRService {
   }
 
   void setupNotFoundListener(BuildContext context) {
-    hubConnection?.on('ReceiveNotFound', (List<Object?>? message) {
+    hubConnection?.on('ReceiveNotFound', (List<Object?>? message) async {
       if (message != null &&
           (_notificationTimer == null || !_notificationTimer!.isActive)) {
         final String mac = message[0] as String;
@@ -154,11 +151,13 @@ class SignalRService {
                   'El paciente ha perdido la conexion: $mac a las $fechaHora')),
         );
         if(!isDisconnectedScreenOpen) {
+          final nombrepaciente = await storage.read(key: mac);
           isDisconnectedScreenOpen = true;
+          if(!context.mounted)return;
           Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => const ConnectionStatusPage()
+                  builder: (context) => ConnectionStatusPage(nombrepaciente: nombrepaciente)
               )
           ).then((_) {
             isDisconnectedScreenOpen = false;
@@ -184,36 +183,20 @@ class SignalRService {
     }
   }
 
-  void setupMessageListener(BuildContext context) {
-    hubConnection?.on('ReceiveMessage', (List<Object?>? message) {
-      for (var item in message!) {
-        print(message);
+  Future<void> unsubscribeFromDevices() async {
+    if (hubConnection != null && hubConnection!.state == HubConnectionState.Connected) {
+      try {
+        print('Desuscribiendo de dispositivos: $_deviceIds');
+        await hubConnection!.invoke("UnsubscribeFromDevices", args: [_deviceIds]);
+      } catch (error) {
+        print('Error desuscribiéndose de dispositivos: $error');
       }
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => const ZoneAlarmScr()));
-    });
+    } else {
+      print('HubConnection no está inicializado o no está conectado.');
+    }
   }
 
-  String createJwt(String aud, String key) {
-    final header = {"alg": "HS256", "typ": "JWT"};
-    final payload = {
-      "aud": aud,
-      "exp":
-          DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/ 1000,
-      "iat": DateTime.now().millisecondsSinceEpoch ~/ 1000
-    };
-
-    String base64Header =
-        base64Url.encode(utf8.encode(json.encode(header))).replaceAll('=', '');
-    String base64Payload =
-        base64Url.encode(utf8.encode(json.encode(payload))).replaceAll('=', '');
-
-    var secret = utf8.encode(key);
-    var signature = Hmac(sha256, secret)
-        .convert(utf8.encode('$base64Header.$base64Payload'));
-    String base64Signature =
-        base64Url.encode(signature.bytes).replaceAll('=', '');
-
-    return '$base64Header.$base64Payload.$base64Signature';
+  Future<void> clearStorage() async {
+    await storage.deleteAll();
   }
 }
