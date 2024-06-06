@@ -114,11 +114,14 @@ class _LogInFormState extends State<LogInForm> {
       final data = jsonDecode(response.body);
       await storage.write(key: 'token', value: data['token']);
       final dispositivos = List<String>.from(data['dispositivos']);
-      final pacientes = await _pacientesService.obtenerPacientesPorId(await tokenUtils.getIdUsuarioToken());
-      for(var item in pacientes){
-        if(item.idDispositivo.idDispositivo!=null) {
-          await storage.write(
-              key: item.idDispositivo.idDispositivo!, value: '${item.idPersona.nombre} ${item.idPersona.apellidoP} ${item.idPersona.apellidoM}');
+      if(await tokenUtils.getRolUsuarioToken()!="Administrador") {
+        final pacientes = await _pacientesService.obtenerPacientesPorId(
+            await tokenUtils.getIdUsuarioToken());
+        for(var item in pacientes){
+          if(item.idDispositivo.idDispositivo!=null) {
+            await storage.write(
+                key: item.idDispositivo.idDispositivo!, value: '${item.idPersona.nombre} ${item.idPersona.apellidoP} ${item.idPersona.apellidoM}');
+          }
         }
       }
       if(!mounted)return;
