@@ -303,7 +303,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
                         zoneAlarmScr), // Navega a la pantalla RegisterScreen
                   );
                 },
-                icon: const Icon(Icons.alarm),
+                icon: const Icon(Icons.location_searching),
                 label: const Text('Alarma Zona Segura'),
               ),
             ),
