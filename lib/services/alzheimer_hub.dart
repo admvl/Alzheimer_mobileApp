@@ -16,7 +16,8 @@ import '../models/location_data.dart';
 class SignalRService {
   late HubConnection? hubConnection;
   final String hubUrl =
-      "https://alzheimerwebapi.azurewebsites.net/notificationHub";
+      //"https://alzheimerwebapi.azurewebsites.net/notificationHub";
+      "http://192.168.0.15:5066/notificationHub";
   bool isZoneAlarmScreenOpen = false;
   bool isFallAlarmScreenOpen = false;
   bool isDisconnectedScreenOpen = false;

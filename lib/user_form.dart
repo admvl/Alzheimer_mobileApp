@@ -1,5 +1,6 @@
 //import 'dart:io';
 //formulario para alta de pacientes
+
 import 'package:alzheimer_app1/carer_form.dart';
 import 'package:alzheimer_app1/models/dispositivos.dart';
 import 'package:alzheimer_app1/models/pacientes.dart';
@@ -45,9 +46,14 @@ class _UserFormState extends State<UserForm> {
   Dispositivos? selectedDispositivo;
   List<Dispositivos> dispositivos = [];
   List<DropdownMenuItem<String>> dispositivosItems = [];
-
+  bool readOnlyBool = false;
   @override
   Widget build(BuildContext context) {
+    if(widget.paciente == null){
+      readOnlyBool = false;
+    }else{
+      readOnlyBool = true;
+    }
     final _roundedDecoration = InputDecoration(
       labelText: '',
       border: OutlineInputBorder(
@@ -104,7 +110,7 @@ class _UserFormState extends State<UserForm> {
                 validator: FormBuilderValidators.compose([
                   FormBuilderValidators.required(),
                 ]),
-                readOnly: true,
+                readOnly: readOnlyBool,
               ),
               const SizedBox(height: 10),
               FormBuilderTextField(

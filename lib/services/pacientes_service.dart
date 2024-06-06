@@ -3,7 +3,8 @@ import 'package:alzheimer_app1/models/pacientes.dart';
 import 'package:http/http.dart' as http;
 
 class PacientesService {
-  final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
+  //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
+  final String baseUrl = "http://192.168.0.15:5066/api";
 
   PacientesService();
 

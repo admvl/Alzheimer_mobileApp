@@ -250,22 +250,27 @@ class _MedicineMgmtScreenState extends State<MedicineMgmtScreen> {
   List<Medicine> medicines = [];
 
   // Function to remove medicine
-  void _removeMedicine(int index) {
-    setState(() {
+  void _removeMedicine(Medicamentos medicamento, Pacientes paciente) async {
+    /*setState(() {
       medicines.removeAt(index);
-    });
+    });*/
+    await _medicamentosService.eliminarMedicamento(medicamento.idMedicamento!);
+    //_navigateToMedicineForm();
+    MaterialPageRoute(
+      builder: (context) => const WelcomeScreen(),
+    );
   }
 
   // Function to navigate to MedicineForm screen
-  void _navigateToMedicineForm() {
+  void _navigateToMedicineForm() async {
     // Implement navigation to MedicineForm screen
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => const MedicineForm()),
-    ).then((newMedicines) {
+      MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+    ).then((newMedicines)  {
       if (newMedicines != null && newMedicines is List<Medicine>) {
-        setState(() {
-          medicines.addAll(newMedicines);
+        setState(()  {
+        medicines.addAll(newMedicines);
         });
       }
     });
@@ -360,35 +365,60 @@ class _MedicineMgmtScreenState extends State<MedicineMgmtScreen> {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(child: Text('No hay Medicamentos registrados'));
           } else {
             FloatingActionButton(
               onPressed: _navigateToMedicineForm,
               child: const Icon(Icons.add),
             );
             final List<Medicamentos> medicamentos = snapshot.data!;
-            print("*************** MEDICAMENTOS **********");
-            print(medicamentos);
-            return ListView.builder(
-              shrinkWrap: true,
-              itemCount: medicamentos.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text('${medicamentos[index].nombre}' ' - '' ${medicamentos[index].gramaje}''mg'),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MedicineForm(medicamento: medicamentos[index], paciente: paciente),
-                      ),
-                    );
-                  },
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete),
-                    onPressed: () => _removeMedicine(index),
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MedicineForm(paciente: paciente,),
+                        ),
+                      );
+                    },
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.add),
+                      ],
+                    ),
                   ),
-                );
-              },
+                ),
+                Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: medicamentos.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text('${medicamentos[index].nombre}' ' - '' ${medicamentos[index].gramaje}''mg'),
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MedicineForm(medicamento: medicamentos[index], paciente: paciente),
+                            ),
+                          );
+                        },
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () => _removeMedicine(medicamentos[index], paciente),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             );  
           }
         }
