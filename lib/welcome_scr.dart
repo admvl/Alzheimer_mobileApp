@@ -1,13 +1,12 @@
 import 'package:alzheimer_app1/bluetooth_scr.dart';
-import 'package:alzheimer_app1/log_in.dart';
 import 'package:alzheimer_app1/device_conection_scr.dart';
 import 'package:alzheimer_app1/medicine_mgmt.dart';
 import 'package:alzheimer_app1/people_mgmt_scr.dart';
 import 'package:alzheimer_app1/patient_profile.dart';
-//import 'package:alzheimer_app1/patient_profile.dart';
 import 'package:alzheimer_app1/patient_selection.dart';
 import 'package:alzheimer_app1/services/alzheimer_hub.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:star_menu/star_menu.dart';
 import 'check_location_scr.dart';
 import 'fall_alarm_scr.dart';
@@ -19,12 +18,6 @@ import 'user_mgmt.dart';
 import 'user_profile.dart';
 import 'zone_alarm_scr.dart';
 
-/*
-void main() {
-  runApp(const MaterialApp(
-    home: WelcomeScreen(),
-  ));
-}*/
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -36,22 +29,12 @@ class WelcomeScreen extends StatefulWidget {
 
 
 class _WelcomeScreenState extends State<WelcomeScreen>{
-  //final SignalRService _signalRService = SignalRService();
-  //late String _locationMessage = 'Esperando ubicacion...';
+  late SignalRService _signalRService;
 
   @override
   void initState(){
     super.initState();
-    //_signalRService.initSignalR(context);
-    /*_signalRService.hubConnection?.on('ReceiveLocationUpdate', (List<Object?>? message) {
-      setState(() {
-        final String mac = message![0] as String;
-        final double latitude = message[1] as double;
-        final double longitude = message[2] as double;
-        final String fechaHora = message[3] as String;
-        _locationMessage = 'Ubicación actualizada: $mac está en ($latitude, $longitude) a las $fechaHora';
-      });
-    });*/
+    _signalRService = Provider.of<SignalRService>(context, listen: false);
   }
 
   @override
@@ -70,8 +53,12 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
           actions: [
             TextButton(
               child: const Text('Sí'),
-              onPressed: () {
-                Navigator.popUntil(context, ModalRoute.withName('log_in'));
+              onPressed: () async {
+                await _signalRService.unsubscribeFromDevices();
+                await _signalRService.clearStorage(); // Limpiar el almacenamiento
+                if(!context.mounted)return;
+                Navigator.of(context).pushReplacementNamed('/');
+                //Navigator.popUntil(context, ModalRoute.withName('log_in'));
                 //const LogInForm();
               },
             ),
@@ -289,23 +276,6 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
                 ],
               ),
             ),
-            /*
-            Flexible(
-              child: ElevatedButton.icon(
-                onPressed: () {
-                  //PatientManagementScreen patientProfileScr = const PatientManagementScreen();
-                  PatientProfile patientProfileScr = const PatientProfile();
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                        patientProfileScr), // Navega a la pantalla RegisterScreen
-                  );
-                },
-                icon: const Icon(Icons.person_sharp),
-                label: const Text('Perfil Paciente'),
-              ),
-            ),*/
             const SizedBox(height: 10),
             Flexible(
               child: ElevatedButton.icon(

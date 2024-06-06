@@ -1,9 +1,11 @@
 //log-in app
 import 'dart:convert';
 
+import 'package:alzheimer_app1/check_location_scr.dart';
 import 'package:alzheimer_app1/models/log_in.dart';
 import 'package:alzheimer_app1/services/alzheimer_hub.dart';
 import 'package:alzheimer_app1/services/location_provider.dart';
+import 'package:alzheimer_app1/services/pacientes_service.dart';
 import 'package:alzheimer_app1/services/usuarios_service.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +25,7 @@ void main() async{
     MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_)=> LocationProvider()),
+          Provider(create: (_)=> SignalRService())
       ],
       child: const LogInpApp(),
     ),
@@ -36,6 +39,7 @@ class LogInpApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
+      initialRoute: '/',
       routes: {
         '/': (context) => const LogInScreen(),
         '/welcome': (context) => const WelcomeScreen(),
@@ -82,9 +86,16 @@ class _LogInFormState extends State<LogInForm> {
   final _userNameTextController = TextEditingController();
   final _passwordTextController = TextEditingController();
   final _usuariosService = UsuariosService();
-  final _signalRService = SignalRService();
+  final _pacientesService = PacientesService();
+  late SignalRService _signalRService;
  
   double _formProgress = 0;
+
+  @override
+  void initState(){
+    super.initState();
+    _signalRService = Provider.of<SignalRService>(context,listen: false);
+  }
   void _showWelcomeScreen() {
     Navigator.of(context).pushNamed('/welcome');
   }
@@ -103,8 +114,16 @@ class _LogInFormState extends State<LogInForm> {
       final data = jsonDecode(response.body);
       await storage.write(key: 'token', value: data['token']);
       final dispositivos = List<String>.from(data['dispositivos']);
+      final pacientes = await _pacientesService.obtenerPacientesPorId(await tokenUtils.getIdUsuarioToken());
+      for(var item in pacientes){
+        if(item.idDispositivo.idDispositivo!=null) {
+          await storage.write(
+              key: item.idDispositivo.idDispositivo!, value: '${item.idPersona.nombre} ${item.idPersona.apellidoP} ${item.idPersona.apellidoM}');
+        }
+      }
       if(!mounted)return;
       await _signalRService.initSignalR(context,dispositivos);
+      if(!mounted)return;
       ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Inicio de sesión exitoso"))
       );

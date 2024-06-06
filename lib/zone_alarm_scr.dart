@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class ZoneAlarmScr extends StatefulWidget {
-  const ZoneAlarmScr({super.key});
+  final String? nombrepaciente;
+  const ZoneAlarmScr({super.key, this.nombrepaciente});
 
   @override
   State<ZoneAlarmScr> createState() => _ZoneAlarmScrState();
 }
 
 class _ZoneAlarmScrState extends State<ZoneAlarmScr> {
+  final storage = const FlutterSecureStorage();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,9 +39,9 @@ class _ZoneAlarmScrState extends State<ZoneAlarmScr> {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              "Zona segura rebasada",
-              style: TextStyle(
+            Text(
+              "El paciente ${widget.nombrepaciente} ha rebasado la zona segura rebasada",
+              style: const TextStyle(
                 fontSize: 20,
                 color: Colors.white,
               ),
