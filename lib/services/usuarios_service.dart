@@ -30,7 +30,7 @@ class UsuariosService {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(nuevoUsuario.toJson()),
     );
-
+    print(nuevoUsuario.toJson());
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
       return Usuarios.fromJson(jsonData);

@@ -901,7 +901,7 @@ class PatientProfile extends StatelessWidget {
                       _showDialog(context, paciente, usuario, () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => PatientManagementScreen(paciente: paciente, usuario: usuario)), //pasar user
+                          MaterialPageRoute(builder: (context) => PeopleManagementScreen(paciente: paciente, usuario: usuario)), //pasar user
                         );
                       });
                     },

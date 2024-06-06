@@ -1,13 +1,17 @@
 import 'package:alzheimer_app1/models/pacientes.dart';
+import 'package:alzheimer_app1/models/personas.dart';
+import 'package:alzheimer_app1/models/usuarios.dart';
 import 'package:alzheimer_app1/people_mgmt_scr.dart';
 import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
 
 class BuscadorPacientesScreen extends StatefulWidget {
   final Pacientes? paciente;
-  const BuscadorPacientesScreen ({super.key, this.paciente});
+  final Usuarios? usuario;
 
-  const BuscadorPacientesScreen.withoutPaciente ({super.key}) : paciente = null;
+  const BuscadorPacientesScreen ({super.key, this.paciente, this.usuario});
+
+  const BuscadorPacientesScreen.withoutUsuario ({super.key, this.paciente}) : usuario = null;
 
   @override
   _BuscadorPacientesScreenState createState() => _BuscadorPacientesScreenState();
@@ -15,32 +19,48 @@ class BuscadorPacientesScreen extends StatefulWidget {
 
 class _BuscadorPacientesScreenState extends State<BuscadorPacientesScreen> {
   final TextEditingController _searchController = TextEditingController();
-  final List<String> _allPatients = [
-    'Juan Pérez',
-    'María Gómez',
-    'Carlos López',
-    'Ana Martínez',
-    'Pedro Sánchez',
-  ];
-  List<String> _filteredPatients = [];
+  late Future<List<Personas>> _allCaregivers;
+  List<Personas> _filteredCaregivers = [];
 
   @override
   void initState() {
     super.initState();
-    _filteredPatients = _allPatients;
+    _allCaregivers = _findCaregivers(widget.paciente, widget.usuario);
+    _allCaregivers.then((caregivers) {
+      setState(() {
+        _filteredCaregivers = caregivers;
+      });
+    });
   }
 
-  void _filterPatients(String query) {
+  Future<List<Personas>> obtenerDetallesPacientes(List<Pacientes> pacientes) async {
+    List<Future<Personas>> futures = pacientes.map((paciente) => personaService.obtenerPersonaPorId(paciente.idPersona!.idPersona!)).toList();
+    return await Future.wait(futures);
+  }
+
+  Future<List<Personas>> _findCaregivers(Pacientes? paciente, Usuarios? usuario) async {
+    if (paciente == null) return [];
+    //cambiar para obtener todos los pacientes existentes
+    final cuidadores = await pacientesService.obtenerPacientesPorId(usuario!.idUsuario!);
+    if (cuidadores.isEmpty) return [];
+    return await obtenerDetallesPacientes(cuidadores);
+  }
+
+  void _filterCaregivers(String query) {
     if (query.isEmpty) {
-      setState(() {
-        _filteredPatients = _allPatients;
+      _allCaregivers.then((caregivers) {
+        setState(() {
+          _filteredCaregivers = caregivers;
+        });
       });
     } else {
-      setState(() {
-        _filteredPatients = _allPatients
-            .where((patient) =>
-                patient.toLowerCase().contains(query.toLowerCase()))
-            .toList();
+      _allCaregivers.then((caregivers) {
+        setState(() {
+          _filteredCaregivers = caregivers.where((caregiver) {
+            final words = caregiver.nombre!.split(' ') + caregiver.apellidoP.split(' ') + caregiver.apellidoM.split(' ');
+            return words.any((word) => word.toLowerCase().contains(query.toLowerCase()));
+          }).toList();
+        });
       });
     }
   }
@@ -72,16 +92,30 @@ class _BuscadorPacientesScreenState extends State<BuscadorPacientesScreen> {
                 labelText: 'Buscar pacientes',
                 border: OutlineInputBorder(),
               ),
-              onChanged: _filterPatients,
+              onChanged: _filterCaregivers,
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: _filteredPatients.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  title: Text(_filteredPatients[index]),
-                );
+            child: FutureBuilder<List<Personas>>(
+              future: _allCaregivers,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No hay pacientes disponibles'));
+                } else {
+                  return ListView.builder(
+                    itemCount: _filteredCaregivers.length,
+                    itemBuilder: (context, index) {
+                      final paciente = _filteredCaregivers[index];
+                      return ListTile(
+                        title: Text('${paciente.nombre ?? 'Sin detalle disponible'} ${paciente.apellidoP} ${paciente.apellidoM}'),
+                      );
+                    },
+                  );
+                }
               },
             ),
           ),
