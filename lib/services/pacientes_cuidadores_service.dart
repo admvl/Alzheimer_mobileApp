@@ -6,13 +6,30 @@ import 'dart:convert';
 import '../models/pacientes_cuidadores.dart';
 
 class PacientesCuidadoresService {
-  final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
+  //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
+  final String baseUrl = "http://192.168.0.15:5066/api";
 
   PacientesCuidadoresService();
 
   //Obtener lista de familiares por ID de usuario
   Future<List<Cuidadores>> obtenerCuidadoresPorId(String id) async {
     final response = await http.get(Uri.parse('$baseUrl/pacientecuidadores/$id'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = jsonDecode(response.body);
+      List<Cuidadores> cuidadores = [];
+      for (var item in jsonData) {
+        cuidadores.add(Cuidadores.fromJson(item));
+      }
+      return cuidadores;
+    } else {
+      throw Exception('Error al obtener lista de familiares por ID');
+    }
+  }
+
+    //Obtener lista de todos los cuidadores
+  Future<List<Cuidadores>> obtenerTodo() async {
+    final response = await http.get(Uri.parse('$baseUrl/todoscuidadores/'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
@@ -44,7 +61,7 @@ class PacientesCuidadoresService {
 
   // Obtener una relacion por ID
   Future<PacientesCuidadores> obtenerPacienteCuidadorPorId(String id) async {
-    final response = await http.get(Uri.parse('$baseUrl/pacientecuidadores/$id'));
+    final response = await http.get(Uri.parse('$baseUrl/pacientescuidadores/$id'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);

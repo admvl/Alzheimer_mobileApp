@@ -1,6 +1,7 @@
 import 'package:alzheimer_app1/bluetooth_scr.dart';
 import 'package:alzheimer_app1/device_conection_scr.dart';
 import 'package:alzheimer_app1/medicine_mgmt.dart';
+import 'package:alzheimer_app1/people_mgmt_scr.dart';
 import 'package:alzheimer_app1/patient_profile.dart';
 import 'package:alzheimer_app1/patient_selection.dart';
 import 'package:alzheimer_app1/services/alzheimer_hub.dart';
@@ -96,13 +97,13 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
           MaterialPageRoute(builder: (context) => const UserMangement()),
         );
         break;
-      case 3:
+      /*case 3:
       // Navigate to CheckLocation
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const MedicineForm()),
         );
-        break;
+        break;*/
       default:
         debugPrint('Unhandled menu item: $index');
     }
@@ -117,7 +118,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
           size: 100, color: Color.fromARGB(255, 3, 189, 164)),
       const Text('Mi Perfil'),
       const Text('Gestionar Usuarios'),
-      const Text('Registro de Medicamentos'),
+      //const Text('Registro de Medicamentos'),
     ];
 
     return Scaffold(
@@ -165,6 +166,22 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       const SizedBox(height: 20),
+                      /*Flexible(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            RegisterScreen registerScreen =
+                            const RegisterScreen();
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                  registerScreen), // Navega a la pantalla RegisterScreen
+                            );
+                          },
+                          icon: const Icon(Icons.edit_note),
+                          label: const Text('Gestionar Usuarios'),
+                        ),
+                      ),*/
                       Flexible(
                         child: ElevatedButton.icon(
                           onPressed: () {
@@ -178,7 +195,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
                             );
                           },
                           icon: const Icon(Icons.edit_note),
-                          label: const Text('Nuevo Usuario'),
+                          label: const Text('Usuarios'),
                         ),
                       ),
                       const SizedBox(height: 10),
@@ -303,7 +320,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
                         zoneAlarmScr), // Navega a la pantalla RegisterScreen
                   );
                 },
-                icon: const Icon(Icons.location_searching),
+                icon: const Icon(Icons.crisis_alert_sharp),
                 label: const Text('Alarma Zona Segura'),
               ),
             ),
@@ -319,7 +336,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
                         fallAlarmScr), // Navega a la pantalla RegisterScreen
                   );
                 },
-                icon: const Icon(Icons.alarm),
+                icon: const Icon(Icons.report_problem_outlined),
                 label: const Text('Alarma Caída'),
               ),
             ),
@@ -335,7 +352,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
                         bluetoothScr), // Navega a la pantalla RegisterScreen
                   );
                 },
-                icon: const Icon(Icons.alarm),
+                icon: const Icon(Icons.handyman_outlined),
                 label: const Text('Configurar Dispositivo'),
               ),
             ),
@@ -350,7 +367,7 @@ class _WelcomeScreenState extends State<WelcomeScreen>{
                         const ConnectionStatusPage()), // Navega a la pantalla RegisterScreen
                   );
                 },
-                icon: const Icon(Icons.alarm),
+                icon: const Icon(Icons.wifi_off),
                 label: const Text('Alarma Conexión'),
               ),
             ),

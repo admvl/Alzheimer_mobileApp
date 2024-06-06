@@ -715,7 +715,7 @@ class CustomIconPassRow extends StatelessWidget {
 import 'package:alzheimer_app1/carer_form.dart';
 import 'package:alzheimer_app1/models/pacientes.dart';
 import 'package:alzheimer_app1/models/usuarios.dart';
-import 'package:alzheimer_app1/patient_mgmt_scr.dart';
+import 'package:alzheimer_app1/people_mgmt_scr.dart';
 import 'package:alzheimer_app1/services/pacientes_service.dart';
 import 'package:alzheimer_app1/services/usuarios_service.dart';
 import 'package:alzheimer_app1/user_form.dart';
@@ -901,7 +901,7 @@ class PatientProfile extends StatelessWidget {
                       _showDialog(context, paciente, usuario, () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => PatientManagementScreen(paciente: paciente)),
+                          MaterialPageRoute(builder: (context) => PeopleManagementScreen(paciente: paciente, usuario: usuario)), //pasar user
                         );
                       });
                     },

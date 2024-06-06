@@ -223,7 +223,8 @@ class _FamiliarFormState extends State<FamiliarForm> {
                       nombre: formValues['nombre'],
                       apellidoP: formValues['apellidoPaterno'],
                       apellidoM: formValues['apellidoMaterno'],
-                      fechaNacimiento: DateTime.parse(formValues['fechaNac']),
+                      //fechaNacimiento: DateTime.parse(formValues['fechaNac']),
+                      fechaNacimiento: formValues['fechaNac'],
                       numeroTelefono: formValues['telefono'],
                     );
                     try{
