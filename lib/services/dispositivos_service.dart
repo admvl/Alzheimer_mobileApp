@@ -8,6 +8,22 @@ class DispositivosService {
 
   DispositivosService();
 
+  // Crear una nuevo dispositivo
+  Future<Dispositivos> crearDispositivo(Dispositivos nuevoDispositivo) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/CrearDispositivo'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode(nuevoDispositivo.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonData = jsonDecode(response.body);
+      return Dispositivos.fromJson(jsonData);
+    } else {
+      throw Exception('Error al crear una nuevo Dispositivo');
+    }
+  }
+
   //Actualizar geocerca
   Future<Dispositivos> actualizarDispositivos(
       String id, Dispositivos dispositivoActualizado) async {

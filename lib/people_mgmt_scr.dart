@@ -99,33 +99,6 @@ class _PeopleManagementScreenState extends State<PeopleManagementScreen> with Pe
     );
   }
 
-  /*
-  @override
-  void initState() {
-    super.initState();
-    // Initialize tabs and views based on whether paciente is available
-    if (widget.paciente != null) {
-      myTabs = [
-        const Tab(text: 'Familiares'),
-        const Tab(text: 'Cuidadores'),
-      ];
-      tabViews = [
-        FamiliaresTab(paciente: widget.paciente, usuario: widget.usuario),
-        CuidadoresTab(paciente: widget.paciente, usuario: widget.usuario),
-      ];
-    } else {
-      myTabs = [
-        const Tab(text: 'Familiares'),
-        const Tab(text: 'Cuidadores'),
-        const Tab(text: 'Pacientes'),
-      ];
-      tabViews = [
-        FamiliaresTab(paciente: widget.paciente, usuario: widget.usuario),
-        CuidadoresTab(paciente: widget.paciente, usuario: widget.usuario),
-        PacientesTab(paciente: widget.paciente, usuario: widget.usuario),
-      ];
-    }
-  }*/
   @override
   void initState() {
     super.initState();
@@ -155,18 +128,18 @@ class _PeopleManagementScreenState extends State<PeopleManagementScreen> with Pe
       ];
     } else if (widget.paciente != null) {
       myTabs = [
-        if (hasPermission("familyTab"))
+        //if (hasPermission("familyTab"))
           const Tab(text: 'Familiares'),
         
-        if (hasPermission("carerTab"))
+        //if (hasPermission("carerTab"))
           const Tab(text: 'Cuidadores'),
       ];
       tabViews = [
-        if (hasPermission("familyTab"))
+        //if (hasPermission("familyTab"))
           FamiliaresTab(paciente: widget.paciente, usuario: _usuario),
 
-        if (hasPermission("carerTab"))
-        CuidadoresTab(paciente: widget.paciente, usuario: _usuario),
+        //if (hasPermission("carerTab"))
+          CuidadoresTab(paciente: widget.paciente, usuario: _usuario),
       ];
     }
   }
@@ -175,18 +148,26 @@ class _PeopleManagementScreenState extends State<PeopleManagementScreen> with Pe
 
 
 //Cuidador no tiene acceso
-class FamiliaresTab extends StatelessWidget {
+//class FamiliaresTab extends StatelessWidget {
+class FamiliaresTab extends StatefulWidget {
   final Pacientes? paciente;
   final Usuarios? usuario;
 
-  const FamiliaresTab({Key? key, this.paciente, this.usuario}) : super(key: key);
-  const FamiliaresTab.withoutPatient({Key? key, this.usuario}) : paciente = null;
-  const FamiliaresTab.withoutUser({Key? key, this.paciente}) : usuario = null;
+  const FamiliaresTab({super.key, this.paciente, this.usuario});
+  const FamiliaresTab.withoutPatient({super.key, this.usuario}) : paciente = null;
+  const FamiliaresTab.withoutUser({super.key, this.paciente}) : usuario = null;
+
+  @override
+  _FamiliaresTabState createState() => _FamiliaresTabState();
+}
+
+class _FamiliaresTabState extends State<FamiliaresTab> with PermissionMixin<FamiliaresTab> {
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        if (hasPermission("addFam"))
         Padding(
           padding: const EdgeInsets.all(8.0),
           child: ElevatedButton(
@@ -219,10 +200,16 @@ class FamiliaresTab extends StatelessWidget {
   Widget _buildFamiliaresList(BuildContext context) {
 
     late Future<List<Familiares>> familiaresFuture;
-    if(usuario!.idTipoUsuario!.tipoUsuario == "Administrador"){
+    if(widget.usuario!.idTipoUsuario!.tipoUsuario == "Administrador"){
+      if(widget.paciente!= null){
+        //solo familiares asignados al paciente actual
+        familiaresFuture = familiareservice.obtenerFamiliaresPorId(widget.paciente!.idPaciente!);
+      }else{
+       //muestra a todos los familiares para gestión de usuario
        familiaresFuture = familiareservice.obtenerTodosFamiliares();  
-    } else if (usuario!.idTipoUsuario!.tipoUsuario == "Familiar" ){ // cuidador no tiene acceso
-        familiaresFuture = familiareservice.obtenerFamiliaresPorId(usuario!.idUsuario!);
+      }
+    } else if (widget.usuario!.idTipoUsuario!.tipoUsuario == "Familiar" ){ // cuidador no tiene acceso
+       familiaresFuture = familiareservice.obtenerFamiliaresPorId(widget.paciente!.idPaciente!);
     }
 
     return FutureBuilder<List<Familiares>>(
@@ -266,11 +253,26 @@ class FamiliaresTab extends StatelessWidget {
 }
 
 
+class CuidadoresTab extends StatefulWidget {
+  final Pacientes? paciente;
+  final Usuarios? usuario;
+
+  const CuidadoresTab({Key? key, this.paciente, this.usuario}) : super(key: key);
+  const CuidadoresTab.withoutPatient({Key? key, this.usuario}) : paciente = null;
+  const CuidadoresTab.withoutUser({Key? key, this.paciente}) : usuario = null;
+
+  @override
+  _CuidadoresTabState createState() => _CuidadoresTabState();
+}
+
+class _CuidadoresTabState extends State<CuidadoresTab> with PermissionMixin<CuidadoresTab> {
+/*
 class CuidadoresTab extends StatelessWidget {
   final Pacientes? paciente;
   final Usuarios? usuario;
   const CuidadoresTab({super.key, this.paciente, this.usuario});
   const CuidadoresTab.withoutUser({super.key, this.paciente}) : usuario = null;
+*/
 
   /* PENDIENTE ELIMINAR
   void _removeCuidadorPaciente(Cuidadores? cuidador) async {
@@ -319,10 +321,16 @@ class CuidadoresTab extends StatelessWidget {
   Widget _buildCuidadoresList (BuildContext context){
 
     late Future<List<Cuidadores>> cuidadoresFuture;
-    if(usuario!.idTipoUsuario!.tipoUsuario == "Administrador"){
+    if(widget.usuario!.idTipoUsuario!.tipoUsuario == "Administrador"){
+      if(widget.paciente!= null){
+        //solo cuidadores asignados al paciente actual
+        cuidadoresFuture = cuidadoresService.obtenerCuidadoresPorId(widget.paciente!.idPaciente!);  
+      } else{
+        //obtiene todos los cuidadores para gestionar usuarios
        cuidadoresFuture = cuidadoresService.obtenerTodosCuidadores();  
-    } else if (usuario!.idTipoUsuario!.tipoUsuario == "Familiar"){ //cuidador no tiene acceso
-      cuidadoresFuture = cuidadoresService.obtenerCuidadoresPorId(paciente?.idPaciente ?? usuario!.idUsuario!);  
+      }
+    } else if (widget.usuario!.idTipoUsuario!.tipoUsuario == "Familiar"){ //cuidador no tiene acceso
+      cuidadoresFuture = cuidadoresService.obtenerCuidadoresPorId(widget.paciente!.idPaciente!);  
     }
 
     return FutureBuilder<List<Cuidadores>>(
@@ -403,13 +411,12 @@ class _PacientesTabState extends State<PacientesTab>  with PermissionMixin<Pacie
 
 
   Widget _buildPacientesList(BuildContext context){
-    print("***** TIPO USUARIO");
-    print(widget.usuario!.idTipoUsuario!.tipoUsuario);
+
     late Future<List<Pacientes>> pacientesFuture;
     if(widget.usuario!.idTipoUsuario!.tipoUsuario == "Administrador"){
        pacientesFuture = pacientesService.obtenerTodosPacientes();  
     } else if (widget.usuario!.idTipoUsuario!.tipoUsuario == "Familiar" || widget.usuario!.idTipoUsuario!.tipoUsuario == "Cuidador"){
-      pacientesFuture = pacientesService.obtenerPacientesPorId(widget.paciente?.idPaciente ?? widget.usuario!.idUsuario!);  
+      pacientesFuture = pacientesService.obtenerPacientesPorId(widget.usuario!.idUsuario!);  
     }
 
     return FutureBuilder<List<Pacientes>>(
