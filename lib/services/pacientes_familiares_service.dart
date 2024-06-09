@@ -7,13 +7,14 @@ import 'dart:convert';
 
 class PacientesFamiliaresService {
   //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
-  final String baseUrl = "http://192.168.0.15:5066/api";
+  final String baseUrl = "http://192.168.68.120:5066/api";
 
   PacientesFamiliaresService();
 
   //Obtener lista de familiares por ID de usuario
   Future<List<Familiares>> obtenerFamiliaresPorId(String id) async {
-    final response = await http.get(Uri.parse('$baseUrl/pacientefamiliares/$id'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/pacientefamiliares/$id'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);

@@ -17,13 +17,13 @@ class SignalRService {
   late HubConnection? hubConnection;
   final String hubUrl =
       //"https://alzheimerwebapi.azurewebsites.net/notificationHub";
-      "http://192.168.0.15:5066/notificationHub";
+  "http://192.168.68.120:5066/notificationHub";
   bool isZoneAlarmScreenOpen = false;
   bool isFallAlarmScreenOpen = false;
   bool isDisconnectedScreenOpen = false;
   Timer? _notificationTimer;
   final storage = const FlutterSecureStorage();
-  List<String> _deviceIds =[];
+  List<String> _deviceIds = [];
 
   Future<void> initSignalR(BuildContext context, List<String> deviceIds) async {
     _deviceIds = deviceIds;
@@ -70,8 +70,13 @@ class SignalRService {
         // Aquí puedes manejar la actualización de la ubicación
         print(
             'Location update: $mac is at ($latitude, $longitude) at $fechaHora');
-        final locationProvider = Provider.of<LocationProvider>(context,listen: false);
-        locationProvider.updateLocation(LocationData(mac:mac,latitude:latitude,longitude:longitude,fechaHora:fechaHora));
+        final locationProvider =
+            Provider.of<LocationProvider>(context, listen: false);
+        locationProvider.updateLocation(LocationData(
+            mac: mac,
+            latitude: latitude,
+            longitude: longitude,
+            fechaHora: fechaHora));
       }
     });
   }
@@ -96,10 +101,13 @@ class SignalRService {
         if (!isZoneAlarmScreenOpen) {
           final nombrepaciente = await storage.read(key: mac);
           isZoneAlarmScreenOpen = true;
-          if(!context.mounted)return;
-          Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ZoneAlarmScr(nombrepaciente: nombrepaciente,)))
-              .then((_) {
+          if (!context.mounted) return;
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ZoneAlarmScr(
+                        nombrepaciente: nombrepaciente,
+                      ))).then((_) {
             isZoneAlarmScreenOpen = false;
           });
         }
@@ -126,10 +134,13 @@ class SignalRService {
         if (!isFallAlarmScreenOpen) {
           final nombrepaciente = await storage.read(key: mac);
           isFallAlarmScreenOpen = true;
-          if(!context.mounted)return;
-          Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => FallAlarmScr(nombrepaciente: nombrepaciente,)))
-              .then((_) {
+          if (!context.mounted) return;
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => FallAlarmScr(
+                        nombrepaciente: nombrepaciente,
+                      ))).then((_) {
             isFallAlarmScreenOpen = false;
           });
         }
@@ -151,16 +162,16 @@ class SignalRService {
               content: Text(
                   'El paciente ha perdido la conexion: $mac a las $fechaHora')),
         );
-        if(!isDisconnectedScreenOpen) {
+        if (!isDisconnectedScreenOpen) {
           final nombrepaciente = await storage.read(key: mac);
           isDisconnectedScreenOpen = true;
-          if(!context.mounted)return;
+          if (!context.mounted) return;
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => ConnectionStatusPage(nombrepaciente: nombrepaciente)
-              )
-          ).then((_) {
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ConnectionStatusPage(nombrepaciente: nombrepaciente)))
+              .then((_) {
             isDisconnectedScreenOpen = false;
           });
         }
@@ -185,10 +196,12 @@ class SignalRService {
   }
 
   Future<void> unsubscribeFromDevices() async {
-    if (hubConnection != null && hubConnection!.state == HubConnectionState.Connected) {
+    if (hubConnection != null &&
+        hubConnection!.state == HubConnectionState.Connected) {
       try {
         print('Desuscribiendo de dispositivos: $_deviceIds');
-        await hubConnection!.invoke("UnsubscribeFromDevices", args: [_deviceIds]);
+        await hubConnection!
+            .invoke("UnsubscribeFromDevices", args: [_deviceIds]);
       } catch (error) {
         print('Error desuscribiéndose de dispositivos: $error');
       }
