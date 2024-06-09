@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -131,7 +132,17 @@ class _BluetoothScrState extends State<BluetoothScr> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Bluetooth Connection'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+            );
+          },
+        ),
       ),
       body: Center(
         child: isScanning

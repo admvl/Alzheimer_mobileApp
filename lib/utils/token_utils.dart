@@ -31,4 +31,19 @@ class TokenUtils{
       throw Exception('Token expirado');
     }
   }
+  
+  Future<List<String>> getPermisosUsuarioToken() async {
+    String? token = await storage.read(key: 'token');
+    if (token != null) {
+      Map<String, dynamic> decodedToken = Jwt.parseJwt(token);
+      String? permisosStr = decodedToken['permissions'];
+      if (permisosStr != null) {
+        return permisosStr.split(',').toList();
+      } else {
+        throw Exception('El token no contiene permisos válidos');
+      }
+    } else {
+      throw Exception('Token expirado');
+    }
+  }
 }

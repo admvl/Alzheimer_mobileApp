@@ -27,6 +27,25 @@ class PacientesFamiliaresService {
     }
   }
 
+  //Obtener todoas los pacientes por ID de usuario loggeado
+  Future<List<Familiares>> obtenerTodosFamiliares() async {
+    final response = await http.get(Uri.parse('$baseUrl/todosfamiliares/'));
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonData = jsonDecode(response.body);
+      //final Map<String, dynamic> jsonData = jsonDecode(response.body);
+      //List<Pacientes> pacientes = jsonData.map((e) => Pacientes.fromJson(e)).toList();
+      List<Familiares> familiares = [];
+      for (var item in jsonData) {
+        familiares.add(Familiares.fromJson(item));
+      }
+      return familiares;
+      //return Pacientes.fromJson(jsonData);
+    } else {
+      throw Exception('Error al obtener todos los familiares por ID');
+    }
+  }
+
   Future<PacientesFamiliares> crearPacienteFamiliar(
       PacientesFamiliares nuevaRelacion) async {
     final response = await http.post(

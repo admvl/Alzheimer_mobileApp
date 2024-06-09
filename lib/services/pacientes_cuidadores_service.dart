@@ -28,7 +28,7 @@ class PacientesCuidadoresService {
   }
 
     //Obtener lista de todos los cuidadores
-  Future<List<Cuidadores>> obtenerTodo() async {
+  Future<List<Cuidadores>> obtenerTodosCuidadores() async {
     final response = await http.get(Uri.parse('$baseUrl/todoscuidadores/'));
 
     if (response.statusCode == 200) {
@@ -39,7 +39,7 @@ class PacientesCuidadoresService {
       }
       return cuidadores;
     } else {
-      throw Exception('Error al obtener lista de familiares por ID');
+      throw Exception('Error al obtener lista de todos los cuidadores');
     }
   }
 
