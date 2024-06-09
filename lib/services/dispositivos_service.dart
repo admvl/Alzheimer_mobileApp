@@ -66,4 +66,17 @@ class DispositivosService {
       throw Exception('Error al obtener dispositivos');
     }
   }
+
+  // Eliminar un dispositivo por ID
+  Future<bool> eliminarDispositivoPorId(String id) async {
+    final response = await http.delete(Uri.parse('$baseUrl/dispositivos/$id'));
+
+    if (response.statusCode == 204) {
+      return true;
+    } else if (response.statusCode == 404) {
+      return false;
+    } else {
+      throw Exception('Error al eliminar dispositivo por ID');
+    }
+  }
 }

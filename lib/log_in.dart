@@ -135,7 +135,7 @@ class _LogInFormState extends State<LogInForm> {
       _showWelcomeScreen();
     }else if (response.statusCode == 401) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Contraseña incorrecta"))
+        const SnackBar(content: Text("Datos incorrectos"))
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
