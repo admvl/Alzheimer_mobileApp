@@ -11,11 +11,19 @@ class Dias{
     required this.idCuidaPaciente,
   });
 
+  /*
   factory Dias.fromJson(Map<String, dynamic> json){
     return Dias(
       idDia: json['IdDia'] as String,
       dia: DateTime.parse(json['Dia'] as String),
       idCuidaPaciente: PacientesCuidadores.fromJson(json['IdCuidaPacienteNavigation']),
+    );
+  }*/
+  factory Dias.fromJson(Map<String, dynamic> json){
+  return Dias(
+      idDia: json['IdDia'] as String?,
+      dia: DateTime.parse(json['Dia'] as String? ?? '2000-01-01T00:00:00Z'),
+      idCuidaPaciente: PacientesCuidadores.fromJson(json['IdCuidaPacienteNavigation'] as Map<String, dynamic>),
     );
   }
 
