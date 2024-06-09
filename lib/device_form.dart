@@ -207,6 +207,12 @@ class _DeviceFormState extends State<DeviceForm> {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Dispositivo registrado con éxito')),
                       );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const DeviceMmgt(),
+                        ),
+                      );
                     } catch (e) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text('Error al registrar dispositivo: $e')),

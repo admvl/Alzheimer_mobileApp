@@ -3,29 +3,49 @@ import 'package:alzheimer_app1/models/dispositivos.dart';
 import 'package:alzheimer_app1/models/pacientes.dart';
 import 'package:alzheimer_app1/services/dispositivos_service.dart';
 import 'package:alzheimer_app1/utils/permission_mixin.dart';
+import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
 
 final dispositivosService = DispositivosService();
 
 class DeviceMmgt extends StatefulWidget {
   final Pacientes? paciente;
-  //final Usuarios? usuario;
   const DeviceMmgt({super.key, this.paciente});
-  //const DeviceMmgt.withoutUser({super.key, this.paciente}) : usuario = null;
 
   @override
   _DeviceMgmtState createState() => _DeviceMgmtState();
 }
 
-
 class _DeviceMgmtState extends State<DeviceMmgt> with PermissionMixin<DeviceMmgt> {
+  late Future<List<Dispositivos>> dispositivosFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    dispositivosFuture = dispositivosService.obtenerDispositivos();
+  }
+
+  void _reloadDevices() {
+    setState(() {
+      dispositivosFuture = dispositivosService.obtenerDispositivos();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text('Gestión de Dispositivos'),
+        title: const Text('Gestión de Dispositivos'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const WelcomeScreen()),
+            );
+          },
+        ),
       ),
       body: Column(
         children: [
@@ -37,7 +57,7 @@ class _DeviceMgmtState extends State<DeviceMmgt> with PermissionMixin<DeviceMmgt
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DeviceForm(),
+                      builder: (context) => const DeviceForm(),
                     ),
                   );
                 },
@@ -60,9 +80,6 @@ class _DeviceMgmtState extends State<DeviceMmgt> with PermissionMixin<DeviceMmgt
   }
 
   Widget _buildDevicesList(BuildContext context) {
-    late Future<List<Dispositivos>> dispositivosFuture;
-    dispositivosFuture = dispositivosService.obtenerDispositivos();
-
     return FutureBuilder<List<Dispositivos>>(
       future: dispositivosFuture,
       builder: (context, snapshot) {
@@ -83,11 +100,53 @@ class _DeviceMgmtState extends State<DeviceMmgt> with PermissionMixin<DeviceMmgt
               return ListTile(
                 leading: const Icon(Icons.devices),
                 title: Text('${dispositivo.idDispositivo}'),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () => _confirmRemoveDevice(dispositivo.idDispositivo),
+                ),
               );
             },
           );
         }
       },
     );
+  }
+
+  Future<void> _confirmRemoveDevice(String? idDispositivo) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar eliminación'),
+        content: const Text('¿Está seguro de que desea eliminar este dispositivo?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldDelete == true) {
+      _removeDevice(idDispositivo);
+    }
+  }
+
+  Future<void> _removeDevice(String? idDispositivo) async {
+    try {
+      await dispositivosService.eliminarDispositivoPorId(idDispositivo!);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Dispositivo eliminado con éxito')),
+      );
+      _reloadDevices(); // Recargar la lista de dispositivos
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al eliminar el dispositivo: $e')),
+      );
+    }
   }
 }
