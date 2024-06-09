@@ -6,6 +6,7 @@ import 'package:alzheimer_app1/models/log_in.dart';
 import 'package:alzheimer_app1/services/alzheimer_hub.dart';
 import 'package:alzheimer_app1/services/location_provider.dart';
 import 'package:alzheimer_app1/services/pacientes_service.dart';
+import 'package:alzheimer_app1/services/user_provider.dart';
 import 'package:alzheimer_app1/services/usuarios_service.dart';
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,8 @@ void main() async{
     MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (_)=> LocationProvider()),
-          Provider(create: (_)=> SignalRService())
+          Provider(create: (_)=> SignalRService()),
+          ChangeNotifierProvider(create: (_) => UserProvider()),
       ],
       child: const LogInpApp(),
     ),

@@ -719,6 +719,7 @@ import 'package:alzheimer_app1/people_mgmt_scr.dart';
 import 'package:alzheimer_app1/services/pacientes_service.dart';
 import 'package:alzheimer_app1/services/usuarios_service.dart';
 import 'package:alzheimer_app1/user_form.dart';
+import 'package:alzheimer_app1/utils/permission_mixin.dart';
 import 'package:alzheimer_app1/utils/token_utils.dart';
 import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
@@ -732,8 +733,18 @@ final pacientesService = PacientesService();
 final usuariosService = UsuariosService();
 final tokenUtils = TokenUtils();
 
-class PatientProfile extends StatelessWidget {
+//class PatientProfile extends StatelessWidget {
+class PatientProfile extends StatefulWidget {
   const PatientProfile({super.key});
+
+  @override
+  _PatientProfileState createState() => _PatientProfileState();
+}
+
+
+
+class _PatientProfileState extends State<PatientProfile>  with PermissionMixin<PatientProfile>{
+  //const PatientProfile({super.key});
   static const Color dividerColor = Colors.black;
 
   Future<void> _showDialog(BuildContext context, Pacientes paciente, Usuarios usuario, Function onSuccessRedirect) {
@@ -885,17 +896,20 @@ class PatientProfile extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: () {
-                      _showDialog(context, paciente, usuario, () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => UserForm(paciente: paciente)),
-                        );
-                      });
-                    },
-                    child: const Text("Editar Información"),
-                  ),
+                  //user_form
+                  if (hasPermission("user_form"))
+                    ElevatedButton(
+                      onPressed: () {
+                        _showDialog(context, paciente, usuario, () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => UserForm(paciente: paciente)),
+                          );
+                        });
+                      },
+                      child: const Text("Editar Información"),
+                    ),
+                  if (hasPermission("patientMgmt"))
                   ElevatedButton(
                     onPressed: () {
                       _showDialog(context, paciente, usuario, () {
