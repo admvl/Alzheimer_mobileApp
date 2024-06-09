@@ -7,7 +7,7 @@ import '../models/pacientes_cuidadores.dart';
 
 class PacientesCuidadoresService {
   //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
-  final String baseUrl = "http://192.168.68.120:5066/api";
+  final String baseUrl = "http://192.168.68.122:5066/api";
 
   PacientesCuidadoresService();
 
@@ -28,7 +28,7 @@ class PacientesCuidadoresService {
     }
   }
 
-    //Obtener lista de todos los cuidadores
+  //Obtener lista de todos los cuidadores
   Future<List<Cuidadores>> obtenerTodosCuidadores() async {
     final response = await http.get(Uri.parse('$baseUrl/todoscuidadores/'));
 
