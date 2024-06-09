@@ -5,14 +5,14 @@ import 'package:alzheimer_app1/models/familiares.dart';
 class Cuidadores{
   final String? idCuidador;
   final Usuarios idUsuario;
-  final Familiares idFamiliar;
-  final PacientesCuidadores? pacientesCuidadores;
+  final Familiares? idFamiliar;
+  final List<PacientesCuidadores?>? pacientesCuidadores;
   
   
   Cuidadores({
     this.idCuidador,
     required this.idUsuario,
-    required this.idFamiliar,
+    this.idFamiliar,
     this.pacientesCuidadores,
   });
 
@@ -20,8 +20,10 @@ class Cuidadores{
     return Cuidadores(
       idCuidador: json['IdCuidador']as String?,
       idUsuario: Usuarios.fromJson(json['IdUsuarioNavigation']),
-      idFamiliar: Familiares.fromJson(json['IdFamiliarNavigation']),
-      pacientesCuidadores: json['PacientesCuidadores'] != null ? PacientesCuidadores.fromJson(json['PacientesCuidadores']) : null,
+      idFamiliar: json['IdFamiliarNavigation']!= null ? Familiares.fromJson(json['IdFamiliarNavigation']) : null,
+      pacientesCuidadores: json['PacientesCuidadores'] != null ?
+        (json['PacientesCuidadores'] as List).map((i)=> PacientesCuidadores.fromJson(i))
+        .toList() : null,
     );
   }
 
@@ -37,11 +39,11 @@ class Cuidadores{
   final Map<String, dynamic> data = {
     'IdCuidador': idCuidador ?? '',
     'IdUsuario': idUsuario.idUsuario,
-    'IdFamiliar': idFamiliar.idFamiliar,
+    'IdFamiliar': idFamiliar?.idFamiliar,
   };
 
   if (pacientesCuidadores != null) {
-    data['PacientesCuidadores'] = pacientesCuidadores!.toJson();
+    data['PacientesCuidadores'] = pacientesCuidadores!.map((i) => i!.toJson()).toList();
   }
 
   return data;
