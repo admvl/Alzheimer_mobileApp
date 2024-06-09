@@ -7,13 +7,14 @@ import '../models/pacientes_cuidadores.dart';
 
 class PacientesCuidadoresService {
   //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
-  final String baseUrl = "http://192.168.0.15:5066/api";
+  final String baseUrl = "http://192.168.68.120:5066/api";
 
   PacientesCuidadoresService();
 
   //Obtener lista de familiares por ID de usuario
   Future<List<Cuidadores>> obtenerCuidadoresPorId(String id) async {
-    final response = await http.get(Uri.parse('$baseUrl/pacientecuidadores/$id'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/pacientecuidadores/$id'));
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
@@ -27,7 +28,7 @@ class PacientesCuidadoresService {
     }
   }
 
-    //Obtener lista de todos los cuidadores
+  //Obtener lista de todos los cuidadores
   Future<List<Cuidadores>> obtenerTodo() async {
     final response = await http.get(Uri.parse('$baseUrl/todoscuidadores/'));
 
@@ -61,7 +62,8 @@ class PacientesCuidadoresService {
 
   // Obtener una relacion por ID
   Future<PacientesCuidadores> obtenerPacienteCuidadorPorId(String id) async {
-    final response = await http.get(Uri.parse('$baseUrl/pacientescuidadores/$id'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/pacientescuidadores/$id'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
