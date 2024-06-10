@@ -27,11 +27,17 @@ class SignalRService {
 
   Future<void> initSignalR(BuildContext context, List<String> deviceIds) async {
     _deviceIds = deviceIds;
+    String? token = await storage.read(key: 'token');
+
+    if (token == null) {
+      throw Exception("Token not found");
+    }
     hubConnection = HubConnectionBuilder()
         .withUrl(
           hubUrl,
           options: HttpConnectionOptions(
             transport: HttpTransportType.WebSockets,
+            accessTokenFactory: () async => token,
           ),
         )
         .build();

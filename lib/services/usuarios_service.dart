@@ -17,7 +17,9 @@ class UsuariosService {
   Future<http.Response> login(LogIn usuario) async {
     final response = await http.post(
       Uri.parse('$baseUrl/login'),
-      headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json'
+        },
       body: jsonEncode(usuario.toJson()),
     );
     return response;
@@ -25,9 +27,16 @@ class UsuariosService {
 
   // Crear una nueva persona
   Future<Usuarios> crearUsuario(Users nuevoUsuario) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response = await http.post(
       Uri.parse('$baseUrl/CrearUsuario'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
+      },
       body: jsonEncode(nuevoUsuario.toJson()),
     );
     print(nuevoUsuario.toJson());
@@ -41,9 +50,16 @@ class UsuariosService {
 
   // Actualizar una nueva persona
   Future<Usuarios> actualizarUsuario(Users actualizarUsuario) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response = await http.put(
       Uri.parse('$baseUrl/usuarios/${actualizarUsuario.usuario.idUsuario}'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
+      },
       body: jsonEncode(actualizarUsuario.toJson()),
     );
 
@@ -57,7 +73,14 @@ class UsuariosService {
 
   // Obtener una persona por ID
   Future<Usuarios> obtenerUsuarioPorId(String id) async {
-    final response = await http.get(Uri.parse('$baseUrl/usuarios/$id'));
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    final response = await http.get(Uri.parse('$baseUrl/usuarios/$id'),
+      headers: {
+        'Authorization': 'Bearer $token'
+      },);
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -68,8 +91,15 @@ class UsuariosService {
   }
 
   Future<TiposUsuarios> obtenerTipoUsuario(String tipoUsuario) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response =
-        await http.get(Uri.parse('$baseUrl/tiposusuarios/$tipoUsuario'));
+        await http.get(Uri.parse('$baseUrl/tiposusuarios/$tipoUsuario'),
+          headers: {
+            'Authorization': 'Bearer $token'
+          });
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -82,9 +112,16 @@ class UsuariosService {
   // Actualizar una persona por ID
   Future<Usuarios> actualizarUsuarioPorId(
       String id, Usuarios usuarioActualizado) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response = await http.put(
       Uri.parse('$baseUrl/usuarios/$id'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
+      },
       body: jsonEncode(usuarioActualizado.toJson()),
     );
 
@@ -98,7 +135,14 @@ class UsuariosService {
 
   // Eliminar una persona por ID
   Future<bool> eliminarUsuarioPorId(String id) async {
-    final response = await http.delete(Uri.parse('$baseUrl/usuarios/$id'));
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    final response = await http.delete(Uri.parse('$baseUrl/usuarios/$id'),
+      headers: {
+        'Authorization': 'Bearer $token'
+      });
 
     if (response.statusCode == 204) {
       return true;
