@@ -3,8 +3,8 @@ import 'package:alzheimer_app1/models/pacientes.dart';
 
 class PacientesFamiliares{
   final String? idPacienteFamiliar;
-  final Pacientes idPaciente;
-  final Familiares idFamiliar;
+  final String idPaciente;
+  final String idFamiliar;
   
   
   PacientesFamiliares({
@@ -16,16 +16,16 @@ class PacientesFamiliares{
   factory PacientesFamiliares.fromJson(Map<String, dynamic> json){
     return PacientesFamiliares(
       idPacienteFamiliar: json['IdPacienteFamiliar']as String,
-      idPaciente: Pacientes.fromJson(json['IdPacienteNavigation']),
-      idFamiliar: Familiares.fromJson(json['IdFamiliarNavigation']),
+      idPaciente: json['IdPaciente'] as String,
+      idFamiliar: json['IdFamiliar'] as String,
     );
   }
 
   Map<String, dynamic> toJson(){
     return{
-     // 'IdPacienteFamiliar': idPacienteFamiliar ?? '',
-      'IdPaciente': idPaciente.idPaciente,
-      'IdFamiliar': idFamiliar.idFamiliar,
+      if(idPacienteFamiliar!=null) 'IdPacienteFamiliar': idPacienteFamiliar,
+      'IdPaciente': idPaciente,
+      'IdFamiliar': idFamiliar,
     };
   }
 }

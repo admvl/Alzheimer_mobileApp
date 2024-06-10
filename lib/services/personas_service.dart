@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import '../models/personas.dart'; // Importa tu clase Personas aquí
 
 class PersonasService {
+  final storage = const FlutterSecureStorage();
   //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
   final String baseUrl = "http://192.168.68.122:5066/api";
 
@@ -10,9 +12,16 @@ class PersonasService {
 
   // Crear una nueva persona
   Future<Personas> crearPersona(Personas nuevaPersona) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response = await http.post(
       Uri.parse('$baseUrl/CrearPersona'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
+      },
       body: jsonEncode(nuevaPersona.toJson()),
     );
 
@@ -26,7 +35,14 @@ class PersonasService {
 
   // Obtener una persona por ID
   Future<Personas> obtenerPersonaPorId(String id) async {
-    final response = await http.get(Uri.parse('$baseUrl/personas/$id'));
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    final response = await http.get(Uri.parse('$baseUrl/personas/$id'),
+      headers: {
+        'Authorization': 'Bearer $token'
+      });
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -39,9 +55,16 @@ class PersonasService {
   // Actualizar una persona por ID
   Future<Personas> actualizarPersonaPorId(
       String id, Personas personaActualizada) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response = await http.put(
       Uri.parse('$baseUrl/personas/$id'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
+      },
       body: jsonEncode(personaActualizada.toJson()),
     );
 
@@ -55,7 +78,14 @@ class PersonasService {
 
   // Eliminar una persona por ID
   Future<bool> eliminarPersonaPorId(String id) async {
-    final response = await http.delete(Uri.parse('$baseUrl/personas/$id'));
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    final response = await http.delete(Uri.parse('$baseUrl/personas/$id'),
+      headers: {
+        'Authorization': 'Bearer $token'
+      });
 
     if (response.statusCode == 204) {
       return true;

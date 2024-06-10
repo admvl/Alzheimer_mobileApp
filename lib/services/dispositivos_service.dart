@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:alzheimer_app1/models/dispositivos.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class DispositivosService {
+  final storage = FlutterSecureStorage();
   //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
   final String baseUrl = "http://192.168.68.122:5066/api";
 
@@ -10,9 +12,16 @@ class DispositivosService {
 
   // Crear una nuevo dispositivo
   Future<Dispositivos> crearDispositivo(Dispositivos nuevoDispositivo) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response = await http.post(
       Uri.parse('$baseUrl/CrearDispositivo'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
+      },
       body: jsonEncode(nuevoDispositivo.toJson()),
     );
 
@@ -27,9 +36,16 @@ class DispositivosService {
   //Actualizar geocerca
   Future<Dispositivos> actualizarDispositivos(
       String id, Dispositivos dispositivoActualizado) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response = await http.put(
       Uri.parse(('$baseUrl/dispositivos/$id')),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
+      },
       body: jsonEncode(dispositivoActualizado.toJson()),
     );
     if (response.statusCode == 200) {
@@ -42,7 +58,14 @@ class DispositivosService {
 
   // Obtener una persona por ID
   Future<Dispositivos> obtenerDispositivoPorId(String id) async {
-    final response = await http.get(Uri.parse('$baseUrl/dispositivos/$id'));
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    final response = await http.get(Uri.parse('$baseUrl/dispositivos/$id'),
+      headers: {
+        'Authorization': 'Bearer $token'
+      });
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -53,7 +76,14 @@ class DispositivosService {
   }
 
   Future<List<Dispositivos>> obtenerDispositivos() async {
-    final response = await http.get(Uri.parse('$baseUrl/dispositivos/'));
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    final response = await http.get(Uri.parse('$baseUrl/dispositivos/'),
+      headers: {
+        'Authorization': 'Bearer $token'
+      });
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
@@ -69,7 +99,14 @@ class DispositivosService {
 
   // Eliminar un dispositivo por ID
   Future<bool> eliminarDispositivoPorId(String id) async {
-    final response = await http.delete(Uri.parse('$baseUrl/dispositivos/$id'));
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    final response = await http.delete(Uri.parse('$baseUrl/dispositivos/$id'),
+      headers: {
+        'Authorization': 'Bearer $token'
+      });
 
     if (response.statusCode == 204) {
       return true;

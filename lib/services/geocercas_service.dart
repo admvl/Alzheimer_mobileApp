@@ -4,18 +4,25 @@ import 'package:alzheimer_app1/models/geocercas.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
-final storage = FlutterSecureStorage();
 
 class GeocercasService {
+  final storage = FlutterSecureStorage();
   //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
   final String baseUrl = "http://192.168.68.122:5066/api";
   GeocercasService();
 
   //crear Geocerca
   Future<Geocerca> crearGeocerca(Geocerca nuevaGeocerca) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response = await http.post(
       Uri.parse('$baseUrl/crearGeocerca'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
+      },
       body: jsonEncode(nuevaGeocerca.toJson()),
     );
 
@@ -30,9 +37,16 @@ class GeocercasService {
   //Actualizar geocerca
   Future<Geocerca> actualizarGeocerca(
       String id, Geocerca geocercaActualizada) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response = await http.put(
       Uri.parse(('$baseUrl/geocercas/$id')),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
+      },
       body: jsonEncode(geocercaActualizada.toJson()),
     );
     if (response.statusCode == 200) {
@@ -45,7 +59,14 @@ class GeocercasService {
 
   //obtener geocerca
   Future<Geocerca> obtenerGeocerca(String id) async {
-    final response = await http.get(Uri.parse('$baseUrl/geocercas/$id'));
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    final response = await http.get(Uri.parse('$baseUrl/geocercas/$id'),
+      headers: {
+        'Authorization': 'Bearer $token'
+      });
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
       return Geocerca.fromJson(jsonData);
@@ -56,7 +77,14 @@ class GeocercasService {
 
   //Eliminar medicamento
   Future<bool> eliminarGeocerca(String id) async {
-    final response = await http.delete(Uri.parse('$baseUrl/geocercas/$id'));
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    final response = await http.delete(Uri.parse('$baseUrl/geocercas/$id'),
+      headers: {
+        'Authorization': 'Bearer $token'
+      });
 
     if (response.statusCode == 204) {
       return true;
