@@ -145,12 +145,12 @@ import 'package:alzheimer_app1/models/pacientes_cuidadores.dart';
 import 'package:alzheimer_app1/models/pacientes_familiares.dart';
 import 'package:alzheimer_app1/models/personas.dart';
 import 'package:alzheimer_app1/models/usuarios.dart';
+import 'package:alzheimer_app1/patient_carer_data_scr.dart';
 import 'package:alzheimer_app1/people_mgmt_scr.dart';
 import 'package:alzheimer_app1/services/pacientes_cuidadores_service.dart';
 import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
 
-final pacieteCuidadoresService = PacientesCuidadoresService();
 final pacienteCuidadorService = PacientesCuidadoresService();
 
 class BuscadorCuidadoresScreen extends StatefulWidget {
@@ -262,7 +262,13 @@ class _BuscadorCuidadoresScreenState extends State<BuscadorCuidadoresScreen> {
                       return ListTile(
                         title: Text('${caregiver.nombre ?? 'Sin detalle disponible'} ${caregiver.apellidoP} ${caregiver.apellidoM}'),
                         onTap: () {
-                          _confirmPatientCuidador(widget.paciente!, cuidador);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => DefinePatientCarerData(cuidador: cuidador, paciente: widget.paciente),
+                            ),
+                          );
+                          //_definePatientCarerData(widget.paciente!, cuidador);
                         },
                       );
                     },
@@ -281,54 +287,5 @@ class _BuscadorCuidadoresScreenState extends State<BuscadorCuidadoresScreen> {
     _searchController.dispose();
     super.dispose();
   }
-  
-  Future<void> _confirmPatientCuidador(Pacientes paciente, Cuidadores cuidador) async{
-    final shouldAdd = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Confirmar vinculacion'),
-        content: const Text('¿Está seguro de que desea vincular este cuidador?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('Aceptar'),
-          ),
-        ],
-      ),
-    );
 
-    if (shouldAdd == true) {
-      _addPatientCuidador(paciente, cuidador);
-    }
-  }
-  
-  Future<void> _addPatientCuidador(Pacientes paciente, Cuidadores cuidador) async {
-    final nuevoPacienteCuidador = PacientesCuidadores(
-      idPaciente: paciente.idPaciente!,
-      idCuidador: cuidador.idCuidador!, 
-    );
-    try {
-      await pacienteCuidadorService.crearPacienteCuidador(nuevoPacienteCuidador);
-      if (!context.mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Cuidador vinculado con éxito')),
-      );
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const PeopleManagementScreen(),
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error al vincular cuidador: $e')),
-      );
-    }
-  }
-  
-  
 }
