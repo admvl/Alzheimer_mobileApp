@@ -8,16 +8,16 @@ class PacientesCuidadores {
   final String? idCuidaPaciente;
   final String idPaciente;
   final String idCuidador;
-  final TimeOfDay horaInicio;
-  final TimeOfDay horaFin;
+  final TimeOfDay? horaInicio;
+  final TimeOfDay? horaFin;
   final Dias? dias;
 
   PacientesCuidadores({
     this.idCuidaPaciente,
     required this.idPaciente,
     required this.idCuidador,
-    required this.horaInicio,
-    required this.horaFin,
+    this.horaInicio,
+    this.horaFin,
     this.dias,
   });
 
@@ -34,16 +34,41 @@ class PacientesCuidadores {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  /*Map<String, dynamic> toJson() {
     final now = DateTime.now();
-    final inicioDateTime = DateTime(now.year, now.month, now.day, horaInicio.hour, horaInicio.minute);
-    final finDateTime = DateTime(now.year, now.month, now.day, horaFin.hour, horaFin.minute);
+    final inicioDateTime = DateTime(now.year, now.month, now.day, horaInicio!.hour, horaInicio!.minute);
+    final finDateTime = DateTime(now.year, now.month, now.day, horaFin!.hour, horaFin!.minute);
     return {
       'IdCuidaPaciente': idCuidaPaciente ?? '',
       'IdPaciente': idPaciente,
       'IdCuidador': idCuidador,
       'HoraInicio': DateFormat('HH:mm:ss').format(inicioDateTime),
       'HoraFin': DateFormat('HH:mm:ss').format(finDateTime),
+      'Dias': dias?.toJson(),
+    };
+  }*/
+  Map<String, dynamic> toJson() {
+    final now = DateTime.now();
+    
+    String? formattedHoraInicio;
+    String? formattedHoraFin;
+
+    if (horaInicio != null) {
+      final inicioDateTime = DateTime(now.year, now.month, now.day, horaInicio!.hour, horaInicio!.minute);
+      formattedHoraInicio = DateFormat('HH:mm:ss').format(inicioDateTime);
+    }
+
+    if (horaFin != null) {
+      final finDateTime = DateTime(now.year, now.month, now.day, horaFin!.hour, horaFin!.minute);
+      formattedHoraFin = DateFormat('HH:mm:ss').format(finDateTime);
+    }
+
+    return {
+      'IdCuidaPaciente': idCuidaPaciente ?? '',
+      'IdPaciente': idPaciente,
+      'IdCuidador': idCuidador,
+      'HoraInicio': formattedHoraInicio,
+      'HoraFin': formattedHoraFin,
       'Dias': dias?.toJson(),
     };
   }
