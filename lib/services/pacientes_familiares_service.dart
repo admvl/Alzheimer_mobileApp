@@ -1,4 +1,5 @@
 import 'package:alzheimer_app1/models/familiares.dart';
+import 'package:alzheimer_app1/models/pacientes_cuidadores.dart';
 import 'package:alzheimer_app1/models/pacientes_familiares.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -7,7 +8,7 @@ import 'dart:convert';
 
 class PacientesFamiliaresService {
   //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
-  final String baseUrl = "http://192.168.68.122:5066/api";
+  final String baseUrl = "http://192.168.0.15:5066/api";
 
   PacientesFamiliaresService();
 
@@ -47,10 +48,10 @@ class PacientesFamiliaresService {
     }
   }
 
-  Future<PacientesFamiliares> crearPacienteFamiliar(
-      PacientesFamiliares nuevaRelacion) async {
+  Future<PacientesFamiliares> crearPacienteFamiliar(PacientesFamiliares nuevaRelacion) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/creapacientesfamiliares'),
+      //Uri.parse('$baseUrl/creapacientesfamiliares'),
+      Uri.parse('$baseUrl/CrearRelacionFamiliares'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(nuevaRelacion.toJson()),
     );
@@ -65,14 +66,31 @@ class PacientesFamiliaresService {
 
   // Obtener una relacion por ID
   Future<PacientesFamiliares> obtenerPacienteFamiliarPorId(String id) async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/pacientesfamiliares/$id'));
+    final response = await http.get(Uri.parse('$baseUrl/pacientefamiliares/$id'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
       return PacientesFamiliares.fromJson(jsonData);
     } else {
       throw Exception('Error al obtener relacion paciente - familiar por ID');
+    }
+  }
+
+  // Obtener relaciones por ID
+  Future<List<PacientesFamiliares>> obtenerPacienteFamiliaresPorId(String id) async {
+    final response = await http.get(Uri.parse('$baseUrl/pacientefamiliares/$id'));
+
+    if (response.statusCode == 200) {
+      //final Map<String, dynamic> jsonData = jsonDecode(response.body);
+      final List<dynamic> jsonData = jsonDecode(response.body);
+      List<PacientesFamiliares> pacientesFamiliares = [];
+      for (var item in jsonData) {
+        pacientesFamiliares.add(PacientesFamiliares.fromJson(item));
+      }
+      //return cuidadores;
+      return pacientesFamiliares;
+    } else {
+      throw Exception('Error al obtener relacion paciente - familiares por ID');
     }
   }
 

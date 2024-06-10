@@ -316,18 +316,20 @@ class _WelcomeScreenState extends State<WelcomeScreen> with PermissionMixin<Welc
                 ),
               ),
               const SizedBox(height: 10),
-              Flexible(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => NotificacionesScreen()),
-                    );
-                  },
-                  icon: const Icon(Icons.notifications),
-                  label: const Text('Historial de Notificaciones'),
+              //notify
+              if (hasPermission("notify"))
+                Flexible(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => NotificacionesScreen()),
+                      );
+                    },
+                    icon: const Icon(Icons.notifications),
+                    label: const Text('Historial de Notificaciones'),
+                  ),
                 ),
-              ),
               const SizedBox(height: 10),
             ],
           ),

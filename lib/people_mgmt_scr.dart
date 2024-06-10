@@ -3,13 +3,17 @@ import 'package:alzheimer_app1/familiar_form.dart' hide usuariosService;
 import 'package:alzheimer_app1/models/cuidadores.dart';
 import 'package:alzheimer_app1/models/familiares.dart';
 import 'package:alzheimer_app1/models/pacientes.dart';
+import 'package:alzheimer_app1/models/pacientes_cuidadores.dart';
+import 'package:alzheimer_app1/models/pacientes_familiares.dart';
 import 'package:alzheimer_app1/models/usuarios.dart';
 import 'package:alzheimer_app1/search_carer_scr.dart';
+import 'package:alzheimer_app1/search_family_scr.dart';
 import 'package:alzheimer_app1/search_patient_scr.dart';
 import 'package:alzheimer_app1/services/pacientes_cuidadores_service.dart';
 import 'package:alzheimer_app1/services/pacientes_familiares_service.dart';
 import 'package:alzheimer_app1/services/pacientes_service.dart';
 import 'package:alzheimer_app1/services/personas_service.dart';
+import 'package:alzheimer_app1/user_form.dart';
 import 'package:alzheimer_app1/user_profile.dart';
 import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
@@ -168,28 +172,32 @@ class _FamiliaresTabState extends State<FamiliaresTab> with PermissionMixin<Fami
     return Column(
       children: [
         if (hasPermission("addFam"))
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  //builder: (context) => BuscadorFamiliaresScreen(usuario: usuario, paciente: paciente),
-                  builder: (context) => const FamiliarForm(),
-                ),
-              );
-            },
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.add),
-                SizedBox(width: 8),
-                Text('Añadir Familiar'),
-              ],
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    //builder: (context) => BuscadorFamiliaresScreen(usuario: usuario, paciente: paciente),
+                    //builder: (context) => const FamiliarForm(),
+
+                    builder: (context) => widget.paciente == null 
+                      ? const FamiliarForm()
+                      : BuscadorFamiliaresScreen(usuario: widget.usuario, paciente: widget.paciente),
+                  ),
+                );
+              },
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.add),
+                  SizedBox(width: 8),
+                  Text('Añadir Familiar'),
+                ],
+              ),
             ),
           ),
-        ),
         Expanded(
           child: _buildFamiliaresList(context),
         ),
@@ -203,7 +211,7 @@ class _FamiliaresTabState extends State<FamiliaresTab> with PermissionMixin<Fami
     if(widget.usuario!.idTipoUsuario!.tipoUsuario == "Administrador"){
       if(widget.paciente!= null){
         //solo familiares asignados al paciente actual
-        familiaresFuture = familiareservice.obtenerFamiliaresPorId(widget.paciente!.idPaciente!);
+        familiaresFuture = familiareservice.obtenerFamiliaresPorId(widget.paciente!.idPaciente!); //ok
       }else{
        //muestra a todos los familiares para gestión de usuario
        familiaresFuture = familiareservice.obtenerTodosFamiliares();  
@@ -238,17 +246,65 @@ class _FamiliaresTabState extends State<FamiliaresTab> with PermissionMixin<Fami
                         builder: (context) => UserProfile(usuario: familiar.idUsuario)),
                   );
                 },
-                /*
                 trailing: IconButton(
                   icon: const Icon(Icons.delete),
-                  onPressed: () => _removefamiliar(cuidador), //eliminar relaciones exitentes y familiar
-                ),*/
+                  onPressed: () => _confirmRemovePatientFamiliar(widget.paciente!, familiar),
+                ),
               );
             },
           );
         }
       },
     );
+  }
+  _confirmRemovePatientFamiliar(Pacientes paciente, Familiares familiar) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar eliminación'),
+        content: const Text('¿Está seguro de que desea desvincular este familiar?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldDelete == true) {
+      try{
+        PacientesFamiliares relacionPatientFam = await familiareservice.obtenerPacienteFamiliarPorId(paciente.idPaciente!);
+        /*for (var relacion in relacionPatientFam) {
+          if(relacion.idPaciente.idPaciente == paciente.idPaciente && relacion.idFamiliar.idFamiliar == familiar.idFamiliar){
+            _removePatientFamiliar(relacion.idPacienteFamiliar!);
+          }
+        } */
+        _removePatientFamiliar(relacionPatientFam.idPacienteFamiliar!);
+      }catch (e){
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al obtener relación paciente - familiar: $e')),
+        );
+      }
+    }
+  }
+  
+  Future<void> _removePatientFamiliar(String idRelacion) async{
+    try {
+      await familiareservice.eliminarPacienteFamiliarPorId(idRelacion);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('El familiar a sido desvinculado con éxito')),
+      );
+      //_reloadDevices(); // Recargar la lista de dispositivos
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al desvincular el familiar: $e')),
+      );
+    }
   }
 }
 
@@ -266,24 +322,6 @@ class CuidadoresTab extends StatefulWidget {
 }
 
 class _CuidadoresTabState extends State<CuidadoresTab> with PermissionMixin<CuidadoresTab> {
-/*
-class CuidadoresTab extends StatelessWidget {
-  final Pacientes? paciente;
-  final Usuarios? usuario;
-  const CuidadoresTab({super.key, this.paciente, this.usuario});
-  const CuidadoresTab.withoutUser({super.key, this.paciente}) : usuario = null;
-*/
-
-  /* PENDIENTE ELIMINAR
-  void _removeCuidadorPaciente(Cuidadores? cuidador) async {
-    PacientesCuidadores pacienteCuidador = await cuidadoresService
-        .obtenerPacienteCuidadorPorId(cuidador!.idUsuario.idUsuario!);
-    await cuidadoresService
-        .eliminarPacienteCuidadorPorId(pacienteCuidador.idCuidaPaciente!);
-    MaterialPageRoute(
-      builder: (context) => const WelcomeScreen(),
-    );
-  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -296,8 +334,9 @@ class CuidadoresTab extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    //builder: (context) => BuscadorCuidadoresScreen(usuario: usuario, paciente: paciente)),
-                    builder: (context) => const CarerForm(),
+                    builder: (context) => widget.paciente == null 
+                      ? const CarerForm()
+                      : BuscadorCuidadoresScreen(usuario: widget.usuario, paciente: widget.paciente),
                 ),
               );
             },
@@ -306,7 +345,7 @@ class CuidadoresTab extends StatelessWidget {
               children: [
                 Icon(Icons.add),
                 SizedBox(width: 8),
-                Text('ADD'),
+                Text('Añadir Cuidador'),
               ],
             ),
           ),
@@ -329,7 +368,7 @@ class CuidadoresTab extends StatelessWidget {
         //obtiene todos los cuidadores para gestionar usuarios
        cuidadoresFuture = cuidadoresService.obtenerTodosCuidadores();  
       }
-    } else if (widget.usuario!.idTipoUsuario!.tipoUsuario == "Familiar"){ //cuidador no tiene acceso
+    }else if (widget.usuario!.idTipoUsuario!.tipoUsuario == "Familiar"){ //cuidador no tiene acceso
       cuidadoresFuture = cuidadoresService.obtenerCuidadoresPorId(widget.paciente!.idPaciente!);  
     }
 
@@ -362,16 +401,60 @@ class CuidadoresTab extends StatelessWidget {
                         builder: (context) => UserProfile(usuario: cuidador.idUsuario)),
                   );
                 },
-                /*trailing: IconButton(
+                trailing: IconButton(
                   icon: const Icon(Icons.delete),
-                  onPressed: () => _removeCuidadorPaciente(cuidador),
-                ),*/
+                  onPressed: () => _confirmRemoveCuidadorFamiliar(widget.paciente!, cuidador),
+                ),
               );
             },
           );
         }
       },
     );
+  }
+
+  _confirmRemoveCuidadorFamiliar(Pacientes paciente, Cuidadores cuidador) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar eliminación'),
+        content: const Text('¿Está seguro de que desea desvincular este cuidador?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldDelete == true) {
+      try{
+        PacientesCuidadores relacionPatientCarer = await cuidadoresService.obtenerPacienteCuidadorPorId(paciente.idPaciente!);
+        _removePatientCuidador(relacionPatientCarer.idCuidaPaciente!);
+      }catch (e){
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al obtener relación paciente - cuidador: $e')),
+        );
+      }
+    }
+  }
+  
+  Future<void> _removePatientCuidador(String idRelacion) async{
+    try {
+      await cuidadoresService.eliminarPacienteCuidadorPorId(idRelacion);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('El cuidador a sido desvinculado con éxito')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error al desvincular el cuidador: $e')),
+      );
+    }
   }
 }
 
@@ -402,6 +485,29 @@ class _PacientesTabState extends State<PacientesTab>  with PermissionMixin<Pacie
   Widget build(BuildContext context) {
     return Column(
       children: [
+        if (hasPermission("addPac"))
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  //builder: (context) => BuscadorFamiliaresScreen(usuario: usuario, paciente: paciente),
+                  builder: (context) => const UserForm(),
+                ),
+              );
+            },
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.add),
+                SizedBox(width: 8),
+                Text('Añadir Paciente'),
+              ],
+            ),
+          ),
+        ),
         Expanded(
           child: _buildPacientesList(context),
         )

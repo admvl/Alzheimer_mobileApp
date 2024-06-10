@@ -7,7 +7,7 @@ import '../models/pacientes_cuidadores.dart';
 
 class PacientesCuidadoresService {
   //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
-  final String baseUrl = "http://192.168.68.122:5066/api";
+  final String baseUrl = "http://192.168.0.15:5066/api";
 
   PacientesCuidadoresService();
 
@@ -44,10 +44,9 @@ class PacientesCuidadoresService {
     }
   }
 
-  Future<PacientesCuidadores> crearPacienteCuidador(
-      PacientesCuidadores nuevaRelacion) async {
+  Future<PacientesCuidadores> crearPacienteCuidador(PacientesCuidadores nuevaRelacion) async {
     final response = await http.post(
-      Uri.parse('$baseUrl/creapacientescuidadores'),
+      Uri.parse('$baseUrl/CrearRelacion'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(nuevaRelacion.toJson()),
     );
