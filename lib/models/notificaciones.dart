@@ -1,14 +1,12 @@
-import 'package:alzheimer_app1/models/pacientes.dart';
-import 'package:alzheimer_app1/models/tipos_notificaciones.dart';
+import 'package:flutter/material.dart';
 
-class Notificaciones{
+class Notificaciones {
   final String? idNotificacion;
   final String mensaje;
   final DateTime fecha;
-  final DateTime hora;
-  final Pacientes idPaciente;
-  final TiposNotificaciones idTipoNotificacion;
-
+  final TimeOfDay hora;
+  final String idPaciente;
+  final String idTipoNotificacion;
 
   Notificaciones({
     this.idNotificacion,
@@ -19,25 +17,31 @@ class Notificaciones{
     required this.idTipoNotificacion,
   });
 
-  factory Notificaciones.fromJson(Map<String, dynamic> json){
+  factory Notificaciones.fromJson(Map<String, dynamic> json) {
+    final fecha = DateTime.parse(json['Fecha'] as String);
+    final horaString = json['Hora'] as String;
+    final horaParts = horaString.split(':');
+    final hora = TimeOfDay(hour: int.parse(horaParts[0]), minute: int.parse(horaParts[1]));
+
     return Notificaciones(
-      idNotificacion: json['IdNotificacion'] as String,
+      idNotificacion: json['IdNotificacion'] as String?,
       mensaje: json['Mensaje'] as String,
-      fecha: DateTime.parse(json['Fecha'] as String),
-      hora: DateTime.parse(json['Hora'] as String),
-      idPaciente: Pacientes.fromJson(json['IdPacienteNavigation']),
-      idTipoNotificacion: TiposNotificaciones.fromJson(json['IdTipoNotificacionNavigation']),
+      fecha: fecha,
+      hora: hora,
+      idPaciente: json['IdPaciente'] as String,
+      idTipoNotificacion: json['IdTipoNotificacion'] as String,
     );
   }
 
-  Map<String, dynamic> toJson(){
-    return{
+  Map<String, dynamic> toJson() {
+    final horaString = '${hora.hour.toString().padLeft(2, '0')}:${hora.minute.toString().padLeft(2, '0')}:00';
+    return {
       'IdNotificacion': idNotificacion ?? '',
       'Mensaje': mensaje,
-      'Fecha': fecha,
-      'Hora': hora,
-      'IdPaciente': idPaciente.idPaciente,
-      'IdTipoNotificacion': idTipoNotificacion.idTipoNotificacion,
+      'Fecha': fecha.toIso8601String(),
+      'Hora': horaString,
+      'IdPaciente': idPaciente,
+      'IdTipoNotificacion': idTipoNotificacion,
     };
   }
 }
