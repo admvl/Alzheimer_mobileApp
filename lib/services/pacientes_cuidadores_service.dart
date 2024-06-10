@@ -1,20 +1,29 @@
 import 'package:alzheimer_app1/models/cuidadores.dart';
 import 'package:alzheimer_app1/models/pacientes_familiares.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../models/pacientes_cuidadores.dart';
 
 class PacientesCuidadoresService {
+  final storage = FlutterSecureStorage();
   //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
-  final String baseUrl = "http://192.168.0.15:5066/api";
+  final String baseUrl = "http://192.168.68.122:5066/api";
 
   PacientesCuidadoresService();
 
   //Obtener lista de familiares por ID de usuario
   Future<List<Cuidadores>> obtenerCuidadoresPorId(String id) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response =
-        await http.get(Uri.parse('$baseUrl/pacientecuidadores/$id'));
+        await http.get(Uri.parse('$baseUrl/pacientecuidadores/$id'),
+          headers: {
+            'Authorization': 'Bearer $token'
+          });
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
@@ -30,7 +39,14 @@ class PacientesCuidadoresService {
 
   //Obtener lista de todos los cuidadores
   Future<List<Cuidadores>> obtenerTodosCuidadores() async {
-    final response = await http.get(Uri.parse('$baseUrl/todoscuidadores/'));
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    final response = await http.get(Uri.parse('$baseUrl/todoscuidadores/'),
+        headers: {
+          'Authorization': 'Bearer $token'
+        });
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
@@ -45,9 +61,16 @@ class PacientesCuidadoresService {
   }
 
   Future<PacientesCuidadores> crearPacienteCuidador(PacientesCuidadores nuevaRelacion) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response = await http.post(
       Uri.parse('$baseUrl/CrearRelacion'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
+      },
       body: jsonEncode(nuevaRelacion.toJson()),
     );
 
@@ -61,8 +84,15 @@ class PacientesCuidadoresService {
 
   // Obtener una relacion por ID
   Future<PacientesCuidadores> obtenerPacienteCuidadorPorId(String id) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response =
-        await http.get(Uri.parse('$baseUrl/pacientescuidadores/$id'));
+        await http.get(Uri.parse('$baseUrl/pacientescuidadores/$id'),
+          headers: {
+            'Authorization': 'Bearer $token'
+          });
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -75,9 +105,16 @@ class PacientesCuidadoresService {
   // Actualizar una persona por ID
   Future<PacientesCuidadores> actualizarPacienteCuidadorPorId(
       String id, PacientesCuidadores pacienteCuidadorActualizado) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response = await http.put(
       Uri.parse('$baseUrl/pacientescuidadores/$id'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
+      },
       body: jsonEncode(pacienteCuidadorActualizado.toJson()),
     );
 
@@ -92,8 +129,15 @@ class PacientesCuidadoresService {
 
   // Eliminar una persona por ID
   Future<bool> eliminarPacienteCuidadorPorId(String id) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response =
-        await http.delete(Uri.parse('$baseUrl/pacientescuidadores/$id'));
+        await http.delete(Uri.parse('$baseUrl/pacientescuidadores/$id'),
+          headers: {
+            'Authorization': 'Bearer $token'
+          });
 
     if (response.statusCode == 204) {
       return true;

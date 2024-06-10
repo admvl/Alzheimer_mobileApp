@@ -551,8 +551,8 @@ class _BuscadorFamiliaresScreenState extends State<BuscadorFamiliaresScreen> {
   
   Future<void> _addPatientFamiliar(Pacientes paciente, Familiares familiar) async {
     final nuevoPacienteFamiliar = PacientesFamiliares(
-      idPaciente: paciente,
-      idFamiliar: familiar, // Aquí aseguramos que idFamiliar es del tipo correcto
+      idPaciente: paciente.idPaciente!,
+      idFamiliar: familiar.idFamiliar!, // Aquí aseguramos que idFamiliar es del tipo correcto
     );
     try {
       await pacieteFamiliarService.crearPacienteFamiliar(nuevoPacienteFamiliar);

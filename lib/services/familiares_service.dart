@@ -1,19 +1,28 @@
 import 'dart:convert';
 import 'package:alzheimer_app1/models/familiares.dart';
 import 'package:alzheimer_app1/models/pacientes.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
 class FamiliaresService {
+  final storage = FlutterSecureStorage();
   //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
-  final String baseUrl = "http://192.168.0.15:5066/api";
+  final String baseUrl = "http://192.168.68.122:5066/api";
 
   FamiliaresService();
 
   // Crear una nuevo paciente
   Future<Familiares> crearFamiliar(Familiares nuevoFamiliar) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response = await http.post(
       Uri.parse('$baseUrl/CrearFamiliar'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
+      },
       body: jsonEncode(nuevoFamiliar.toJson()),
     );
 
@@ -27,7 +36,14 @@ class FamiliaresService {
 
   // Obtener una persona por ID
   Future<Familiares> obtenerFamiliarPorId(String id) async {
-    final response = await http.get(Uri.parse('$baseUrl/familiares/$id'));
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    final response = await http.get(Uri.parse('$baseUrl/familiares/$id'),
+      headers: {
+        'Authorization': 'Bearer $token'
+      });
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -39,7 +55,14 @@ class FamiliaresService {
 
   //Obtener todoas los pacientes por ID de usuario loggeado
   Future<List<Familiares>> obtenerTodosFamiliares(String id) async {
-    final response = await http.get(Uri.parse('$baseUrl/todosfamiliares/$id'));
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    final response = await http.get(Uri.parse('$baseUrl/todosfamiliares/$id'),
+      headers: {
+        'Authorization': 'Bearer $token'
+      });
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
@@ -58,7 +81,14 @@ class FamiliaresService {
   
   //Obtener pacientes por ID de usuario loggeado
   Future<List<Familiares>> obtenerPacientesPorId(String id) async {
-    final response = await http.get(Uri.parse('$baseUrl/familiares/$id'));
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    final response = await http.get(Uri.parse('$baseUrl/familiares/$id'),
+      headers: {
+        'Authorization': 'Bearer $token'
+      });
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
@@ -77,9 +107,16 @@ class FamiliaresService {
 
   // Actualizar una persona por ID
   Future<Familiares> actualizarFamiliarPorId(String id, Familiares familiarActualizado) async {
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
     final response = await http.put(
       Uri.parse('$baseUrl/familiares/$id'),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Authorization': 'Bearer $token',
+        'Content-Type': 'application/json'
+      },
       body: jsonEncode(familiarActualizado.toJson()),
     );
 
@@ -93,7 +130,14 @@ class FamiliaresService {
 
   // Eliminar una persona por ID
   Future<bool> eliminarFamiliarPorId(String id) async {
-    final response = await http.delete(Uri.parse('$baseUrl/familiares/$id'));
+    String? token = await storage.read(key: 'token');
+    if (token == null) {
+      throw Exception('Token not found');
+    }
+    final response = await http.delete(Uri.parse('$baseUrl/familiares/$id'),
+      headers: {
+        'Authorization': 'Bearer $token'
+      });
 
     if (response.statusCode == 204) {
       return true;
