@@ -5,8 +5,8 @@ import 'package:alzheimer_app1/models/ubicaciones.dart';
 
 class UbicacionesService {
   final storage = const FlutterSecureStorage();
-  //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
-  final String baseUrl = "http://192.168.68.122:5066/api";
+  final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
+  //final String baseUrl = "http://192.168.68.122:5066/api";
 
 
   //Obtener ubicacion

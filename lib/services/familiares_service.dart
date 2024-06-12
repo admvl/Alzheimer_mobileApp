@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 
 class FamiliaresService {
   final storage = FlutterSecureStorage();
-  //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
-  final String baseUrl = "http://192.168.68.122:5066/api";
+  final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
+  //final String baseUrl = "http://192.168.68.122:5066/api";
 
   FamiliaresService();
 

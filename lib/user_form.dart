@@ -244,11 +244,18 @@ class _UserFormState extends State<UserForm> {
                       numeroTelefono: formValues['telefono'],
                     );
                     try{
+                      Dispositivos tempDispositivo;
+                      if(selectedDispositivo!.idDispositivo!=widget.paciente!.idDispositivo.idDispositivo){
+                        tempDispositivo = selectedDispositivo!;
+                      }else{
+                        tempDispositivo = widget.paciente!.idDispositivo;
+                      }
                       Pacientes nuevoPaciente = Pacientes(
                         //idPaciente: formValues['curp'],
                         idPaciente: widget.paciente!.idPaciente,
                         //idDispositivo: selectedDispositivo!,
-                        idDispositivo: widget.paciente!.idDispositivo,
+                        //idDispositivo: widget.paciente!.idDispositivo,
+                        idDispositivo: tempDispositivo,
                         idPersona: nuevaPersona
                       );
                       try{

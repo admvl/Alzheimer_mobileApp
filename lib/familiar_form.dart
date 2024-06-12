@@ -247,6 +247,12 @@ class _FamiliarFormState extends State<FamiliarForm> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Familiar registrado con éxito')),
                         );
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const WelcomeScreen(),
+                            )
+                        );
                       } catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Error al registrar familiar : $e')),
