@@ -1,3 +1,4 @@
+/* OK
 import 'package:alzheimer_app1/bluetooth_scr.dart';
 import 'package:alzheimer_app1/device_conection_scr.dart';
 import 'package:alzheimer_app1/device_mgmt.dart';
@@ -338,10 +339,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> with PermissionMixin<Welc
     );
   }
 }
+*/
 
-
-// GEMINI
-/*
 import 'package:alzheimer_app1/bluetooth_scr.dart';
 import 'package:alzheimer_app1/device_conection_scr.dart';
 import 'package:alzheimer_app1/device_mgmt.dart';
@@ -368,6 +367,7 @@ import 'user_profile.dart';
 import 'zone_alarm_scr.dart';
 import 'widgets/permission_widget.dart';
 import 'package:alzheimer_app1/utils/permission_mixin.dart';
+import 'package:star_menu/star_menu.dart';
 
 class WelcomeScreen extends StatefulWidget {
   const WelcomeScreen({super.key});
@@ -440,10 +440,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> with PermissionMixin<Welc
         );
         break;
       case 2:
-      // Navigate to PeopleManagementScreen
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const PeopleManagementScreen.withoutUser()),
+          MaterialPageRoute(builder: (context) => NotificacionesScreen()),
         );
         break;
       default:
@@ -457,7 +456,8 @@ class _WelcomeScreenState extends State<WelcomeScreen> with PermissionMixin<Welc
     final upperMenuItems = <Widget>[
       const Icon(Icons.person_sharp, size: 100, color: Color.fromARGB(255, 3, 189, 164)),
       const Text('Mi Perfil'),
-      const Text('Gestionar Usuarios'),
+      //const Text('Gestionar Usuarios'),
+      const Text('Notificaciones'),
     ];
 
     return WillPopScope(
@@ -500,13 +500,31 @@ class _WelcomeScreenState extends State<WelcomeScreen> with PermissionMixin<Welc
         body: Center(
           child: Column(
             children: [
-              const SizedBox(height: 10),
-              // Image before buttons
-              Image.network(imageUrl),
+              const SizedBox(height: 3),
+              Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface, // Color de fondo del tema actual
+                  boxShadow: [
+                    BoxShadow(
+                      color: Theme.of(context).colorScheme.inversePrimary,
+                      spreadRadius: 3,
+                      blurRadius: 3,
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  child: Image.network(
+                    'https://plus.unsplash.com/premium_photo-1665203568927-bf0e58ee3d20?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
               const SizedBox(height: 20),
               Wrap(
                 spacing: 10.0, // Adjust spacing between buttons as needed
-                runSpacing: 10.0, // Adjust spacing between rows of buttons as needed
+                runSpacing: 20.0, // Adjust spacing between rows of buttons as needed
                 children: [
                   // Conditionally display buttons based on permissions
                   if (hasPermission("zoneScr"))
@@ -533,6 +551,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> with PermissionMixin<Welc
                       icon: const Icon(Icons.pin_drop_outlined),
                       label: const Text('Ubicación'),
                     ),
+                ],
+              ),
+              Wrap(
+                spacing: 10.0,
+                runSpacing: 10.0,
+                children: [
                   if (hasPermission("setMedAlarm"))
                     ElevatedButton.icon(
                       onPressed: () {
@@ -545,40 +569,48 @@ class _WelcomeScreenState extends State<WelcomeScreen> with PermissionMixin<Welc
                       icon: const Icon(Icons.alarm),
                       label: const Text('Alarmas'),
                     ),
-                  // ... Add other buttons here following the same structure
+                  if (hasPermission("medMgmt"))
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const MedicineMgmtScreen()),
+                        );
+                      },
+                      icon: const Icon(Icons.medical_services_outlined),
+                      label: const Text('Medicamentos'),
+                    ),
                 ],
               ),
-              const SizedBox(height: 10),
-              // Remaining buttons
-              Flexible(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    PatientProfile patientProfileScr = const PatientProfile();
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => patientProfileScr),
-                    );
-                  },
-                  icon: const Icon(Icons.person_outline_outlined),
-                  label: const Text('Perfil Paciente'),
-                ),
-              ),
-              const SizedBox(height: 10),
-              if (hasPermission("medMgmt"))
-                Flexible(
-                  child: ElevatedButton.icon(
+              Wrap(
+                spacing: 10.0,
+                runSpacing: 10.0,
+                children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        PatientProfile patientProfileScr = const PatientProfile();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => patientProfileScr),
+                        );
+                      },
+                      icon: const Icon(Icons.person_outline_outlined),
+                      label: const Text('Perfil Paciente'),
+                    ),
+                  ElevatedButton.icon(
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => MedicineMgmtScreen()),
+                        MaterialPageRoute(builder: (context) => const PeopleManagementScreen.withoutUser()),
                       );
                     },
-                    icon: const Icon(Icons.medical_services_outlined),
-                    label: const Text('Medicamentos'),
+                    icon: const Icon(Icons.people),
+                    label: const Text(' Usuarios'),
                   ),
-                ),
-              // ... Add other buttons here
-              const SizedBox(height: 10),
+
+                ],
+              ),
+              const SizedBox(height: 20),
               Flexible(
                 child: ElevatedButton.icon(
                   onPressed: () {
@@ -593,45 +625,9 @@ class _WelcomeScreenState extends State<WelcomeScreen> with PermissionMixin<Welc
               ),
               const SizedBox(height: 10),
               Wrap(
-                spacing: 10.0, // Adjust spacing between buttons as needed
-                runSpacing: 10.0, // Adjust spacing between rows of buttons as needed
+                spacing: 10.0,
+                runSpacing: 10.0,
                 children: [
-                  if (hasPermission("medicineAlarm"))
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        MedicineAlarmScr medicineAlarmScr = const MedicineAlarmScr();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => medicineAlarmScr),
-                        );
-                      },
-                      icon: const Icon(Icons.alarm),
-                      label: const Text('Alarma Medicamentos'),
-                    ),
-                  if (hasPermission("zoneAlarm"))
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        ZoneAlarmScr zoneAlarmScr = const ZoneAlarmScr();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => zoneAlarmScr),
-                        );
-                      },
-                      icon: const Icon(Icons.crisis_alert_sharp),
-                      label: const Text('Alarma Zona Segura'),
-                    ),
-                  if (hasPermission("fallAlarm"))
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        FallAlarmScr fallAlarmScr = const FallAlarmScr();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => fallAlarmScr),
-                        );
-                      },
-                      icon: const Icon(Icons.report_problem_outlined),
-                      label: const Text('Alarma Caída'),
-                    ),
                   if (hasPermission("bluetooth"))
                     ElevatedButton.icon(
                       onPressed: () {
@@ -644,29 +640,6 @@ class _WelcomeScreenState extends State<WelcomeScreen> with PermissionMixin<Welc
                       icon: const Icon(Icons.handyman_outlined),
                       label: const Text('Configurar Dispositivo'),
                     ),
-                  if (hasPermission("devConnAlarm"))
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const ConnectionStatusPage()),
-                        );
-                      },
-                      icon: const Icon(Icons.wifi_off),
-                      label: const Text('Alarma Conexión'),
-                    ),
-                  //notify
-                  if (hasPermission("notify"))
-                    ElevatedButton.icon(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => NotificacionesScreen()),
-                        );
-                      },
-                      icon: const Icon(Icons.notifications),
-                      label: const Text('Historial de Notificaciones'),
-                    ),
                 ],
               ),
             ],
@@ -675,4 +648,5 @@ class _WelcomeScreenState extends State<WelcomeScreen> with PermissionMixin<Welc
       ),
     );
   }
-}*/
+}
+

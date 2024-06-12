@@ -560,11 +560,9 @@ class _BuscadorFamiliaresScreenState extends State<BuscadorFamiliaresScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Familiar vinculado con éxito')),
       );
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => const PeopleManagementScreen(),
-        ),
+        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

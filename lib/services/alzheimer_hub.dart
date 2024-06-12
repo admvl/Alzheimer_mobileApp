@@ -17,7 +17,7 @@ class SignalRService {
   late HubConnection? hubConnection;
   final String hubUrl =
       //"https://alzheimerwebapi.azurewebsites.net/notificationHub";
-      "http://192.168.68.122:5066/notificationHub";
+      "http://192.168.0.15:5066/notificationHub";
   bool isZoneAlarmScreenOpen = false;
   bool isFallAlarmScreenOpen = false;
   bool isDisconnectedScreenOpen = false;
