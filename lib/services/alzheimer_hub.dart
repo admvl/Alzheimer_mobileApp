@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:alzheimer_app1/device_conection_scr.dart';
 import 'package:alzheimer_app1/fall_alarm_scr.dart';
+import 'package:alzheimer_app1/medicine_alarm_scr.dart';
 import 'package:alzheimer_app1/services/location_provider.dart';
 import 'package:alzheimer_app1/zone_alarm_scr.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +17,8 @@ import '../models/location_data.dart';
 class SignalRService {
   late HubConnection? hubConnection;
   final String hubUrl =
-      "https://alzheimerwebapi.azurewebsites.net/notificationHub";
-      //"http://192.168.68.122:5066/notificationHub";
+      //"https://alzheimerwebapi.azurewebsites.net/notificationHub";
+      "http://192.168.68.108:5066/notificationHub";
   bool isZoneAlarmScreenOpen = false;
   bool isFallAlarmScreenOpen = false;
   bool isDisconnectedScreenOpen = false;
@@ -60,6 +61,7 @@ class SignalRService {
       setupLocationOut(context);
       setupFallListener(context);
       setupNotFoundListener(context);
+      setupAlarmListener(context);
       //setupMessageListener(context);
     }
   }
@@ -101,11 +103,11 @@ class SignalRService {
         print(
             'Fuera de zona segura el dispositivo: $mac is at ($latitude, $longitude) at $fechaHora');
 
-        ScaffoldMessenger.of(context).showSnackBar(
+        /*ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(
                   'Fuera de zona segura el dispositivo: $mac está en ($latitude, $longitude) a las $fechaHora')),
-        );
+        );*/
         if (!isZoneAlarmScreenOpen) {
           final nombrepaciente = await storage.read(key: mac);
           isZoneAlarmScreenOpen = true;
@@ -126,6 +128,34 @@ class SignalRService {
       }
     });
   }
+  void setupAlarmListener(BuildContext context) {
+    hubConnection?.on('ReceiveMedicationNotification', (List<Object?>? message) async {
+      if (message != null) {
+        final String mac = message[0] as String;
+        final String hora = message[1] as String;
+        final String mensaje = message[2] as String;
+        // Aquí puedes manejar la actualización de la ubicación
+        print('Alarma del paciente: $mac a las $hora');
+
+        /*ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Alarma del dispositivo: $mac a la $hora')),
+        );*/
+        if (!isFallAlarmScreenOpen) {
+          final nombrepaciente = await storage.read(key: mac);
+          isFallAlarmScreenOpen = true;
+          if (!context.mounted) return;
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MedicineAlarmScr(nombrepaciente:nombrepaciente
+                  ))).then((_) {
+            isFallAlarmScreenOpen = false;
+          });
+        }
+      }
+    });
+  }
 
   void setupFallListener(BuildContext context) {
     hubConnection?.on('ReceiveFall', (List<Object?>? message) async {
@@ -135,10 +165,10 @@ class SignalRService {
         // Aquí puedes manejar la actualización de la ubicación
         print('El paciente ha caido: $mac a las $fechaHora');
 
-        ScaffoldMessenger.of(context).showSnackBar(
+        /*ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text('El paciente ha caido: $mac a las $fechaHora')),
-        );
+        );*/
         if (!isFallAlarmScreenOpen) {
           final nombrepaciente = await storage.read(key: mac);
           isFallAlarmScreenOpen = true;
@@ -165,11 +195,11 @@ class SignalRService {
         // Aquí puedes manejar la actualización de la ubicación
         print('El paciente ha perdido la conexion: $mac a las $fechaHora');
 
-        ScaffoldMessenger.of(context).showSnackBar(
+        /*ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Text(
                   'El paciente ha perdido la conexion: $mac a las $fechaHora')),
-        );
+        );*/
         if (!isDisconnectedScreenOpen) {
           final nombrepaciente = await storage.read(key: mac);
           isDisconnectedScreenOpen = true;

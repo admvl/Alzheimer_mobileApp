@@ -76,7 +76,7 @@ class _NotificacionesScreenState extends State<NotificacionesScreen> {
                   leading: _getIconForNotificationType(notificacion.idTipoNotificacion),
                   title: Text(notificacion.mensaje),
                   subtitle: Text(
-                    '${notificacion.fecha.toLocal().toString().split(' ')[0]} ${notificacion.hora.format(context)}',
+                    '${notificacion.fecha?.toLocal().toString().split(' ')[0]} ${notificacion.hora.format(context)}',
                   ),
                 );
               },
