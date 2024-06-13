@@ -341,6 +341,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with PermissionMixin<Welc
 }
 */
 
+import 'package:alzheimer_app1/abous_us.dart';
 import 'package:alzheimer_app1/bluetooth_scr.dart';
 import 'package:alzheimer_app1/device_conection_scr.dart';
 import 'package:alzheimer_app1/device_mgmt.dart';
@@ -445,6 +446,12 @@ class _WelcomeScreenState extends State<WelcomeScreen> with PermissionMixin<Welc
           MaterialPageRoute(builder: (context) => NotificacionesScreen()),
         );
         break;
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => AboutUsPage()),
+        );//AboutUsPage
+        break;
       default:
         debugPrint('Unhandled menu item: $index');
     }
@@ -458,6 +465,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> with PermissionMixin<Welc
       const Text('Mi Perfil'),
       //const Text('Gestionar Usuarios'),
       const Text('Notificaciones'),
+      const Text('Acerca de'),
     ];
 
     return WillPopScope(
