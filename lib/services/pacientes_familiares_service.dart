@@ -9,8 +9,8 @@ import 'dart:convert';
 
 class PacientesFamiliaresService {
   final storage = const FlutterSecureStorage();
-  //final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
-  final String baseUrl = "http://192.168.0.15:5066/api";
+  final String baseUrl = "https://alzheimerwebapi.azurewebsites.net/api";
+  //final String baseUrl = "http://192.168.68.122:5066/api";
 
   PacientesFamiliaresService();
 
@@ -20,11 +20,9 @@ class PacientesFamiliaresService {
     if (token == null) {
       throw Exception('Token not found');
     }
-    final response =
-        await http.get(Uri.parse('$baseUrl/pacientefamiliares/$id'),
-            headers: {
-              'Authorization': 'Bearer $token'
-            });
+    final response = await http.get(
+        Uri.parse('$baseUrl/pacientefamiliares/$id'),
+        headers: {'Authorization': 'Bearer $token'});
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
@@ -45,9 +43,7 @@ class PacientesFamiliaresService {
       throw Exception('Token not found');
     }
     final response = await http.get(Uri.parse('$baseUrl/todosfamiliares/'),
-        headers: {
-          'Authorization': 'Bearer $token'
-        });
+        headers: {'Authorization': 'Bearer $token'});
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonData = jsonDecode(response.body);
@@ -64,7 +60,8 @@ class PacientesFamiliaresService {
     }
   }
 
-  Future<PacientesFamiliares> crearPacienteFamiliar(PacientesFamiliares nuevaRelacion) async {
+  Future<PacientesFamiliares> crearPacienteFamiliar(
+      PacientesFamiliares nuevaRelacion) async {
     String? token = await storage.read(key: 'token');
     if (token == null) {
       throw Exception('Token not found');
@@ -93,10 +90,9 @@ class PacientesFamiliaresService {
     if (token == null) {
       throw Exception('Token not found');
     }
-    final response = await http.get(Uri.parse('$baseUrl/pacientesfamiliares/$id'),
-      headers: {
-        'Authorization': 'Bearer $token'
-      });
+    final response = await http.get(
+        Uri.parse('$baseUrl/pacientesfamiliares/$id'),
+        headers: {'Authorization': 'Bearer $token'});
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -107,15 +103,15 @@ class PacientesFamiliaresService {
   }
 
   // Obtener relaciones por ID
-  Future<List<PacientesFamiliares>> obtenerPacienteFamiliaresPorId(String id) async {
+  Future<List<PacientesFamiliares>> obtenerPacienteFamiliaresPorId(
+      String id) async {
     String? token = await storage.read(key: 'token');
     if (token == null) {
       throw Exception('Token not found');
     }
-    final response = await http.get(Uri.parse('$baseUrl/pacientefamiliares/$id'),
-      headers: {
-        'Authorization': 'Bearer $token'
-      });
+    final response = await http.get(
+        Uri.parse('$baseUrl/pacientefamiliares/$id'),
+        headers: {'Authorization': 'Bearer $token'});
 
     if (response.statusCode == 200) {
       //final Map<String, dynamic> jsonData = jsonDecode(response.body);
@@ -162,11 +158,9 @@ class PacientesFamiliaresService {
     if (token == null) {
       throw Exception('Token not found');
     }
-    final response =
-        await http.delete(Uri.parse('$baseUrl/pacientesfamiliares/$id'),
-          headers: {
-            'Authorization': 'Bearer $token'
-          });
+    final response = await http.delete(
+        Uri.parse('$baseUrl/pacientesfamiliares/$id'),
+        headers: {'Authorization': 'Bearer $token'});
 
     if (response.statusCode == 204) {
       return true;
