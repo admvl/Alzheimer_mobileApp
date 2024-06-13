@@ -50,7 +50,7 @@ class _DeviceMgmtState extends State<DeviceMmgt> with PermissionMixin<DeviceMmgt
       ),
       body: Column(
         children: [
-          if (hasPermission("devMgmt"))
+          if (hasPermission("devChng"))
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(

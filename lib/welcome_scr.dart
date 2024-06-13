@@ -619,18 +619,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> with PermissionMixin<Welc
                 ],
               ),
               const SizedBox(height: 20),
-              Flexible(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const DeviceMmgt()),
-                    );
-                  },
-                  icon: const Icon(Icons.monitor_heart_outlined),
-                  label: const Text('Dispositivos'),
+              if (hasPermission("devMgmt"))
+                Flexible(
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const DeviceMmgt()),
+                      );
+                    },
+                    icon: const Icon(Icons.monitor_heart_outlined),
+                    label: const Text('Dispositivos'),
+                  ),
                 ),
-              ),
               const SizedBox(height: 10),
               Wrap(
                 spacing: 10.0,
