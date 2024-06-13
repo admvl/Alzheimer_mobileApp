@@ -9,10 +9,13 @@ import 'package:alzheimer_app1/models/usuarios.dart';
 import 'package:alzheimer_app1/search_carer_scr.dart';
 import 'package:alzheimer_app1/search_family_scr.dart';
 import 'package:alzheimer_app1/search_patient_scr.dart';
+import 'package:alzheimer_app1/services/cuidador_service.dart';
+import 'package:alzheimer_app1/services/familiares_service.dart';
 import 'package:alzheimer_app1/services/pacientes_cuidadores_service.dart';
 import 'package:alzheimer_app1/services/pacientes_familiares_service.dart';
 import 'package:alzheimer_app1/services/pacientes_service.dart';
 import 'package:alzheimer_app1/services/personas_service.dart';
+import 'package:alzheimer_app1/services/usuarios_service.dart';
 import 'package:alzheimer_app1/user_form.dart';
 import 'package:alzheimer_app1/user_profile.dart';
 import 'package:alzheimer_app1/welcome_scr.dart';
@@ -22,7 +25,10 @@ import 'package:alzheimer_app1/utils/permission_mixin.dart';
 final personaService = PersonasService();
 final cuidadoresService = PacientesCuidadoresService();
 final familiareservice = PacientesFamiliaresService();
+final familiarService = FamiliaresService();
 final pacientesService = PacientesService();
+final userService = UsuariosService();
+final cuidadorService = CuidadorService();
 
 //Person Management
 class PeopleManagementScreen extends StatefulWidget {
@@ -248,7 +254,11 @@ class _FamiliaresTabState extends State<FamiliaresTab> with PermissionMixin<Fami
                 },
                 trailing: IconButton(
                   icon: const Icon(Icons.delete),
-                  onPressed: () => _confirmRemovePatientFamiliar(widget.paciente!, familiar),
+                  onPressed: () => 
+                    //_confirmRemovePatientFamiliar(widget.paciente!, familiar),
+                    widget.paciente != null 
+                    ? _confirmRemovePatientFamiliar(widget.paciente!, familiar)
+                    : _confirmRemoveFamiliar(familiar),
                 ),
               );
             },
@@ -279,11 +289,6 @@ class _FamiliaresTabState extends State<FamiliaresTab> with PermissionMixin<Fami
     if (shouldDelete == true) {
       try{
         PacientesFamiliares relacionPatientFam = await familiareservice.obtenerPacienteFamiliarPorId(paciente.idPaciente!);
-        /*for (var relacion in relacionPatientFam) {
-          if(relacion.idPaciente.idPaciente == paciente.idPaciente && relacion.idFamiliar.idFamiliar == familiar.idFamiliar){
-            _removePatientFamiliar(relacion.idPacienteFamiliar!);
-          }
-        } */
         _removePatientFamiliar(relacionPatientFam.idPacienteFamiliar!);
       }catch (e){
         ScaffoldMessenger.of(context).showSnackBar(
@@ -304,6 +309,44 @@ class _FamiliaresTabState extends State<FamiliaresTab> with PermissionMixin<Fami
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al desvincular el familiar: $e')),
       );
+    }
+  }
+  
+  _confirmRemoveFamiliar(Familiares familiar) async {
+        final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar eliminación'),
+        content: const Text('¿Está seguro de que desea eliminar este familiar?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldDelete == true) {
+      try {
+        //familiar - usuario - persona
+        await familiarService.eliminarFamiliarPorId(familiar.idFamiliar!);
+        await usuariosService.eliminarUsuarioPorId(familiar.idUsuario!.idUsuario!);
+        await personaService.eliminarPersonaPorId(familiar.idUsuario.idPersona!.idPersona!);
+        //await 
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('El familiar a sido eliminado con éxito')),
+        );
+        //_reloadDevices(); // Recargar la lista de dispositivos
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al eliminar el familiar: $e')),
+        );
+      }
     }
   }
 }
@@ -403,7 +446,10 @@ class _CuidadoresTabState extends State<CuidadoresTab> with PermissionMixin<Cuid
                 },
                 trailing: IconButton(
                   icon: const Icon(Icons.delete),
-                  onPressed: () => _confirmRemoveCuidadorFamiliar(widget.paciente!, cuidador),
+                  onPressed: () => 
+                  widget.paciente != null 
+                    ? _confirmRemoveCuidadorFamiliar(widget.paciente!, cuidador)
+                    : _confirmRemoveCuidador(cuidador),
                 ),
               );
             },
@@ -454,6 +500,44 @@ class _CuidadoresTabState extends State<CuidadoresTab> with PermissionMixin<Cuid
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error al desvincular el cuidador: $e')),
       );
+    }
+  }
+  
+   _confirmRemoveCuidador(Cuidadores cuidador) async {
+        final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmar eliminación'),
+        content: const Text('¿Está seguro de que desea eliminar este cuidador?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+
+    if (shouldDelete == true) {
+      try {
+        //familiar - usuario - persona
+        await cuidadorService.eliminarCuidadorPorId(cuidador.idCuidador!);
+        await usuariosService.eliminarUsuarioPorId(cuidador.idUsuario!.idUsuario!);
+        await personaService.eliminarPersonaPorId(cuidador.idUsuario.idPersona!.idPersona!);
+        //await 
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('El cuidador a sido eliminado con éxito')),
+        );
+        //_reloadDevices(); // Recargar la lista de dispositivos
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error al eliminar el cuidador: $e')),
+        );
+      }
     }
   }
 }
