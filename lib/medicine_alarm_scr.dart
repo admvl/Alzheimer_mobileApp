@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class MedicineAlarmScr extends StatefulWidget {
-  const MedicineAlarmScr({super.key});
+  final String? nombrepaciente;
+  const MedicineAlarmScr({super.key,this.nombrepaciente});
 
   @override
   State<MedicineAlarmScr> createState() => _MedicineAlarmScrState();
@@ -35,9 +36,9 @@ class _MedicineAlarmScrState extends State<MedicineAlarmScr> {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              "Es hora de tomar tu medicamento.",
-              style: TextStyle(
+            Text(
+              "Es hora de que ${widget.nombrepaciente} tome su medicamento",
+              style: const TextStyle(
                 fontSize: 20,
                 color: Colors.black,
               ),
