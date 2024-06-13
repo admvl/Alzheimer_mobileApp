@@ -95,7 +95,7 @@ class _DeviceMgmtState extends State<DeviceMmgt> with PermissionMixin<DeviceMmgt
         children: [
           Icon(Icons.add),
           SizedBox(width: 8),
-          Text('Añadir Cuidador'),
+          Text('Añadir Dispositivo'),
         ],
       ),
                 
