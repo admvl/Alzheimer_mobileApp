@@ -163,7 +163,8 @@ class _LogInFormState extends State<LogInForm> {
               radius: 80,
               child: const ProfileView(
                 image: NetworkImage(
-                  "https://images.unsplash.com/photo-1712945245297-9d9f05cf27b1?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  "https://images.unsplash.com/photo-1718244794384-c4341ac19cec?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                  //"https://images.unsplash.com/photo-1718110059185-5940de2ffa28?q=80&w=1932&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
                 ),
               ),
             ),

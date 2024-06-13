@@ -1,3 +1,4 @@
+import 'package:alzheimer_app1/bluetooth_scr.dart';
 import 'package:alzheimer_app1/device_form.dart';
 import 'package:alzheimer_app1/models/dispositivos.dart';
 import 'package:alzheimer_app1/models/pacientes.dart';
@@ -61,14 +62,43 @@ class _DeviceMgmtState extends State<DeviceMmgt> with PermissionMixin<DeviceMmgt
                     ),
                   );
                 },
-                child: const Row(
+                /*child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(Icons.add),
                     SizedBox(width: 8),
                     Text('ADD'),
                   ],
+                ),*/
+                /*
+                Wrap(
+                  spacing: 10.0,
+                  runSpacing: 10.0,
+                  children: [
+                    if (hasPermission("bluetooth"))
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          BluetoothScr bluetoothScr = const BluetoothScr();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => bluetoothScr),
+                          );
+                        },
+                        icon: const Icon(Icons.handyman_outlined),
+                        label: const Text('Configurar Dispositivo'),
+                      ),
+                  ],
                 ),
+                */
+                child: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.add),
+          SizedBox(width: 8),
+          Text('Añadir Dispositivo'),
+        ],
+      ),
+                
               ),
             ),
           Expanded(
@@ -107,6 +137,7 @@ class _DeviceMgmtState extends State<DeviceMmgt> with PermissionMixin<DeviceMmgt
               );
             },
           );
+          
         }
       },
     );

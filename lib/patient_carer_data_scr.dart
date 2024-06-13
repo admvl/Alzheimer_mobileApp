@@ -4,6 +4,7 @@ import 'package:alzheimer_app1/models/pacientes.dart';
 import 'package:alzheimer_app1/models/pacientes_cuidadores.dart';
 import 'package:alzheimer_app1/people_mgmt_scr.dart';
 import 'package:alzheimer_app1/services/pacientes_cuidadores_service.dart';
+import 'package:alzheimer_app1/welcome_scr.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -187,11 +188,9 @@ class _DefinePatientCarerDataState extends State<DefinePatientCarerData> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Cuidador vinculado con éxito')),
       );
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => const PeopleManagementScreen(),
-        ),
+        MaterialPageRoute(builder: (context) => const WelcomeScreen()),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
